@@ -44,15 +44,20 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- 3. GESTIÓN DE DATOS (DATABASE CON REPARACIÓN AUTOMÁTICA) ---
+# --- 3. GESTIÓN DE DATOS (DATABASE ACTUALIZADA) ---
 FILE_ELEVES = 'eleves.csv'
 FILE_PROPOSALS = 'propositions.csv'
 FILE_VOTES = 'votes_finaux.csv'
+FILE_EVAL_PROF = 'evaluation_prof.csv' # NUEVO ARCHIVO DOCENTE
 
 def init_db():
+    # Definición de columnas
     cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID']
-    cols_props = ['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status']
+    # AÑADIDO: 'Nom_Epreuve'
+    cols_props = ['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status', 'Nom_Epreuve']
     cols_votes = ['Votante', 'Equite', 'FairPlay', 'Innovation', 'Francophonie']
+    # NUEVO: Tabla de Evaluación Docente
+    cols_eval = ['Equipe', 'Nom_Epreuve', 'Stars_Epreuve', 'Stars_Eleve1', 'Stars_Eleve2', 'Commentaire']
 
     # 1. Alumnos
     if not os.path.exists(FILE_ELEVES):
@@ -62,11 +67,15 @@ def init_db():
         if not set(cols_eleves).issubset(df.columns):
             pd.DataFrame(columns=cols_eleves).to_csv(FILE_ELEVES, index=False)
 
-    # 2. Propuestas
+    # 2. Propuestas (Actualización con columna Nom_Epreuve)
     if not os.path.exists(FILE_PROPOSALS):
         pd.DataFrame(columns=cols_props).to_csv(FILE_PROPOSALS, index=False)
     else:
         df = pd.read_csv(FILE_PROPOSALS)
+        # Reparación automática si falta la columna nueva
+        if 'Nom_Epreuve' not in df.columns:
+            df['Nom_Epreuve'] = "Non défini"
+            df.to_csv(FILE_PROPOSALS, index=False)
         if 'Status' not in df.columns:
             df['Status'] = 'Pending'
             df.to_csv(FILE_PROPOSALS, index=False)
@@ -75,6 +84,10 @@ def init_db():
     if not os.path.exists(FILE_VOTES):
         pd.DataFrame(columns=cols_votes).to_csv(FILE_VOTES, index=False)
 
+    # 4. Evaluación Profesor (NUEVO)
+    if not os.path.exists(FILE_EVAL_PROF):
+        pd.DataFrame(columns=cols_eval).to_csv(FILE_EVAL_PROF, index=False)
+
 def load_data(file): return pd.read_csv(file)
 def save_data(df, file): df.to_csv(file, index=False)
 
@@ -82,6 +95,7 @@ init_db()
 df_eleves = load_data(FILE_ELEVES)
 df_proposals = load_data(FILE_PROPOSALS)
 df_votes = load_data(FILE_VOTES)
+df_eval = load_data(FILE_EVAL_PROF)
 
 # --- 4. FUNCIÓN GENERADOR DE CARNET ---
 def create_badge(pseudo, avatar, role="Athlète"):
@@ -109,59 +123,150 @@ if 'page' not in st.session_state: st.session_state['page'] = 'profile'
 def nav(page_name): st.session_state['page'] = page_name; st.rerun()
 
 # ==========================================
-#   ZONA PROFESOR (SIDEBAR)
+#   ZONA PROFESOR (SIDEBAR + EVALUACIÓN)
 # ==========================================
 with st.sidebar:
     st.header("👨‍🏫 Zone Prof")
-    st.info("Utiliza esto para proyectar en la pizarra.")
-    url_app = st.text_input("URL de tu App (Copia del navegador)", "https://share.streamlit.io/...")
     
-    if url_app:
-        qr_img = qrcode.make(url_app)
-        buffer = io.BytesIO()
-        qr_img.save(buffer, format="PNG")
-        img_bytes = buffer.getvalue()
-        st.image(img_bytes, caption="Escanea para entrar a la App", use_container_width=True)
-    
+    # 1. QR CODE GENERATOR
+    with st.expander("📲 QR Code Classe"):
+        url_app = st.text_input("URL App", "https://share.streamlit.io/...")
+        if url_app:
+            qr_img = qrcode.make(url_app)
+            buffer = io.BytesIO()
+            qr_img.save(buffer, format="PNG")
+            st.image(buffer.getvalue(), use_container_width=True)
+
     st.markdown("---")
-    st.caption("✅ Comp. Digital (Uso de App)")
-    st.caption("✅ ODD 16 (Instituciones sólidas)")
+    
+    # 2. DASHBOARD DE EVALUACIÓN (NUEVO)
+    st.subheader("📝 Évaluation")
+    password = st.text_input("Mot de passe", type="password")
+    
+    if password == "admin2026":  # CONTRASEÑA PROFESOR
+        st.success("Mode Prof Actif")
+        
+        # Filtrar solo equipos aprobados
+        approved_teams = df_proposals[df_proposals['Status'] == 'Approved']
+        
+        if approved_teams.empty:
+            st.warning("Aucune équipe validée.")
+        else:
+            # Selector de equipo
+            team_options = [f"{r['Demandeur']} & {r['Partenaire']}" for i, r in approved_teams.iterrows()]
+            selected_team_str = st.selectbox("Choisir Équipe", team_options)
+            
+            # Recuperar datos del equipo seleccionado
+            # (Un poco de magia de pandas para encontrar la fila correcta)
+            team_row = approved_teams[
+                (approved_teams['Demandeur'] + " & " + approved_teams['Partenaire']) == selected_team_str
+            ].iloc[0]
+            
+            p1 = team_row['Demandeur']
+            p2 = team_row['Partenaire']
+            nom_epreuve = team_row.get('Nom_Epreuve', 'Non défini')
+            
+            st.info(f"🏅 Épreuve: **{nom_epreuve}**")
+            
+            with st.form("eval_form"):
+                st.markdown("### Notation (Étoiles)")
+                
+                # Evaluación de la Prueba (Uso de st.feedback - Streamlit moderno)
+                st.write(f"⭐ Note de l'Épreuve ({nom_epreuve})")
+                stars_epreuve = st.feedback("stars", key="s_epreuve")
+                
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"👤 {p1}")
+                    stars_p1 = st.feedback("stars", key="s_p1")
+                with col2:
+                    st.write(f"👤 {p2}")
+                    stars_p2 = st.feedback("stars", key="s_p2")
+                
+                comment = st.text_area("Observations Prof")
+                
+                if st.form_submit_button("Enregistrer Note"):
+                    # Convertir feedback (0-4) a nota 1-5 para guardar
+                    s_e = (stars_epreuve + 1) if stars_epreuve is not None else 0
+                    s_1 = (stars_p1 + 1) if stars_p1 is not None else 0
+                    s_2 = (stars_p2 + 1) if stars_p2 is not None else 0
+                    
+                    new_eval = pd.DataFrame([[selected_team_str, nom_epreuve, s_e, s_1, s_2, comment]], 
+                                          columns=['Equipe', 'Nom_Epreuve', 'Stars_Epreuve', 'Stars_Eleve1', 'Stars_Eleve2', 'Commentaire'])
+                    df_eval = pd.concat([df_eval, new_eval], ignore_index=True)
+                    save_data(df_eval, FILE_EVAL_PROF)
+                    st.success("Évaluation enregistrée !")
 
 # ==========================================
 #              PÁGINAS DE LA APP
 # ==========================================
 
-# --- PÁGINA 1: PERFIL ---
+# --- PÁGINA 1: PERFIL + GESTIÓN DE PRUEBA ---
 if st.session_state['page'] == 'profile':
     st.markdown("<h1>👤 Mon Profil</h1>", unsafe_allow_html=True)
     
-    with st.form("profile_maker"):
-        st.markdown("<div class='avatar-circle'>😎</div>", unsafe_allow_html=True)
-        c1, c2 = st.columns([1,3])
-        
-        # --- CAMBIO: LISTA DE 17 AVATARES ---
-        lista_avatares = [
-            "🦊", "🦁", "🐯", "🐼", "🐨", "🦄", "🐲", "⚡", "🔥", 
-            "🚀", "🤖", "👽", "🦸", "🥷", "🧙", "🕵️", "👻"
+    # SECCIÓN 1: CREAR PERFIL (Si no existe)
+    with st.expander("✨ Créer / Modifier mon Avatar", expanded=True):
+        with st.form("profile_maker"):
+            st.markdown("<div class='avatar-circle'>😎</div>", unsafe_allow_html=True)
+            c1, c2 = st.columns([1,3])
+            
+            lista_avatares = ["🦊", "🦁", "🐯", "🐼", "🐨", "🦄", "🐲", "⚡", "🔥", "🚀", "🤖", "👽", "🦸", "🥷", "🧙", "🕵️", "👻"]
+            with c1: avatar = st.selectbox("Avatar", lista_avatares)
+            with c2: pseudo = st.text_input("Ton Pseudo", placeholder="Ex: Flash_Gordon")
+            
+            st.markdown("### ⚡ Mes Super-Pouvoirs")
+            forces = st.multiselect("Forces", ["Vitesse 🏃‍♂️", "Force 💪", "Stratégie 🧠", "Endurance 🔋", "Organisation 📋"], label_visibility="collapsed")
+            
+            st.markdown("### 🐢 Mon Point Faible")
+            faiblesse = st.text_input("Weakness", placeholder="Je suis...", label_visibility="collapsed")
+            
+            if st.form_submit_button("💾 Sauvegarder Profil"):
+                if pseudo and forces:
+                    new_user = pd.DataFrame([[pseudo, avatar, ", ".join(forces), faiblesse, "Ready", "None"]], 
+                                          columns=['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID'])
+                    df_eleves = pd.concat([df_eleves, new_user], ignore_index=True)
+                    save_data(df_eleves, FILE_ELEVES)
+                    st.success("Profil mis à jour !")
+                    st.rerun()
+
+    # SECCIÓN 2: BAUTIZAR PRUEBA (SOLO SI TIENE EQUIPO APROBADO)
+    st.markdown("---")
+    st.subheader("🔥 Ma Team & Mon Épreuve")
+    
+    # Buscamos si el usuario tiene un equipo aprobado
+    # Puede ser Demandeur o Partenaire
+    user_pseudo = pseudo if 'pseudo' in locals() and pseudo else "" # Intenta coger el pseudo del form
+    
+    # Para simplificar la demo, usamos un input de búsqueda si no acabamos de guardar
+    if not user_pseudo:
+        user_pseudo = st.text_input("Entre ton pseudo pour voir ta team:", key="search_team")
+
+    if user_pseudo:
+        my_team = df_proposals[
+            ((df_proposals['Demandeur'] == user_pseudo) | (df_proposals['Partenaire'] == user_pseudo)) &
+            (df_proposals['Status'] == 'Approved')
         ]
         
-        with c1: avatar = st.selectbox("Avatar", lista_avatares)
-        with c2: pseudo = st.text_input("Ton Pseudo", placeholder="Ex: Flash_Gordon")
-        
-        st.markdown("### ⚡ Mes Super-Pouvoirs")
-        forces = st.multiselect("Forces", ["Vitesse 🏃‍♂️", "Force 💪", "Stratégie 🧠", "Endurance 🔋", "Organisation 📋"], label_visibility="collapsed")
-        
-        st.markdown("### 🐢 Mon Point Faible")
-        faiblesse = st.text_input("Weakness", placeholder="Je suis...", label_visibility="collapsed")
-        
-        if st.form_submit_button("💾 Sauvegarder"):
-            if pseudo and forces:
-                new_user = pd.DataFrame([[pseudo, avatar, ", ".join(forces), faiblesse, "Ready", "None"]], 
-                                      columns=['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID'])
-                df_eleves = pd.concat([df_eleves, new_user], ignore_index=True)
-                save_data(df_eleves, FILE_ELEVES)
-                st.success("Profil Créé ! Va au Marché.")
-            else: st.error("Remplis tout !")
+        if not my_team.empty:
+            row_team = my_team.iloc[0]
+            st.success(f"✅ Tu es en duo avec : {row_team['Partenaire'] if row_team['Demandeur'] == user_pseudo else row_team['Demandeur']}")
+            
+            current_test_name = row_team.get('Nom_Epreuve', 'Non défini')
+            st.info(f"Nom actuel de l'épreuve : **{current_test_name}**")
+            
+            with st.form("name_test_form"):
+                new_name = st.text_input("Nommez votre épreuve sportive (Ex: Le Saut Galactique):")
+                if st.form_submit_button("🏷️ Baptiser l'Épreuve"):
+                    # Actualizar en el DataFrame
+                    idx = row_team.name # Índice original
+                    df_proposals.at[idx, 'Nom_Epreuve'] = new_name
+                    save_data(df_proposals, FILE_PROPOSALS)
+                    st.balloons()
+                    st.success(f"C'est officiel ! Votre épreuve s'appelle : {new_name}")
+                    st.rerun()
+        else:
+            st.caption("Tu n'as pas encore d'équipe validée par le Conseil.")
 
 # --- PÁGINA 2: MERCADO ---
 elif st.session_state['page'] == 'market':
@@ -169,7 +274,7 @@ elif st.session_state['page'] == 'market':
     available_students = df_eleves[df_eleves['TeamID'] == 'None']
 
     if available_students.empty:
-        st.warning("Personne de disponible pour le moment.")
+        st.warning("Personne de disponible.")
     else:
         for i, row in available_students.iterrows():
             with st.container():
@@ -184,15 +289,14 @@ elif st.session_state['page'] == 'market':
                         me = st.text_input("Ton Pseudo", placeholder="Qui es-tu ?")
                         st.markdown("**Pourquoi ce choix ?**")
                         justif = st.text_area("Justification", placeholder="Je te choisis car...")
-                        
                         if st.form_submit_button("🚀 Envoyer"):
                             if len(justif) > 10:
-                                new_p = pd.DataFrame([[me, row['Pseudo'], justif, 0, 0, "Pending"]],
-                                                   columns=['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status'])
+                                new_p = pd.DataFrame([[me, row['Pseudo'], justif, 0, 0, "Pending", "Non défini"]],
+                                                   columns=['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status', 'Nom_Epreuve'])
                                 df_proposals = pd.concat([df_proposals, new_p], ignore_index=True)
                                 save_data(df_proposals, FILE_PROPOSALS)
                                 st.success("Envoyé au Conseil !")
-                            else: st.error("Trop court ! Explique mieux.")
+                            else: st.error("Trop court !")
 
 # --- PÁGINA 3: CONSEJO ---
 elif st.session_state['page'] == 'council':
@@ -205,7 +309,6 @@ elif st.session_state['page'] == 'council':
         for i, row in pending.iterrows():
             st.markdown(f"### ⚔️ {row['Demandeur']} + {row['Partenaire']}")
             st.info(f"🗣️ \"{row['Justification']}\"")
-            
             c1, c2 = st.columns(2)
             if c1.button(f"🟢 VALIDÉ ({row['Votes_Pour']})", key=f"y{i}"):
                 df_proposals.at[i, 'Votes_Pour'] += 1
@@ -234,75 +337,55 @@ elif st.session_state['page'] == 'badge':
 # --- PÁGINA 5: PREMIOS (AWARDS) ---
 elif st.session_state['page'] == 'awards':
     st.markdown("<h1>🏆 Les Oscars JO</h1>", unsafe_allow_html=True)
-    
     tab1, tab2 = st.tabs(["🗳️ Je Vote", "📊 Résultats"])
     approved_teams = df_proposals[df_proposals['Status'] == 'Approved']
     
     if approved_teams.empty:
         st.warning("⚠️ Il faut valider des équipes au Conseil d'abord !")
     else:
-        team_list = [f"{r['Demandeur']} & {r['Partenaire']}" for i, r in approved_teams.iterrows()]
+        # Mostramos el nombre de la prueba si existe, si no los nombres
+        team_list = []
+        for i, r in approved_teams.iterrows():
+            label = f"{r['Demandeur']} & {r['Partenaire']}"
+            if r['Nom_Epreuve'] != "Non défini":
+                label += f" ({r['Nom_Epreuve']})"
+            team_list.append(label)
         
-        # SUB-PESTAÑA 1: VOTACIÓN
         with tab1:
-            st.markdown("Vote pour les meilleurs duos ! (Honnêtement 😉)")
+            st.markdown("Vote pour les meilleurs duos !")
             with st.form("voting_form"):
                 voter = st.selectbox("Qui vote ?", df_eleves['Pseudo'].unique())
+                c_a, c_b = st.columns(2)
+                with c_a:
+                    v_eq = st.selectbox("⚖️ Prix Équité", team_list)
+                    v_in = st.selectbox("💡 Prix Innovation", team_list)
+                with c_b:
+                    v_fp = st.selectbox("🤝 Prix Fair-Play", team_list)
+                    v_fr = st.selectbox("🗣️ Prix Francophonie", team_list)
                 
-                col_a, col_b = st.columns(2)
-                with col_a:
-                    st.markdown("⚖️ **Prix de l'Équité (ODD 10)**")
-                    st.caption("Le duo le plus inclusif.")
-                    v_eq = st.selectbox("Choix 1", team_list, key="v1")
-                    
-                    st.markdown("💡 **Prix de l'Innovation (ODD 9)**")
-                    st.caption("Le duo le plus original.")
-                    v_in = st.selectbox("Choix 2", team_list, key="v2")
-
-                with col_b:
-                    st.markdown("🤝 **Prix du Fair-Play (ODD 16)**")
-                    st.caption("Le respect avant tout.")
-                    v_fp = st.selectbox("Choix 3", team_list, key="v3")
-                    
-                    st.markdown("🗣️ **Prix Francophonie**")
-                    st.caption("L'effort en français.")
-                    v_fr = st.selectbox("Choix 4", team_list, key="v4")
-                
-                if st.form_submit_button("📩 Envoyer mes Votes"):
+                if st.form_submit_button("📩 Envoyer"):
                     if voter in df_votes['Votante'].values:
-                        st.error("Tu as déjà voté ! 🚫")
+                        st.error("Tu as déjà voté !")
                     else:
                         new_vote = pd.DataFrame([[voter, v_eq, v_fp, v_in, v_fr]], 
                                               columns=['Votante', 'Equite', 'FairPlay', 'Innovation', 'Francophonie'])
                         df_votes = pd.concat([df_votes, new_vote], ignore_index=True)
                         save_data(df_votes, FILE_VOTES)
-                        st.success("Votes enregistrés ! Merci.")
+                        st.success("Votes enregistrés !")
                         st.balloons()
-
-        # SUB-PESTAÑA 2: RESULTADOS
         with tab2:
-            st.markdown("### 🌟 Le Podium en Direct")
-            if df_votes.empty:
-                st.info("Attente des votes...")
+            if df_votes.empty: st.info("Attente des votes...")
             else:
-                def show_winner(category, emoji, title):
-                    if category in df_votes.columns:
-                        counts = df_votes[category].value_counts()
-                        if not counts.empty:
-                            winner = counts.idxmax()
-                            votes = counts.max()
-                            st.metric(label=f"{emoji} {title}", value=winner, delta=f"{votes} votes")
-                            st.bar_chart(counts)
-                
-                show_winner('Equite', '⚖️', "Prix Équité")
-                st.markdown("---")
-                show_winner('FairPlay', '🤝', "Prix Fair-Play")
-                st.markdown("---")
-                show_winner('Innovation', '💡', "Prix Innovation")
-                st.markdown("---")
-                show_winner('Francophonie', '🗣️', "Prix Francophonie")
+                def show(cat, emo):
+                    if cat in df_votes.columns:
+                        c = df_votes[cat].value_counts()
+                        if not c.empty: st.metric(f"{emo} Gagnant", c.idxmax(), f"{c.max()} votes")
+                show('Equite', '⚖️')
+                show('FairPlay', '🤝')
+                show('Innovation', '💡')
+                show('Francophonie', '🗣️')
 
-# --- MENÚ INFERIOR (5 COLUMNAS) ---
+# --- MENÚ INFERIOR ---
 st.markdown("---")
 n1, n2, n3, n4, n5 = st.columns(5)
 with n1: 
