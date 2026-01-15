@@ -114,14 +114,36 @@ FILE_ELEVES = 'eleves.csv'
 FILE_PROPOSALS = 'propositions.csv'
 
 def init_db():
+    # Definimos las columnas que DEBEN existir
+    cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID']
+    cols_props = ['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status']
+
+    # 1. Verificar Archivo Alumnos
     if not os.path.exists(FILE_ELEVES):
-        pd.DataFrame(columns=['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID']).to_csv(FILE_ELEVES, index=False)
+        pd.DataFrame(columns=cols_eleves).to_csv(FILE_ELEVES, index=False)
+    else:
+        # Si el archivo existe, comprobamos que tenga las columnas correctas
+        df = pd.read_csv(FILE_ELEVES)
+        if not set(cols_eleves).issubset(df.columns):
+            # Si faltan columnas, reiniciamos el archivo
+            pd.DataFrame(columns=cols_eleves).to_csv(FILE_ELEVES, index=False)
+            st.rerun()
+
+    # 2. Verificar Archivo Propuestas (Aquí estaba tu error)
     if not os.path.exists(FILE_PROPOSALS):
-        pd.DataFrame(columns=['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status']).to_csv(FILE_PROPOSALS, index=False)
+        pd.DataFrame(columns=cols_props).to_csv(FILE_PROPOSALS, index=False)
+    else:
+        # Si existe, comprobamos si tiene la columna 'Status'
+        df = pd.read_csv(FILE_PROPOSALS)
+        if 'Status' not in df.columns:
+            # Si no la tiene, reiniciamos el archivo para añadirla
+            pd.DataFrame(columns=cols_props).to_csv(FILE_PROPOSALS, index=False)
+            st.rerun()
 
 def load_data(file): return pd.read_csv(file)
 def save_data(df, file): df.to_csv(file, index=False)
 
+# Ejecutamos la comprobación
 init_db()
 df_eleves = load_data(FILE_ELEVES)
 df_proposals = load_data(FILE_PROPOSALS)
