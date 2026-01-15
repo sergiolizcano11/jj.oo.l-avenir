@@ -104,9 +104,19 @@ with st.sidebar:
     
     # Generador de QR para la clase
     url_app = st.text_input("URL de tu App (Copia del navegador)", "https://share.streamlit.io/...")
+    
     if url_app:
-        qr = qrcode.make(url_app)
-        st.image(qr, caption="Escanea para entrar a la App", use_container_width=True)
+        # 1. Generamos la imagen PIL del QR
+        qr_img = qrcode.make(url_app)
+        
+        # 2. SOLUCIÓN DEL ERROR: Guardamos la imagen en un buffer de memoria (Bytes)
+        # Esto convierte el objeto QR en una imagen PNG estándar que Streamlit sí entiende
+        buffer = io.BytesIO()
+        qr_img.save(buffer, format="PNG")
+        img_bytes = buffer.getvalue()
+        
+        # 3. Mostramos la imagen desde los bytes
+        st.image(img_bytes, caption="Escanea para entrar a la App", use_container_width=True)
     
     st.markdown("---")
     st.caption("Objetivos Pedagógicos:")
