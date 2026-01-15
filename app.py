@@ -47,12 +47,12 @@ st.markdown("""
 # --- 3. GESTIÓN DE DATOS (DATABASE CON REPARACIÓN AUTOMÁTICA) ---
 FILE_ELEVES = 'eleves.csv'
 FILE_PROPOSALS = 'propositions.csv'
-FILE_VOTES = 'votes_finaux.csv' # NUEVO ARCHIVO
+FILE_VOTES = 'votes_finaux.csv'
 
 def init_db():
     cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID']
     cols_props = ['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status']
-    cols_votes = ['Votante', 'Equite', 'FairPlay', 'Innovation', 'Francophonie'] # NUEVAS COLUMNAS
+    cols_votes = ['Votante', 'Equite', 'FairPlay', 'Innovation', 'Francophonie']
 
     # 1. Alumnos
     if not os.path.exists(FILE_ELEVES):
@@ -71,7 +71,7 @@ def init_db():
             df['Status'] = 'Pending'
             df.to_csv(FILE_PROPOSALS, index=False)
             
-    # 3. Votos Finales (NUEVO)
+    # 3. Votos Finales
     if not os.path.exists(FILE_VOTES):
         pd.DataFrame(columns=cols_votes).to_csv(FILE_VOTES, index=False)
 
@@ -81,7 +81,7 @@ def save_data(df, file): df.to_csv(file, index=False)
 init_db()
 df_eleves = load_data(FILE_ELEVES)
 df_proposals = load_data(FILE_PROPOSALS)
-df_votes = load_data(FILE_VOTES) # Cargar votos
+df_votes = load_data(FILE_VOTES)
 
 # --- 4. FUNCIÓN GENERADOR DE CARNET ---
 def create_badge(pseudo, avatar, role="Athlète"):
@@ -138,7 +138,14 @@ if st.session_state['page'] == 'profile':
     with st.form("profile_maker"):
         st.markdown("<div class='avatar-circle'>😎</div>", unsafe_allow_html=True)
         c1, c2 = st.columns([1,3])
-        with c1: avatar = st.selectbox("Avatar", ["🦊", "🦁", "🦄", "⚡", "👽", "🤖", "🔥"])
+        
+        # --- CAMBIO: LISTA DE 17 AVATARES ---
+        lista_avatares = [
+            "🦊", "🦁", "🐯", "🐼", "🐨", "🦄", "🐲", "⚡", "🔥", 
+            "🚀", "🤖", "👽", "🦸", "🥷", "🧙", "🕵️", "👻"
+        ]
+        
+        with c1: avatar = st.selectbox("Avatar", lista_avatares)
         with c2: pseudo = st.text_input("Ton Pseudo", placeholder="Ex: Flash_Gordon")
         
         st.markdown("### ⚡ Mes Super-Pouvoirs")
@@ -224,23 +231,19 @@ elif st.session_state['page'] == 'badge':
             st.image(img, caption="Badge Officiel")
             st.download_button("⬇️ Télécharger", img, file_name="badge.png", mime="image/png")
 
-# --- PÁGINA 5: PREMIOS (AWARDS) --- [NUEVA SECCIÓN]
+# --- PÁGINA 5: PREMIOS (AWARDS) ---
 elif st.session_state['page'] == 'awards':
     st.markdown("<h1>🏆 Les Oscars JO</h1>", unsafe_allow_html=True)
     
-    # Pestañas para Votar vs Ver Resultados
     tab1, tab2 = st.tabs(["🗳️ Je Vote", "📊 Résultats"])
-    
-    # Obtener lista de equipos aprobados
     approved_teams = df_proposals[df_proposals['Status'] == 'Approved']
     
     if approved_teams.empty:
         st.warning("⚠️ Il faut valider des équipes au Conseil d'abord !")
     else:
-        # Formatear nombres de equipos para el selectbox
         team_list = [f"{r['Demandeur']} & {r['Partenaire']}" for i, r in approved_teams.iterrows()]
         
-        # --- SUB-PESTAÑA 1: VOTACIÓN ---
+        # SUB-PESTAÑA 1: VOTACIÓN
         with tab1:
             st.markdown("Vote pour les meilleurs duos ! (Honnêtement 😉)")
             with st.form("voting_form"):
@@ -266,7 +269,6 @@ elif st.session_state['page'] == 'awards':
                     v_fr = st.selectbox("Choix 4", team_list, key="v4")
                 
                 if st.form_submit_button("📩 Envoyer mes Votes"):
-                    # Evitar doble voto (simple check)
                     if voter in df_votes['Votante'].values:
                         st.error("Tu as déjà voté ! 🚫")
                     else:
@@ -277,13 +279,12 @@ elif st.session_state['page'] == 'awards':
                         st.success("Votes enregistrés ! Merci.")
                         st.balloons()
 
-        # --- SUB-PESTAÑA 2: RESULTADOS ---
+        # SUB-PESTAÑA 2: RESULTADOS
         with tab2:
             st.markdown("### 🌟 Le Podium en Direct")
             if df_votes.empty:
                 st.info("Attente des votes...")
             else:
-                # Función auxiliar para mostrar ganador
                 def show_winner(category, emoji, title):
                     if category in df_votes.columns:
                         counts = df_votes[category].value_counts()
@@ -291,7 +292,6 @@ elif st.session_state['page'] == 'awards':
                             winner = counts.idxmax()
                             votes = counts.max()
                             st.metric(label=f"{emoji} {title}", value=winner, delta=f"{votes} votes")
-                            # Gráfica simple
                             st.bar_chart(counts)
                 
                 show_winner('Equite', '⚖️', "Prix Équité")
@@ -314,4 +314,4 @@ with n3:
 with n4: 
     if st.button("🆔"): nav('badge')
 with n5: 
-    if st.button("🏆"): nav('awards') # NUEVO BOTÓN
+    if st.button("🏆"): nav('awards')
