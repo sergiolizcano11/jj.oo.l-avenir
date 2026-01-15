@@ -158,6 +158,17 @@ if st.session_state['page'] == 'profile':
                 st.error("Il manque des infos !")
 
 # 2. PÁGINA MERCADO (MATCHING)
+# --- MEJORA DUA: ANDAMIAJE LINGÜÍSTICO ---
+with st.expander("💡 Besoin d'aide pour écrire ? (Sentence Starters)"):
+    st.markdown("""
+    Utilise ces phrases pour t'aider :
+    - **Pour la cause :** *"Je le choisis **parce qu'il** est fort en..."*
+    - **Pour l'opposition :** *"Je suis rapide **mais** il est organisé..."*
+    - **Pour le but :** *"Ensemble, nous voulons **gagner** la médaille..."*
+    """)
+    
+    # Botones que insertan texto automáticamente (Simulado: el alumno copia/pega)
+    st.code("Je pense que nous sommes complémentaires car...", language="text")
 elif st.session_state['page'] == 'market':
     st.title("Le Hub 🤝")
     st.markdown("<p style='text-align:center'>Trouve ton duo parfait.</p>", unsafe_allow_html=True)
