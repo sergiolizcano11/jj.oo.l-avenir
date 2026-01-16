@@ -19,17 +19,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# --- 2. CSS "3D & HIGH CONTRAST" ---
+# --- 2. CSS "HIGH CONTRAST & JOURNAL" ---
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
 
     :root {
         --primary: #4D79FF;
-        --primary-dark: #2a50c4;
-        --accent: #FFD93D;
-        --text: #1A1A1A; /* Negro casi puro para contraste */
-        --card-bg: rgba(255, 255, 255, 0.96); /* Casi opaco para leer bien */
+        --card-bg: rgba(255, 255, 255, 0.96);
+        --text: #1A1A1A;
     }
 
     /* FONDO */
@@ -41,29 +39,22 @@ st.markdown("""
         font-family: 'Poppins', sans-serif;
     }
     
-    /* CAPA DE CONTRASTE SOBRE EL FONDO */
     .stApp::before {
-        content: "";
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.2); /* Oscurece un poco la foto */
-        z-index: -1;
+        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.2); z-index: -1;
     }
 
-    /* TARJETAS FLOTANTES 3D */
-    .css-1r6slb0, .stDataFrame, .stForm, div[data-testid="stExpander"], .news-card, .photo-card {
+    /* TARJETAS GLASSMORPHISM (Ahora aplicado también al MOOD) */
+    .css-1r6slb0, .stDataFrame, .stForm, div[data-testid="stExpander"], .news-card, .photo-card, .mood-card {
         background: var(--card-bg);
         border-radius: 20px;
         padding: 25px;
-        /* Sombra fuerte para efecto 3D */
-        box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.5) inset;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         border: none;
         margin-bottom: 25px;
-        transform: perspective(1000px) translateZ(0);
-        transition: transform 0.2s;
     }
 
-    /* HERO HEADER 3D */
+    /* HERO HEADER */
     .hero-header {
         background: linear-gradient(180deg, #4D79FF 0%, #00C6FF 100%);
         padding: 40px 20px;
@@ -72,55 +63,27 @@ st.markdown("""
         text-align: center;
         margin-bottom: 30px;
         box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-        border-bottom: 6px solid #0099cc; /* Borde 3D */
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        border-bottom: 6px solid #0099cc;
     }
     
-    .hero-header h1 {
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin: 0;
-    }
+    .hero-header h1 { font-size: 2.2rem; font-weight: 900; margin: 0; color: white !important; }
 
-    /* TEXTOS DE ALTO CONTRASTE */
-    h1, h2, h3, p, label, .stMarkdown {
-        color: var(--text) !important;
-        text-shadow: none !important;
-    }
-    .stMarkdown p { font-weight: 500; }
+    /* TEXTOS */
+    h1, h2, h3, p, label, .stMarkdown { color: var(--text) !important; }
 
-    /* BOTONES 3D (GAME STYLE) */
+    /* BOTONES EMOJI GIGANTES */
+    .emoji-btn { font-size: 40px !important; padding: 10px !important; height: auto !important; }
+
+    /* BOTONES GENERALES */
     .stButton > button {
         background: linear-gradient(to bottom, #4D79FF, #3a60d0);
-        color: white;
-        border-radius: 15px;
-        border: none;
-        border-bottom: 6px solid #2a50c4; /* Efecto grosor */
-        padding: 15px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        width: 100%;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        color: white; border-radius: 15px; border: none;
+        border-bottom: 6px solid #2a50c4;
+        padding: 15px; font-weight: 800; width: 100%;
         transition: all 0.1s;
-        margin-top: 10px;
     }
+    .stButton > button:active { transform: translateY(4px); border-bottom: 2px solid #2a50c4; }
     
-    .stButton > button:active {
-        transform: translateY(4px); /* Se hunde al clicar */
-        border-bottom: 2px solid #2a50c4;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    
-    /* Inputs más legibles */
-    .stTextInput input, .stSelectbox div[data-baseweb="select"] {
-        background: white;
-        border: 2px solid #ddd;
-        color: black;
-        font-weight: 600;
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -129,23 +92,23 @@ FILE_ELEVES = 'eleves.csv'
 FILE_TEAMS = 'teams.csv'
 FILE_GALLERY = 'gallery.csv'
 FILE_NEWS = 'news_feed.csv'
-FILE_METEO = 'meteo.csv'
+FILE_JOURNAL = 'journal.csv' # NUEVO: DIARIO
 
 def init_db():
     cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'TeamName']
     cols_teams = ['TeamName', 'Slogan', 'MembersCount', 'Points']
     cols_gallery = ['TeamName', 'ImageB64', 'Caption', 'Date']
     cols_news = ['Date', 'Titre', 'Contenu', 'Type']
-    cols_meteo = ['Pseudo', 'Mood', 'Date']
+    cols_journal = ['Pseudo', 'Date', 'Reflexion', 'Humeur'] # NUEVO
 
     for file, cols in [(FILE_ELEVES, cols_eleves), (FILE_TEAMS, cols_teams), 
-                       (FILE_GALLERY, cols_gallery), (FILE_NEWS, cols_news), (FILE_METEO, cols_meteo)]:
+                       (FILE_GALLERY, cols_gallery), (FILE_NEWS, cols_news), (FILE_JOURNAL, cols_journal)]:
         if not os.path.exists(file):
             pd.DataFrame(columns=cols).to_csv(file, index=False)
         else:
             df = pd.read_csv(file)
             for c in cols:
-                if c not in df.columns: df[c] = "" if c not in ['Points','MembersCount'] else 0
+                if c not in df.columns: df[c] = ""
             df.to_csv(file, index=False)
 
 def load_data(file): return pd.read_csv(file)
@@ -156,6 +119,7 @@ df_eleves = load_data(FILE_ELEVES)
 df_teams = load_data(FILE_TEAMS)
 df_gallery = load_data(FILE_GALLERY)
 df_news = load_data(FILE_NEWS)
+df_journal = load_data(FILE_JOURNAL)
 
 def auto_post(title, content, type_msg="Info 📢"):
     global df_news
@@ -176,6 +140,22 @@ with st.sidebar:
     st.header("👨‍🏫 Zone Prof")
     if st.text_input("Code", type="password") == "admin":
         st.success("Admin")
+        
+        # VISOR DE DIARIOS (NUEVO)
+        st.markdown("---")
+        st.subheader("📖 Lecture Journaux")
+        if df_journal.empty:
+            st.info("Aucun journal.")
+        else:
+            student_filter = st.selectbox("Filtrer par élève", ["Tous"] + list(df_journal['Pseudo'].unique()))
+            
+            view_df = df_journal if student_filter == "Tous" else df_journal[df_journal['Pseudo'] == student_filter]
+            
+            for i, row in view_df.iterrows():
+                with st.expander(f"{row['Date']} - {row['Pseudo']} ({row['Humeur']})"):
+                    st.write(row['Reflexion'])
+
+        st.markdown("---")
         if st.button("Reset News"):
             pd.DataFrame(columns=['Date','Titre','Contenu','Type']).to_csv(FILE_NEWS, index=False)
             st.rerun()
@@ -186,7 +166,6 @@ with st.sidebar:
 
 # --- 1. EL PATIO (HOME) ---
 if st.session_state['page'] == 'home':
-    # HERO HEADER 3D
     st.markdown("""
     <div class="hero-header">
         <h1>🏟️ Le Lycée Olympique</h1>
@@ -194,12 +173,17 @@ if st.session_state['page'] == 'home':
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("##### 👋 Comment ça va ?")
+    # MOOD TRACKER DENTRO DE TARJETA (VISIBILIDAD MEJORADA)
+    st.markdown('<div class="mood-card">', unsafe_allow_html=True)
+    st.markdown("##### 👋 Comment ça va aujourd'hui ?")
     c1, c2, c3, c4 = st.columns(4)
-    if c1.button("🤩"): st.toast("Super !")
-    if c4.button("😴"): st.toast("Repos...")
+    if c1.button("🤩"): st.toast("Super énergie !")
+    if c2.button("🙂"): st.toast("Ça va bien")
+    if c3.button("😐"): st.toast("Moyen...")
+    if c4.button("😴"): st.toast("Fatigué...")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("### 📢 Actualités du Lycée")
+    st.markdown("### 📢 Actualités")
     
     if df_news.empty:
         st.info("Le campus est calme...")
@@ -220,7 +204,7 @@ if st.session_state['page'] == 'home':
         </div>
         """, unsafe_allow_html=True)
 
-# --- 2. PERFIL (CREACIÓN) ---
+# --- 2. PERFIL ---
 elif st.session_state['page'] == 'profile':
     st.markdown("<h1>👤 Mon Profil</h1>", unsafe_allow_html=True)
     
@@ -244,10 +228,9 @@ elif st.session_state['page'] == 'profile':
                 else:
                     st.error("Ce pseudo existe déjà !")
 
-# --- 3. EQUIPOS (SQUADS) ---
+# --- 3. EQUIPOS ---
 elif st.session_state['page'] == 'teams':
     st.markdown("<h1>🛡️ Les Équipes</h1>", unsafe_allow_html=True)
-    
     tab_create, tab_join = st.tabs(["✨ Créer", "🤝 Rejoindre"])
     
     with tab_create:
@@ -263,15 +246,12 @@ elif st.session_state['page'] == 'teams':
                         new_t = pd.DataFrame([[t_name, t_slogan, 1, 0]], columns=df_teams.columns)
                         df_teams = pd.concat([df_teams, new_t], ignore_index=True)
                         save_data(df_teams, FILE_TEAMS)
-                        
                         idx = df_eleves[df_eleves['Pseudo'] == leader_name].index[0]
                         df_eleves.at[idx, 'TeamName'] = t_name
                         save_data(df_eleves, FILE_ELEVES)
-                        
                         auto_post(f"Nouvelle Équipe : {t_name} !", f"Slogan : « {t_slogan} »", "Équipe 🛡️")
-                        st.balloons()
-                    else:
-                        st.error("Déjà pris.")
+                        st.balloons(); st.success("Équipe créée !")
+                    else: st.error("Déjà pris.")
 
     with tab_join:
         if df_teams.empty:
@@ -282,32 +262,25 @@ elif st.session_state['page'] == 'teams':
                     st.markdown(f"**« {row['Slogan']} »**")
                     members = df_eleves[df_eleves['TeamName'] == row['TeamName']]['Pseudo'].tolist()
                     st.write(f"👥 Membres: {', '.join(members)}")
-                    
                     me = st.selectbox(f"Je suis...", df_eleves['Pseudo'].unique(), key=f"j_{i}")
                     if st.button(f"Rejoindre {row['TeamName']}", key=f"btn_{i}"):
                         idx = df_eleves[df_eleves['Pseudo'] == me].index[0]
-                        old_team = df_eleves.at[idx, 'TeamName']
-                        if old_team != row['TeamName']:
-                            df_eleves.at[idx, 'TeamName'] = row['TeamName']
-                            save_data(df_eleves, FILE_ELEVES)
-                            auto_post("Recrutement !", f"{me} a rejoint {row['TeamName']} !", "Info 🤝")
-                            st.rerun()
+                        df_eleves.at[idx, 'TeamName'] = row['TeamName']
+                        save_data(df_eleves, FILE_ELEVES)
+                        auto_post("Recrutement !", f"{me} a rejoint {row['TeamName']} !", "Info 🤝")
+                        st.rerun()
 
 # --- 4. GALERÍA ---
 elif st.session_state['page'] == 'gallery':
-    st.markdown("<h1>📸 Galerie Lycée</h1>", unsafe_allow_html=True)
-    
+    st.markdown("<h1>📸 Galerie</h1>", unsafe_allow_html=True)
     with st.expander("📤 Poster une photo"):
         uploader = st.selectbox("Qui poste ?", df_teams['TeamName'].unique())
         caption = st.text_input("Description")
         uploaded_file = st.file_uploader("Image", type=['png', 'jpg'])
-        
         if st.button("Publier") and uploaded_file and uploader:
             bytes_data = uploaded_file.getvalue()
             b64_str = base64.b64encode(bytes_data).decode()
-            
-            new_img = pd.DataFrame([[uploader, b64_str, caption, datetime.now().strftime("%d/%m")]], 
-                                 columns=df_gallery.columns)
+            new_img = pd.DataFrame([[uploader, b64_str, caption, datetime.now().strftime("%d/%m")]], columns=df_gallery.columns)
             df_gallery = pd.concat([new_img, df_gallery], ignore_index=True)
             save_data(df_gallery, FILE_GALLERY)
             auto_post("Nouvelle Photo 📸", f"L'équipe {uploader} a partagé un souvenir.", "Photo 📸")
@@ -322,14 +295,33 @@ elif st.session_state['page'] == 'gallery':
                 <div class="photo-card">
                     <img src="data:image/png;base64,{row['ImageB64']}" style="width:100%; border-radius:10px;">
                     <p style="color:black;"><strong>{row['TeamName']}</strong><br>{row['Caption']}</p>
-                </div>
-                """, unsafe_allow_html=True)
+                </div>""", unsafe_allow_html=True)
 
-# --- NAVEGACIÓN INFERIOR ---
+# --- 5. JOURNAL (NUEVO) ---
+elif st.session_state['page'] == 'journal':
+    st.markdown("<h1>📖 Mon Journal</h1>", unsafe_allow_html=True)
+    st.caption("Espace privé. Seul le prof peut lire ceci.")
+    
+    with st.form("journal_entry"):
+        author = st.selectbox("C'est qui ?", df_eleves['Pseudo'].unique())
+        mood_day = st.selectbox("Ressenti global", ["Super", "Bien", "Fatigué", "Triste"])
+        reflexion = st.text_area("Qu'as-tu fait aujourd'hui ? Comment t'es-tu senti ?", height=150)
+        
+        if st.form_submit_button("🔒 Enregistrer dans mon journal"):
+            if author and reflexion:
+                new_entry = pd.DataFrame([[author, datetime.now().strftime("%d/%m %H:%M"), reflexion, mood_day]], 
+                                       columns=['Pseudo', 'Date', 'Reflexion', 'Humeur'])
+                df_journal = pd.concat([new_entry, df_journal], ignore_index=True)
+                save_data(df_journal, FILE_JOURNAL)
+                st.success("Entrée enregistrée en toute sécurité.")
+            else:
+                st.error("Écris quelque chose !")
+
+# --- NAVEGACIÓN INFERIOR (CON JOURNAL) ---
 st.markdown("---")
-cols = st.columns(5)
-labels = ["🏠 Lycée", "👤 Profil", "🛡️ Équipes", "📸 Galerie", "🏆 Oscars"]
-pages = ['home', 'profile', 'teams', 'gallery', 'awards']
+cols = st.columns(6)
+labels = ["🏠", "👤", "🛡️", "📸", "📖", "🏆"]
+pages = ['home', 'profile', 'teams', 'gallery', 'journal', 'awards']
 
 for col, label, page in zip(cols, labels, pages):
     with col:
@@ -338,4 +330,4 @@ for col, label, page in zip(cols, labels, pages):
 
 if st.session_state['page'] == 'awards':
     st.markdown("<h1>🏆 Oscars</h1>", unsafe_allow_html=True)
-    st.info("Bientôt disponible pour le vote final !")
+    st.info("Vote final bientôt !")
