@@ -19,10 +19,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed" 
 )
 
-# --- 2. CSS "SKETCH & DOODLE" (ESTILO CÓMIC) ---
+# --- 2. CSS "COMIC BOOK SPORTS" ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Poppins:wght@400;700;900&display=swap');
+    /* Fuente estilo cómic para títulos + fuente legible para texto */
+    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;700;900&display=swap');
 
     :root {
         --primary: #4D79FF;
@@ -31,88 +32,98 @@ st.markdown("""
         --card-bg: #FFFFFF;
     }
 
-    /* FONDO ESTILO LIBRETA / DOODLE (Más limpio y divertido) */
+    /* --- CAMBIO PRINCIPAL: FONDO DE CÓMIC --- */
     .stApp {
-        /* Usamos una textura de papel sutil con garabatos muy suaves */
-        background-image: url('https://img.freepik.com/free-vector/hand-drawn-back-school-background_23-2149056166.jpg?w=1380&t=st=1708123456~exp=1708124056~hmac=fake_token'); 
-        /* Nota: Si el link rompe, usa un color sólido: background-color: #fdfdfd; */
+        /* IMPORTANTE: REEMPLAZA ESTA URL POR TU IMAGEN DE CÓMIC DE DEPORTES */
+        /* He puesto una de ejemplo estilo pop-art genérico */
+        background-image: url('https://img.freepik.com/free-vector/pop-art-comic-background_23-2148566476.jpg?w=1380&t=st=1708125000~exp=1708125600~hmac=example_token');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        font-family: 'Poppins', sans-serif;
+        font-family: 'Poppins', sans-serif; /* Fuente base legible */
     }
     
-    /* CAPA BLANCA PARA LEER BIEN (LEGIBILIDAD) */
+    /* CAPA BLANCA FUERTE PARA LEGIBILIDAD (CRÍTICO EN FONDOS DE CÓMIC) */
     .stApp::before {
         content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255, 255, 255, 0.92); /* Muy blanco para que el texto resalte */
+        background: rgba(255, 255, 255, 0.94); /* 94% opaco para tapar bien el fondo ruidoso */
         z-index: -1;
+        backdrop-filter: blur(2px); /* Un poco de desenfoque extra ayuda */
     }
 
-    /* TARJETAS CON BORDE "DIBUJADO" */
+    /* TARJETAS CON BORDE DE VIÑETA GRUESO */
     .css-1r6slb0, .stDataFrame, .stForm, div[data-testid="stExpander"], .news-card, .photo-card, .mood-card, .trophy-case {
         background: #FFFFFF;
-        border-radius: 15px;
+        border-radius: 12px;
         padding: 20px;
-        /* Efecto borde de cómic + sombra dura */
-        border: 2px solid #2D3436;
-        box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+        /* Borde negro grueso tipo cómic */
+        border: 3px solid black;
+        /* Sombra sólida desplazada (pop art) */
+        box-shadow: 6px 6px 0px rgba(0,0,0,1);
         margin-bottom: 25px;
     }
 
-    /* HERO HEADER ESTILO CÓMIC */
+    /* HERO HEADER ESTILO TÍTULO DE CÓMIC */
     .hero-header {
-        background: #4D79FF;
+        background: linear-gradient(45deg, #4D79FF, #00C6FF);
         padding: 30px 20px;
-        border-radius: 0 0 30px 30px;
+        border-radius: 0 0 20px 20px;
         color: white;
         text-align: center;
         margin-bottom: 30px;
-        border-bottom: 4px solid #000;
-        box-shadow: 0 10px 0 rgba(0,0,0,0.1);
+        border-bottom: 5px solid black;
+        box-shadow: 0 10px 0 rgba(0,0,0,0.2);
     }
     .hero-header h1 { 
-        font-family: 'Comic Neue', cursive; 
-        font-weight: 700; 
-        font-size: 2.5rem;
+        font-family: 'Bangers', cursive; /* Fuente de cómic */
+        font-weight: 400; 
+        font-size: 3rem;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 2px;
+        text-shadow: 3px 3px 0px black; /* Sombra dura de texto */
+    }
+    .hero-header p {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
     }
 
     /* TEXTOS */
-    h1, h2, h3, h4 { color: #2D3436 !important; font-family: 'Comic Neue', sans-serif; font-weight: 700 !important; }
-    p, label, .stMarkdown { color: #2D3436 !important; font-weight: 500; }
+    h1, h2, h3, h4 { color: black !important; font-family: 'Bangers', cursive; letter-spacing: 1px; }
+    p, label, .stMarkdown { color: black !important; font-weight: 600; }
 
-    /* BOTONES INTERACTIVOS 3D (JUEGO) */
+    /* BOTONES "POW!" */
     .stButton > button {
         background: #FFD93D;
-        color: #2D3436;
-        border-radius: 12px;
-        border: 2px solid #2D3436;
-        border-bottom: 5px solid #2D3436; /* Efecto 3D */
+        color: black;
+        border-radius: 8px;
+        border: 3px solid black;
+        border-bottom: 6px solid black;
         padding: 12px;
-        font-weight: 800;
+        font-family: 'Bangers', cursive;
+        font-size: 1.2rem;
         text-transform: uppercase;
         width: 100%;
         transition: all 0.1s;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
+        transform: translateY(-3px);
         background: #FFE066;
+        box-shadow: 0 3px 0 black;
     }
     
     .stButton > button:active {
-        transform: translateY(4px); /* Se hunde */
-        border-bottom: 2px solid #2D3436;
+        transform: translateY(4px);
+        border-bottom: 3px solid black;
     }
     
-    /* Inputs estilo boceto */
+    /* Inputs con borde grueso */
     .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
-        background: #F8F9FA;
-        border: 2px dashed #AAA;
-        border-radius: 10px;
+        background: #FFF;
+        border: 3px solid black;
+        border-radius: 8px;
         color: black;
+        font-weight: 700;
     }
 
 </style>
@@ -124,7 +135,7 @@ FILE_TEAMS = 'teams.csv'
 FILE_GALLERY = 'gallery.csv'
 FILE_NEWS = 'news_feed.csv'
 FILE_JOURNAL = 'journal.csv'
-FILE_SUGGESTIONS = 'suggestions.csv' # NUEVO: BUZÓN
+FILE_SUGGESTIONS = 'suggestions.csv'
 
 def init_db():
     cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'TeamName']
@@ -132,7 +143,7 @@ def init_db():
     cols_gallery = ['TeamName', 'Uploader', 'ImageB64', 'Caption', 'Date']
     cols_news = ['Date', 'Titre', 'Contenu', 'Type']
     cols_journal = ['Pseudo', 'Date', 'Reflexion', 'Humeur']
-    cols_sugg = ['Date', 'Pseudo', 'Type', 'Message'] # NUEVO
+    cols_sugg = ['Date', 'Pseudo', 'Type', 'Message']
 
     for file, cols in [(FILE_ELEVES, cols_eleves), (FILE_TEAMS, cols_teams), 
                        (FILE_GALLERY, cols_gallery), (FILE_NEWS, cols_news), 
@@ -167,17 +178,14 @@ def auto_post(title, content, type_msg="Info 📢"):
 def get_medals(pseudo):
     medals = []
     medals.append({"icon": "🥇", "name": "Début", "desc": "Profil créé", "unlocked": True})
-    
     user_data = df_eleves[df_eleves['Pseudo'] == pseudo]
     has_team = False
     if not user_data.empty:
         team = user_data.iloc[0]['TeamName']
         if team and team != "None" and str(team) != "nan": has_team = True
     medals.append({"icon": "🛡️", "name": "Squad", "desc": "Rejoint une équipe", "unlocked": has_team})
-    
     has_photo = pseudo in df_gallery['Uploader'].values if 'Uploader' in df_gallery.columns else False
     medals.append({"icon": "📸", "name": "Reporter", "desc": "Photo postée", "unlocked": has_photo})
-    
     has_journal = pseudo in df_journal['Pseudo'].values
     medals.append({"icon": "✍️", "name": "Pensée", "desc": "Journal écrit", "unlocked": has_journal})
     return medals
@@ -188,16 +196,14 @@ def nav(page_name):
     st.session_state['page'] = page_name
     st.rerun()
 
-# --- SIDEBAR PROFESOR & BUZÓN DE SUGERENCIAS ---
+# --- SIDEBAR PROFESOR & BUZÓN ---
 with st.sidebar:
-    # BUZÓN DE SUGERENCIAS (NUEVO)
     st.markdown("### 📬 Boîte à Idées")
     with st.expander("Une idée ? Un problème ?"):
         with st.form("suggestion_box"):
             s_who = st.selectbox("C'est qui ?", ["Anonyme"] + list(df_eleves['Pseudo'].unique()))
             s_type = st.selectbox("Sujet", ["💡 Idée géniale", "🐛 Problème", "❓ Question"])
             s_msg = st.text_area("Ton message...")
-            
             if st.form_submit_button("Envoyer au Prof"):
                 if s_msg:
                     new_s = pd.DataFrame([[datetime.now().strftime("%d/%m"), s_who, s_type, s_msg]], 
@@ -205,18 +211,13 @@ with st.sidebar:
                     df_sugg = pd.concat([new_s, df_sugg], ignore_index=True)
                     save_data(df_sugg, FILE_SUGGESTIONS)
                     st.success("Merci ! Message reçu.")
-                else:
-                    st.error("Écris quelque chose !")
+                else: st.error("Écris quelque chose !")
 
     st.markdown("---")
-    
-    # ZONA PROF
     st.header("👨‍🏫 Zone Prof")
     if st.text_input("Code", type="password") == "admin":
         st.success("Admin Connecté")
-        
         tab_journ, tab_sugg = st.tabs(["📖 Journaux", "📬 Idées reçues"])
-        
         with tab_journ:
             if df_journal.empty: st.info("Vide.")
             else:
@@ -226,14 +227,12 @@ with st.sidebar:
                     st.caption(f"{row['Date']} - {row['Pseudo']}")
                     st.write(f"📝 {row['Reflexion']}")
                     st.markdown("---")
-        
         with tab_sugg:
             if df_sugg.empty: st.info("Boîte vide.")
             else:
                 for i, row in df_sugg.iterrows():
                     st.write(f"**{row['Type']}** par {row['Pseudo']}")
                     st.info(row['Message'])
-
         if st.button("Reset News"):
             pd.DataFrame(columns=['Date','Titre','Contenu','Type']).to_csv(FILE_NEWS, index=False)
             st.rerun()
@@ -242,7 +241,7 @@ with st.sidebar:
 #              PÁGINAS DE LA APP
 # ==========================================
 
-# --- 1. EL PATIO (HOME) ---
+# --- 1. HOME ---
 if st.session_state['page'] == 'home':
     st.markdown("""
     <div class="hero-header">
@@ -251,7 +250,6 @@ if st.session_state['page'] == 'home':
     </div>
     """, unsafe_allow_html=True)
     
-    # MOOD TRACKER
     st.markdown('<div class="mood-card">', unsafe_allow_html=True)
     st.markdown("##### 👋 Mood du jour ?")
     c1, c2, c3, c4 = st.columns(4)
@@ -262,39 +260,30 @@ if st.session_state['page'] == 'home':
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("### 📢 Quoi de neuf ?")
-    
-    if df_news.empty:
-        st.info("Le lycée est calme... Trop calme.")
-    
+    if df_news.empty: st.info("Le lycée est calme...")
     for i, row in df_news.iterrows():
         icon = "📢"
         if "Équipe" in str(row['Type']): icon = "🛡️"
         if "Photo" in str(row['Type']): icon = "📸"
-        
         st.markdown(f"""
         <div class="news-card">
             <div style="display:flex; justify-content:space-between; color:#666; font-size:0.8rem;">
-                <span>{icon} {row['Type']}</span>
-                <span>{row['Date']}</span>
+                <span>{icon} {row['Type']}</span><span>{row['Date']}</span>
             </div>
-            <h3 style="color:#2D3436; margin:5px 0;">{row['Titre']}</h3>
-            <p style="color:#555;">{row['Contenu']}</p>
-        </div>
-        """, unsafe_allow_html=True)
+            <h3 style="color:#4D79FF; margin:5px 0;">{row['Titre']}</h3>
+            <p>{row['Contenu']}</p>
+        </div>""", unsafe_allow_html=True)
 
 # --- 2. PERFIL ---
 elif st.session_state['page'] == 'profile':
     st.markdown("<h1>👤 Mon Avatar</h1>", unsafe_allow_html=True)
-    
     st.markdown('<div class="css-1r6slb0">', unsafe_allow_html=True)
     with st.form("my_profile"):
         c1, c2 = st.columns([1,2])
         with c1: 
             av = st.selectbox("Avatar", ["🦊","🦁","🐯","🦄","🐲","⚡","🔥","🚀","🤖","👽","🦸","🥷"])
             st.markdown(f"<div style='font-size:50px;text-align:center'>{av}</div>", unsafe_allow_html=True)
-        with c2: 
-            ps = st.text_input("Pseudo")
-        
+        with c2: ps = st.text_input("Pseudo")
         forces = st.multiselect("Forces", ["Vitesse","Force","Stratégie","Endurance","Créativité"])
         if st.form_submit_button("💾 Sauvegarder"):
             if ps and forces:
@@ -304,8 +293,7 @@ elif st.session_state['page'] == 'profile':
                     save_data(df_eleves, FILE_ELEVES)
                     auto_post(f"Nouvel Élève !", f"{ps} ({av}) a rejoint le lycée !", "Bienvenue 👋")
                     st.success("Profil créé !")
-                else:
-                    st.success(f"Salut {ps} !")
+                else: st.success(f"Salut {ps} !")
     st.markdown('</div>', unsafe_allow_html=True)
 
     if ps: 
@@ -317,22 +305,19 @@ elif st.session_state['page'] == 'profile':
             with cols[idx]:
                 icon = medal['icon'] if medal['unlocked'] else "🔒"
                 color = "black" if medal['unlocked'] else "gray"
-                st.markdown(f"<div style='text-align:center; color:{color}; font-size:30px;'>{icon}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='text-align:center; font-size:10px;'>{medal['name']}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:center; color:{color}; font-size:30px; filter:drop-shadow(2px 2px 0px black);'>{icon}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:center; font-size:10px; font-weight:bold;'>{medal['name']}</div>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 3. EQUIPOS ---
 elif st.session_state['page'] == 'teams':
     st.markdown("<h1>🛡️ Les Équipes</h1>", unsafe_allow_html=True)
     tab_create, tab_join = st.tabs(["✨ Créer", "🤝 Rejoindre"])
-    
     with tab_create:
         with st.form("create_team"):
             st.write("Fonde ta squad !")
-            t_name = st.text_input("Nom de l'Équipe")
-            t_slogan = st.text_input("Slogan")
+            t_name = st.text_input("Nom de l'Équipe"); t_slogan = st.text_input("Slogan")
             leader_name = st.selectbox("Chef d'équipe", df_eleves['Pseudo'].unique())
-            
             if st.form_submit_button("🔥 Go !"):
                 if t_name and t_slogan:
                     if t_name not in df_teams['TeamName'].values:
@@ -345,7 +330,6 @@ elif st.session_state['page'] == 'teams':
                         auto_post(f"Nouvelle Équipe : {t_name} !", f"Slogan : « {t_slogan} »", "Équipe 🛡️")
                         st.balloons()
                     else: st.error("Nom pris.")
-
     with tab_join:
         if df_teams.empty: st.warning("Aucune équipe.")
         for i, row in df_teams.iterrows():
@@ -367,8 +351,7 @@ elif st.session_state['page'] == 'gallery':
     with st.expander("📤 Poster une photo"):
         uploader = st.selectbox("Qui poste ?", df_eleves['Pseudo'].unique()) 
         team_aff = st.selectbox("Pour quelle équipe ?", df_teams['TeamName'].unique())
-        caption = st.text_input("Description")
-        uploaded_file = st.file_uploader("Image", type=['png', 'jpg'])
+        caption = st.text_input("Description"); uploaded_file = st.file_uploader("Image", type=['png', 'jpg'])
         if st.button("Publier") and uploaded_file and uploader:
             bytes_data = uploaded_file.getvalue()
             b64_str = base64.b64encode(bytes_data).decode()
@@ -377,32 +360,26 @@ elif st.session_state['page'] == 'gallery':
             save_data(df_gallery, FILE_GALLERY)
             auto_post("Nouvelle Photo 📸", f"{uploader} ({team_aff}) a partagé un souvenir.", "Photo 📸")
             st.balloons(); st.rerun()
-
     st.write("---")
     if not df_gallery.empty:
         cols = st.columns(2)
         for i, row in df_gallery.iterrows():
             with cols[i % 2]:
-                st.markdown(f"""
-                <div class="photo-card">
+                st.markdown(f"""<div class="photo-card">
                     <img src="data:image/png;base64,{row['ImageB64']}" style="width:100%; border-radius:10px; border:2px solid #000;">
-                    <p style="color:black; margin-top:5px;"><strong>{row['TeamName']}</strong><br>{row['Caption']}</p>
-                </div>""", unsafe_allow_html=True)
+                    <p style="color:black; margin-top:5px;"><strong>{row['TeamName']}</strong><br>{row['Caption']}</p></div>""", unsafe_allow_html=True)
 
 # --- 5. JOURNAL ---
 elif st.session_state['page'] == 'journal':
     st.markdown("<h1>📖 Mon Journal</h1>", unsafe_allow_html=True)
-    st.info("🔒 Espace privé. Seul le prof peut lire.")
-    
+    st.info("🔒 Espace privé.")
     with st.form("journal_entry"):
         author = st.selectbox("Identité", df_eleves['Pseudo'].unique())
         mood_day = st.selectbox("Ressenti", ["Super", "Bien", "Fatigué", "Triste", "Fier"])
         reflexion = st.text_area("Bilan de la séance :")
-        
         if st.form_submit_button("Enregistrer"):
             if author and reflexion:
-                new_entry = pd.DataFrame([[author, datetime.now().strftime("%d/%m %H:%M"), reflexion, mood_day]], 
-                                       columns=['Pseudo', 'Date', 'Reflexion', 'Humeur'])
+                new_entry = pd.DataFrame([[author, datetime.now().strftime("%d/%m %H:%M"), reflexion, mood_day]], columns=['Pseudo', 'Date', 'Reflexion', 'Humeur'])
                 df_journal = pd.concat([new_entry, df_journal], ignore_index=True)
                 save_data(df_journal, FILE_JOURNAL)
                 st.success("Enregistré !")
