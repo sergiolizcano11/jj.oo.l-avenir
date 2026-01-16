@@ -4,6 +4,8 @@ import os
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import io
+# --- NUEVO IMPORT PARA AUDIO (DUA) ---
+from st_audiorec import st_audiorec 
 
 # --- 1. CONFIGURACIÓN VISUAL Y APP ---
 st.set_page_config(
@@ -48,15 +50,12 @@ st.markdown("""
 FILE_ELEVES = 'eleves.csv'
 FILE_PROPOSALS = 'propositions.csv'
 FILE_VOTES = 'votes_finaux.csv'
-FILE_EVAL_PROF = 'evaluation_prof.csv' # NUEVO ARCHIVO DOCENTE
+FILE_EVAL_PROF = 'evaluation_prof.csv' 
 
 def init_db():
-    # Definición de columnas
     cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'Slogan', 'TeamID']
-    # AÑADIDO: 'Nom_Epreuve'
     cols_props = ['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status', 'Nom_Epreuve']
     cols_votes = ['Votante', 'Equite', 'FairPlay', 'Innovation', 'Francophonie']
-    # NUEVO: Tabla de Evaluación Docente
     cols_eval = ['Equipe', 'Nom_Epreuve', 'Stars_Epreuve', 'Stars_Eleve1', 'Stars_Eleve2', 'Commentaire']
 
     # 1. Alumnos
@@ -67,12 +66,11 @@ def init_db():
         if not set(cols_eleves).issubset(df.columns):
             pd.DataFrame(columns=cols_eleves).to_csv(FILE_ELEVES, index=False)
 
-    # 2. Propuestas (Actualización con columna Nom_Epreuve)
+    # 2. Propuestas 
     if not os.path.exists(FILE_PROPOSALS):
         pd.DataFrame(columns=cols_props).to_csv(FILE_PROPOSALS, index=False)
     else:
         df = pd.read_csv(FILE_PROPOSALS)
-        # Reparación automática si falta la columna nueva
         if 'Nom_Epreuve' not in df.columns:
             df['Nom_Epreuve'] = "Non défini"
             df.to_csv(FILE_PROPOSALS, index=False)
@@ -84,7 +82,7 @@ def init_db():
     if not os.path.exists(FILE_VOTES):
         pd.DataFrame(columns=cols_votes).to_csv(FILE_VOTES, index=False)
 
-    # 4. Evaluación Profesor (NUEVO)
+    # 4. Evaluación Profesor
     if not os.path.exists(FILE_EVAL_PROF):
         pd.DataFrame(columns=cols_eval).to_csv(FILE_EVAL_PROF, index=False)
 
@@ -139,25 +137,20 @@ with st.sidebar:
 
     st.markdown("---")
     
-    # 2. DASHBOARD DE EVALUACIÓN (NUEVO)
+    # 2. DASHBOARD DE EVALUACIÓN
     st.subheader("📝 Évaluation")
     password = st.text_input("Mot de passe", type="password")
     
-    if password == "admin2026":  # CONTRASEÑA PROFESOR
+    if password == "admin2026": 
         st.success("Mode Prof Actif")
-        
-        # Filtrar solo equipos aprobados
         approved_teams = df_proposals[df_proposals['Status'] == 'Approved']
         
         if approved_teams.empty:
             st.warning("Aucune équipe validée.")
         else:
-            # Selector de equipo
             team_options = [f"{r['Demandeur']} & {r['Partenaire']}" for i, r in approved_teams.iterrows()]
             selected_team_str = st.selectbox("Choisir Équipe", team_options)
             
-            # Recuperar datos del equipo seleccionado
-            # (Un poco de magia de pandas para encontrar la fila correcta)
             team_row = approved_teams[
                 (approved_teams['Demandeur'] + " & " + approved_teams['Partenaire']) == selected_team_str
             ].iloc[0]
@@ -170,8 +163,6 @@ with st.sidebar:
             
             with st.form("eval_form"):
                 st.markdown("### Notation (Étoiles)")
-                
-                # Evaluación de la Prueba (Uso de st.feedback - Streamlit moderno)
                 st.write(f"⭐ Note de l'Épreuve ({nom_epreuve})")
                 stars_epreuve = st.feedback("stars", key="s_epreuve")
                 
@@ -186,7 +177,6 @@ with st.sidebar:
                 comment = st.text_area("Observations Prof")
                 
                 if st.form_submit_button("Enregistrer Note"):
-                    # Convertir feedback (0-4) a nota 1-5 para guardar
                     s_e = (stars_epreuve + 1) if stars_epreuve is not None else 0
                     s_1 = (stars_p1 + 1) if stars_p1 is not None else 0
                     s_2 = (stars_p2 + 1) if stars_p2 is not None else 0
@@ -205,7 +195,7 @@ with st.sidebar:
 if st.session_state['page'] == 'profile':
     st.markdown("<h1>👤 Mon Profil</h1>", unsafe_allow_html=True)
     
-    # SECCIÓN 1: CREAR PERFIL (Si no existe)
+    # SECCIÓN 1: CREAR PERFIL
     with st.expander("✨ Créer / Modifier mon Avatar", expanded=True):
         with st.form("profile_maker"):
             st.markdown("<div class='avatar-circle'>😎</div>", unsafe_allow_html=True)
@@ -230,15 +220,10 @@ if st.session_state['page'] == 'profile':
                     st.success("Profil mis à jour !")
                     st.rerun()
 
-    # SECCIÓN 2: BAUTIZAR PRUEBA (SOLO SI TIENE EQUIPO APROBADO)
+    # SECCIÓN 2: BAUTIZAR PRUEBA
     st.markdown("---")
     st.subheader("🔥 Ma Team & Mon Épreuve")
-    
-    # Buscamos si el usuario tiene un equipo aprobado
-    # Puede ser Demandeur o Partenaire
-    user_pseudo = pseudo if 'pseudo' in locals() and pseudo else "" # Intenta coger el pseudo del form
-    
-    # Para simplificar la demo, usamos un input de búsqueda si no acabamos de guardar
+    user_pseudo = pseudo if 'pseudo' in locals() and pseudo else ""
     if not user_pseudo:
         user_pseudo = st.text_input("Entre ton pseudo pour voir ta team:", key="search_team")
 
@@ -258,8 +243,7 @@ if st.session_state['page'] == 'profile':
             with st.form("name_test_form"):
                 new_name = st.text_input("Nommez votre épreuve sportive (Ex: Le Saut Galactique):")
                 if st.form_submit_button("🏷️ Baptiser l'Épreuve"):
-                    # Actualizar en el DataFrame
-                    idx = row_team.name # Índice original
+                    idx = row_team.name
                     df_proposals.at[idx, 'Nom_Epreuve'] = new_name
                     save_data(df_proposals, FILE_PROPOSALS)
                     st.balloons()
@@ -268,7 +252,7 @@ if st.session_state['page'] == 'profile':
         else:
             st.caption("Tu n'as pas encore d'équipe validée par le Conseil.")
 
-# --- PÁGINA 2: MERCADO ---
+# --- PÁGINA 2: MERCADO (AHORA CON AUDIO - DUA) ---
 elif st.session_state['page'] == 'market':
     st.markdown("<h1>🤝 Le Marché</h1>", unsafe_allow_html=True)
     available_students = df_eleves[df_eleves['TeamID'] == 'None']
@@ -285,18 +269,38 @@ elif st.session_state['page'] == 'market':
                     st.caption(f"⚡ {row['Forces']} | 🐢 {row['Faiblesse']}")
                 
                 with st.expander(f"💌 Proposer Alliance à {row['Pseudo']}"):
-                    with st.form(f"form_{i}"):
-                        me = st.text_input("Ton Pseudo", placeholder="Qui es-tu ?")
-                        st.markdown("**Pourquoi ce choix ?**")
-                        justif = st.text_area("Justification", placeholder="Je te choisis car...")
-                        if st.form_submit_button("🚀 Envoyer"):
-                            if len(justif) > 10:
-                                new_p = pd.DataFrame([[me, row['Pseudo'], justif, 0, 0, "Pending", "Non défini"]],
-                                                   columns=['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status', 'Nom_Epreuve'])
-                                df_proposals = pd.concat([df_proposals, new_p], ignore_index=True)
-                                save_data(df_proposals, FILE_PROPOSALS)
-                                st.success("Envoyé au Conseil !")
-                            else: st.error("Trop court !")
+                    st.markdown("#### Pourquoi ce choix ?")
+                    st.caption("Option A: Écris ta justification.")
+                    
+                    # --- FORMULARIO HÍBRIDO ---
+                    # Nota: Sacamos los inputs fuera del form estricto para que el audio no recargue mal
+                    me = st.text_input(f"Ton Pseudo (pour {row['Pseudo']})", key=f"me_{i}")
+                    justif_text = st.text_area("Justification Écrite", placeholder="Je te choisis car...", key=f"txt_{i}")
+                    
+                    st.caption("Option B: Enregistre ta voix (Micro d'Or 🎙️)")
+                    # Componente de Audio DUA
+                    wav_audio_data = st_audiorec(key=f"rec_{i}")
+
+                    if st.button(f"🚀 Envoyer Proposition à {row['Pseudo']}", key=f"btn_{i}"):
+                        # VALIDACIÓN DUA: Texto O Audio
+                        has_text = len(justif_text) > 10
+                        has_audio = wav_audio_data is not None
+                        
+                        if has_text or has_audio:
+                            # Preparar el mensaje para guardar
+                            final_justification = justif_text
+                            if has_audio and not has_text:
+                                final_justification = "[🎤 MESSAGE VOCAL REÇU - Validé par DUA]"
+                            elif has_audio and has_text:
+                                final_justification = justif_text + " (+ 🎤 Audio)"
+
+                            new_p = pd.DataFrame([[me, row['Pseudo'], final_justification, 0, 0, "Pending", "Non défini"]],
+                                               columns=['Demandeur', 'Partenaire', 'Justification', 'Votes_Pour', 'Votes_Contre', 'Status', 'Nom_Epreuve'])
+                            df_proposals = pd.concat([df_proposals, new_p], ignore_index=True)
+                            save_data(df_proposals, FILE_PROPOSALS)
+                            st.success("Proposition envoyée au Conseil !")
+                        else:
+                            st.error("⚠️ Il faut écrire une justification OU enregistrer un audio !")
 
 # --- PÁGINA 3: CONSEJO ---
 elif st.session_state['page'] == 'council':
@@ -343,7 +347,6 @@ elif st.session_state['page'] == 'awards':
     if approved_teams.empty:
         st.warning("⚠️ Il faut valider des équipes au Conseil d'abord !")
     else:
-        # Mostramos el nombre de la prueba si existe, si no los nombres
         team_list = []
         for i, r in approved_teams.iterrows():
             label = f"{r['Demandeur']} & {r['Partenaire']}"
