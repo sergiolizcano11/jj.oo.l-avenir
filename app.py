@@ -95,17 +95,16 @@ html_code = """
         }
         .solid-textarea { text-align: left; }
 
-        /* --- MAPA REAL (GOOGLE MAPS) --- */
+        /* --- MAPA REAL (GOOGLE MAPS SATÉLITE) --- */
         .map-container {
             position: relative; width: 100%; height: 350px; background: #000;
             border-radius: 15px; overflow: hidden; border: 2px solid #444;
         }
-        /* Iframe de Google Maps bloqueado para que actúe como fondo */
+        /* Iframe ajustado para X3G4+G6 Ciudad Real */
         .map-frame {
-            width: 100%; height: 120%; border: 0; 
-            pointer-events: none; /* Desactiva interacción para que los pines no se muevan */
-            margin-top: -10%; /* Centrar mejor */
-            filter: brightness(0.7) contrast(1.1); /* Efecto oscuro */
+            width: 100%; height: 100%; border: 0; 
+            pointer-events: none; /* Bloquea el movimiento para que sea un fondo fijo */
+            filter: brightness(0.8) contrast(1.1); /* Estilo visual */
         }
         .map-pin {
             position: absolute; width: 40px; height: 40px; background: var(--accent);
@@ -157,13 +156,15 @@ html_code = """
         .home-btn i { font-size: 1.8rem; margin-bottom: 8px; }
         .home-btn h3 { font-size: 0.75rem; margin: 0; font-weight: 700; text-transform: uppercase; }
 
-        /* --- UTILS --- */
+        /* --- AVATAR --- */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: rgba(0,0,0,0.5); border: 2px solid #444; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
         .avatar-item.selected { background: rgba(77, 121, 255, 0.3); border-color: var(--primary); }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; }
         .trait-tag { background: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; border: 1px solid #444; font-size: 0.85rem; margin-right: 5px; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; }
+
+        /* --- OTHERS --- */
         .phase-card { cursor: pointer; border-left: 4px solid #555; background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 8px; }
         .phase-card.completed { border-left-color: var(--success); background: rgba(40, 167, 69, 0.1); }
         .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
@@ -285,14 +286,14 @@ html_code = """
         
         <div class="map-container">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=38.975694,-3.944361&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/maps?q=X3G4+G6+Ciudad+Real&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
 
-            <div class="map-pin" style="top: 30%; left: 30%;" onclick="alert('Zone Obstacles: Matériaux Recyclés')">🏋️</div>
-            <div class="map-pin" style="top: 50%; left: 50%;" onclick="alert('Cour: Grande Gymkhana Finale')">🏁</div>
-            <div class="map-pin" style="top: 70%; left: 20%;" onclick="alert('Cafétéria: Ravitaillement Sain')">🍎</div>
-            <div class="map-pin locked" style="top: 20%; left: 70%;">🔒</div>
+            <div class="map-pin" style="top: 30%; left: 40%;" onclick="alert('Zone Obstacles')">🏋️</div>
+            <div class="map-pin" style="top: 60%; left: 60%;" onclick="alert('Grande Gymkhana')">🏁</div>
+            <div class="map-pin" style="top: 80%; left: 30%;" onclick="alert('Ravitaillement')">🍎</div>
+            <div class="map-pin locked" style="top: 20%; left: 80%;">🔒</div>
         </div>
         <div class="solid-panel mt-3">
             <h6 class="text-white mb-2"><i class="fa-solid fa-location-dot text-danger"></i> Légende</h6>
