@@ -95,20 +95,24 @@ html_code = """
         }
         .solid-textarea { text-align: left; }
 
-        /* --- MAPA (NUEVO) --- */
+        /* --- MAPA REAL (GOOGLE MAPS) --- */
         .map-container {
-            position: relative; width: 100%; height: 300px; background: #2b3e50;
+            position: relative; width: 100%; height: 350px; background: #000;
             border-radius: 15px; overflow: hidden; border: 2px solid #444;
-            /* Patrón de mapa */
-            background-image: radial-gradient(#3a4b5c 15%, transparent 16%), radial-gradient(#3a4b5c 15%, transparent 16%);
-            background-size: 20px 20px;
+        }
+        /* Iframe de Google Maps bloqueado para que actúe como fondo */
+        .map-frame {
+            width: 100%; height: 120%; border: 0; 
+            pointer-events: none; /* Desactiva interacción para que los pines no se muevan */
+            margin-top: -10%; /* Centrar mejor */
+            filter: brightness(0.7) contrast(1.1); /* Efecto oscuro */
         }
         .map-pin {
             position: absolute; width: 40px; height: 40px; background: var(--accent);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: #000; font-weight: bold; cursor: pointer; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5); transform: translate(-50%, -50%);
-            transition: transform 0.2s; font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.8); transform: translate(-50%, -50%);
+            transition: transform 0.2s; font-size: 1.2rem; z-index: 10;
         }
         .map-pin:active { transform: translate(-50%, -50%) scale(1.2); }
         .map-pin.locked { background: #555; border-color: #777; color: #888; }
@@ -153,30 +157,25 @@ html_code = """
         .home-btn i { font-size: 1.8rem; margin-bottom: 8px; }
         .home-btn h3 { font-size: 0.75rem; margin: 0; font-weight: 700; text-transform: uppercase; }
 
-        /* --- AVATAR --- */
+        /* --- UTILS --- */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: rgba(0,0,0,0.5); border: 2px solid #444; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
         .avatar-item.selected { background: rgba(77, 121, 255, 0.3); border-color: var(--primary); }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; }
         .trait-tag { background: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; border: 1px solid #444; font-size: 0.85rem; margin-right: 5px; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; }
-
-        /* --- OTHERS --- */
         .phase-card { cursor: pointer; border-left: 4px solid #555; background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 8px; }
         .phase-card.completed { border-left-color: var(--success); background: rgba(40, 167, 69, 0.1); }
         .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
         .view { display: none; padding: 20px; min-height: 100vh; }
         .active-view { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1a1a1a; border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .dock-item { font-size: 1.4rem; color: #666; cursor: pointer; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
-
         .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .custom-modal.show { display: flex; }
         .modal-content-solid { background: #222; border: 1px solid #444; border-radius: 12px; padding: 30px; width: 90%; max-width: 400px; text-align: center; }
-        
         .mood-btn { font-size: 2rem; background: #333; border: 1px solid #444; border-radius: 10px; padding: 10px; cursor: pointer; flex: 1; text-align: center; margin: 0 2px; }
         .mood-btn.selected { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
         .journal-entry { border-left: 3px solid var(--accent); margin-bottom: 10px; }
@@ -285,10 +284,15 @@ html_code = """
         <p class="text-secondary small">Localisation des épreuves</p>
         
         <div class="map-container">
-            <div class="map-pin" style="top: 20%; left: 20%;" onclick="alert('Gymnase: Zone Obstacles')">🏋️</div>
-            <div class="map-pin" style="top: 50%; left: 50%;" onclick="alert('Cour: Grande Gymkhana')">🏁</div>
-            <div class="map-pin" style="top: 80%; left: 30%;" onclick="alert('Cafétéria: Ravitaillement')">🍎</div>
-            <div class="map-pin locked" style="top: 30%; left: 80%;">🔒</div>
+            <iframe class="map-frame" 
+                src="https://maps.google.com/maps?q=38.975694,-3.944361&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
+                frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+            </iframe>
+
+            <div class="map-pin" style="top: 30%; left: 30%;" onclick="alert('Zone Obstacles: Matériaux Recyclés')">🏋️</div>
+            <div class="map-pin" style="top: 50%; left: 50%;" onclick="alert('Cour: Grande Gymkhana Finale')">🏁</div>
+            <div class="map-pin" style="top: 70%; left: 20%;" onclick="alert('Cafétéria: Ravitaillement Sain')">🍎</div>
+            <div class="map-pin locked" style="top: 20%; left: 70%;">🔒</div>
         </div>
         <div class="solid-panel mt-3">
             <h6 class="text-white mb-2"><i class="fa-solid fa-location-dot text-danger"></i> Légende</h6>
