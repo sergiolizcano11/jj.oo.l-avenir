@@ -111,12 +111,14 @@ html_code = """
         }
 
         /* --- INPUTS --- */
-        .solid-input {
+        .solid-input, .solid-textarea {
             background-color: #2C2C2C; border: 1px solid #444;
             color: white; padding: 12px; border-radius: 8px;
-            width: 100%; text-align: center; font-size: 1.1rem;
-            margin-bottom: 10px;
+            width: 100%; font-size: 1rem;
+            margin-bottom: 10px; font-family: var(--font-body);
         }
+        .solid-input { text-align: center; font-size: 1.1rem; }
+        
         .trait-selector {
             display: flex; gap: 5px; overflow-x: auto; padding-bottom: 10px;
         }
@@ -154,6 +156,15 @@ html_code = """
         .phase-card.completed { border-left-color: var(--success); }
         .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
 
+        /* --- JOURNAL --- */
+        .mood-btn {
+            font-size: 2rem; background: #2C2C2C; border: 1px solid #444;
+            border-radius: 10px; padding: 10px; cursor: pointer; transition: 0.2s;
+        }
+        .mood-btn.selected { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
+        .journal-entry { border-left: 3px solid var(--accent); }
+        .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #444; }
+
         /* Modal */
         .custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -181,7 +192,7 @@ html_code = """
             <label class="small text-secondary mb-2 d-block text-start">VOTRE NOM</label>
             <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
             
-            <label class="small text-secondary mb-2 d-block text-start mt-3">VOTRE SUPER-POUVOIR (ADJECTIF)</label>
+            <label class="small text-secondary mb-2 d-block text-start mt-3">VOTRE SUPER-POUVOIR</label>
             <div class="trait-selector" id="trait-container"></div>
             <input type="hidden" id="selected-trait">
         </div>
@@ -212,15 +223,21 @@ html_code = """
                 </div>
             </div>
             <div class="col-6">
+                <div class="home-btn" onclick="app.nav('journal', 'nav-journal')">
+                    <i class="fa-solid fa-book-open text-info"></i>
+                    <h3>JOURNAL</h3>
+                </div>
+            </div>
+            <div class="col-6">
                 <div class="home-btn" onclick="app.nav('oscars', 'nav-oscars')">
                     <i class="fa-solid fa-award text-warning"></i>
                     <h3>ÉVALUATION</h3>
                 </div>
             </div>
-             <div class="col-12">
-                <div class="home-btn flex-row gap-3" style="opacity: 0.6;" onclick="alert('Bientôt!')">
-                    <i class="fa-solid fa-flag-checkered text-danger mb-0"></i>
-                    <h3 class="mb-0">GRANDE GYMKHANA</h3>
+            <div class="col-6">
+                <div class="home-btn" style="opacity: 0.6;" onclick="alert('Disponible en Juin!')">
+                    <i class="fa-solid fa-flag-checkered text-danger"></i>
+                    <h3>FINALE</h3>
                 </div>
             </div>
         </div>
@@ -237,12 +254,42 @@ html_code = """
         <div id="missions-list"></div>
     </section>
 
+    <section id="view-journal" class="view">
+        <h4 class="fw-bold mb-3" style="font-family: var(--font-head);">JOURNAL DE BORD</h4>
+        <p class="text-secondary small mb-4">Réflexion après la séance & Photos</p>
+
+        <div class="solid-panel">
+            <label class="small text-secondary mb-2">COMMENT TU TE SENS ?</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="mood-btn" onclick="app.selectMood(this, '🤩')">🤩</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '🙂')">🙂</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '😐')">😐</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '🥱')">🥱</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '😤')">😤</div>
+            </div>
+            <input type="hidden" id="selected-mood">
+
+            <label class="small text-secondary mb-2">TA RÉFLEXION</label>
+            <textarea id="journal-text" class="solid-textarea" rows="3" placeholder="Aujourd'hui, j'ai appris..."></textarea>
+
+            <label class="small text-secondary mb-2">PHOTO DU TRAVAIL</label>
+            <input type="file" id="journal-photo" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
+
+            <button onclick="app.saveJournal()" class="btn-solid">ENREGISTRER L'ENTRÉE</button>
+        </div>
+
+        <hr class="border-secondary my-4">
+        
+        <h6 class="text-secondary mb-3">MES ENTRÉES</h6>
+        <div id="journal-feed">
+            </div>
+    </section>
+
     <section id="view-debate" class="view">
         <div class="text-center mt-4 mb-4">
             <h2 style="font-family: var(--font-head);">ZONE DE DÉBAT</h2>
             <p class="text-secondary small">PHASE 2: CRÉATION D'ÉQUIPE</p>
         </div>
-
         <div class="solid-panel d-flex align-items-center bg-black border-primary">
             <div id="debate-avatar" class="me-3 text-center" style="font-size: 2rem; width: 50px;"></div>
             <div>
@@ -250,26 +297,16 @@ html_code = """
                 <small id="debate-trait" class="badge bg-warning text-dark">Trait</small>
             </div>
         </div>
-
         <div class="solid-panel">
             <h6 class="fw-bold mb-3"><i class="fa-solid fa-users text-info"></i> L'ÉQUIPE</h6>
             <p class="small text-secondary">Négociez avec la classe. L'équipe est-elle équilibrée ?</p>
-            
             <input type="text" id="team-name-create" class="solid-input mb-3" placeholder="NOM DE L'ÉQUIPE">
-            
             <div class="p-3 border rounded mb-3" style="border-color: #444 !important;">
-                <label class="small text-secondary mb-2">AUTO-VALIDATION (CUA/ODD 5)</label>
-                <button id="check-mixed" class="btn-outline" onclick="this.classList.toggle('active')">
-                    <i class="fa-regular fa-square"></i> Équipe Mixte
-                </button>
-                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')">
-                    <i class="fa-regular fa-square"></i> Compétences Variées
-                </button>
-                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')">
-                    <i class="fa-regular fa-square"></i> Validé par la classe
-                </button>
+                <label class="small text-secondary mb-2">AUTO-VALIDATION</label>
+                <button id="check-mixed" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Équipe Mixte</button>
+                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Compétences Variées</button>
+                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Validé par la classe</button>
             </div>
-
             <button onclick="app.finalizeTeam()" class="btn-solid">CONFIRMER L'ÉQUIPE</button>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary text-decoration-none w-100">Retour</button>
@@ -288,6 +325,7 @@ html_code = """
     <div id="app-dock" class="dock-nav" style="display:none;">
         <div id="nav-home" class="dock-item active" onclick="app.nav('home', this)"><i class="fa-solid fa-house"></i></div>
         <div id="nav-dash" class="dock-item" onclick="app.nav('dashboard', this)"><i class="fa-solid fa-list-check"></i></div>
+        <div id="nav-journal" class="dock-item" onclick="app.nav('journal', this)"><i class="fa-solid fa-book-open"></i></div>
         <div id="nav-oscars" class="dock-item" onclick="app.nav('oscars', this)"><i class="fa-solid fa-award"></i></div>
     </div>
 
@@ -296,7 +334,6 @@ html_code = """
             <h4 id="modal-title" class="fw-bold mb-2">...</h4>
             <div class="badge bg-warning text-dark mb-2" id="modal-odd">ODD</div>
             <p id="modal-desc" class="text-secondary small mb-4">...</p>
-            
             <input type="text" id="user-input" class="solid-input text-uppercase" placeholder="CODE PROFESSEUR">
             <button onclick="app.validate()" class="btn-solid mb-2">VALIDER</button>
             <button onclick="app.closeModal()" class="btn btn-link text-secondary text-decoration-none">Fermer</button>
@@ -305,7 +342,6 @@ html_code = """
     </div>
 
     <script>
-        // --- DATOS ---
         const SPRITES = [
             "fa-dragon", "fa-ghost", "fa-robot", "fa-cat", 
             "fa-dog", "fa-crow", "fa-spider", "fa-fish",
@@ -314,29 +350,18 @@ html_code = """
         ];
         const TRAITS = ["Fort", "Rapide", "Intelligent", "Sociable", "Créatif", "Organisé", "Drôle", "Calme"];
 
-        // FASES SEGÚN CRONOGRAMA
         const DATA = {
             user: { sprite: "", name: "", trait: "" },
             teamName: "",
             missions: [
-                { id: 1, type: "code", code: "MONNAIE", title: "L'Argent Solidaire", odd: "ODD 1 & 12",
-                  icon: "fa-coins", desc: "Sept-Oct: Création de la monnaie.", completed: false },
-                  
-                { id: 2, type: "team", title: "Équipes Inclusives", odd: "ODD 5 & 10",
-                  icon: "fa-users", desc: "Nov-Dec: Création et débat des équipes.", completed: false },
-                  
-                { id: 3, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13",
-                  icon: "fa-recycle", desc: "Jan-Fév: Design épreuves recyclées.", completed: false },
-                  
-                { id: 4, type: "code", code: "RULES", title: "Règlement", odd: "ODD 16",
-                  icon: "fa-scale-balanced", desc: "Fév-Mars: Normes de fair-play.", completed: false },
-                  
-                { id: 5, type: "code", code: "FOOD", title: "Ravitaillement", odd: "ODD 3",
-                  icon: "fa-apple-whole", desc: "Avril-Mai: Snacks sains.", completed: false },
-                  
-                { id: 6, type: "code", code: "MAP", title: "Plan Parcours", odd: "ODD 11",
-                  icon: "fa-map", desc: "Mai-Juin: Tracé du plan.", completed: false }
+                { id: 1, type: "code", code: "MONNAIE", title: "L'Argent Solidaire", odd: "ODD 1 & 12", icon: "fa-coins", desc: "Sept-Oct: Création de la monnaie.", completed: false },
+                { id: 2, type: "team", title: "Équipes Inclusives", odd: "ODD 5 & 10", icon: "fa-users", desc: "Nov-Dec: Création et débat des équipes.", completed: false },
+                { id: 3, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13", icon: "fa-recycle", desc: "Jan-Fév: Design épreuves recyclées.", completed: false },
+                { id: 4, type: "code", code: "RULES", title: "Règlement", odd: "ODD 16", icon: "fa-scale-balanced", desc: "Fév-Mars: Normes de fair-play.", completed: false },
+                { id: 5, type: "code", code: "FOOD", title: "Ravitaillement", odd: "ODD 3", icon: "fa-apple-whole", desc: "Avril-Mai: Snacks sains.", completed: false },
+                { id: 6, type: "code", code: "MAP", title: "Plan Parcours", odd: "ODD 11", icon: "fa-map", desc: "Mai-Juin: Tracé du plan.", completed: false }
             ],
+            journal: [],
             currentId: null
         };
         let chart = null;
@@ -371,23 +396,15 @@ html_code = """
                 });
             },
 
-            // --- PERFIL INDIVIDUAL (INICIO) ---
             saveProfile: () => {
                 const name = document.getElementById('player-name').value;
-                if(!DATA.user.sprite || !name || !DATA.user.trait) {
-                    return alert("Complétez votre profil !");
-                }
+                if(!DATA.user.sprite || !name || !DATA.user.trait) return alert("Complétez votre profil !");
                 DATA.user.name = name;
-                
-                // Mostrar en la app
                 document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
-                
-                // Ir al Home
                 app.showView('view-home');
                 document.getElementById('app-dock').style.display = 'flex';
             },
 
-            // --- NAVEGACIÓN ---
             nav: (viewName, el) => {
                 document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
                 if(el) {
@@ -399,6 +416,9 @@ html_code = """
                     app.renderList();
                     setTimeout(app.initChart, 100);
                 }
+                if(viewName === 'journal') {
+                    app.renderJournal();
+                }
             },
 
             showView: (id) => {
@@ -406,7 +426,74 @@ html_code = """
                 document.getElementById(id).classList.add('active-view');
             },
 
-            // --- RENDERIZADO DE FASES ---
+            // --- JOURNAL LOGIC ---
+            selectMood: (el, mood) => {
+                document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+                el.classList.add('selected');
+                document.getElementById('selected-mood').value = mood;
+            },
+
+            saveJournal: () => {
+                const mood = document.getElementById('selected-mood').value;
+                const text = document.getElementById('journal-text').value;
+                const fileInput = document.getElementById('journal-photo');
+                
+                if(!mood || !text) return alert("Ajoutez une émotion et un texte !");
+
+                const entry = {
+                    date: new Date().toLocaleDateString(),
+                    mood: mood,
+                    text: text,
+                    image: null
+                };
+
+                if(fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        entry.image = e.target.result;
+                        DATA.journal.unshift(entry);
+                        app.resetJournalForm();
+                        app.renderJournal();
+                        confetti();
+                    }
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    DATA.journal.unshift(entry);
+                    app.resetJournalForm();
+                    app.renderJournal();
+                    confetti();
+                }
+            },
+
+            resetJournalForm: () => {
+                document.getElementById('selected-mood').value = "";
+                document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+                document.getElementById('journal-text').value = "";
+                document.getElementById('journal-photo').value = "";
+            },
+
+            renderJournal: () => {
+                const feed = document.getElementById('journal-feed');
+                feed.innerHTML = "";
+                if(DATA.journal.length === 0) {
+                    feed.innerHTML = '<p class="text-secondary text-center">Aucune entrée pour le moment.</p>';
+                    return;
+                }
+                DATA.journal.forEach(e => {
+                    let imgHtml = e.image ? `<img src="${e.image}" class="journal-img">` : '';
+                    feed.innerHTML += `
+                    <div class="solid-panel journal-entry">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-secondary">${e.date}</span>
+                            <span style="font-size: 1.5rem;">${e.mood}</span>
+                        </div>
+                        <p class="mb-0 text-white">${e.text}</p>
+                        ${imgHtml}
+                    </div>`;
+                });
+            },
+
+            // --- FASES LOGIC ---
             renderList: () => {
                 const list = document.getElementById('missions-list');
                 list.innerHTML = "";
@@ -414,8 +501,6 @@ html_code = """
                     const status = m.completed ? 'completed' : '';
                     const locked = (!m.completed && m.id > 1 && !DATA.missions[m.id-2].completed) ? 'locked' : '';
                     const iconCheck = m.completed ? 'fa-check text-success' : (locked ? 'fa-lock text-secondary' : 'fa-play text-white');
-                    
-                    // Si es Fase 2 (Equipo), usamos una función especial para abrir el Debate
                     const onClickAction = (m.id === 2 && !locked) ? `app.goToDebate()` : `app.openModal(${m.id})`;
 
                     list.innerHTML += `
@@ -432,16 +517,11 @@ html_code = """
                 });
             },
 
-            // --- FASE 2: DEBATE EQUIPOS ---
             goToDebate: () => {
-                // Verificar si ya está completada
                 if(DATA.missions[1].completed) return;
-
-                // Llenar datos de la ficha de debate con el perfil del usuario
                 document.getElementById('debate-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite} text-white"></i>`;
                 document.getElementById('debate-name').innerText = DATA.user.name;
                 document.getElementById('debate-trait').innerText = DATA.user.trait;
-                
                 app.showView('view-debate');
             },
 
@@ -455,23 +535,18 @@ html_code = """
                 if(!c1 || !c2 || !c3) return alert("Validez les critères !");
 
                 DATA.teamName = team;
-                DATA.missions[1].completed = true; // Fase 2 Completada
-
-                // Actualizar UI
+                DATA.missions[1].completed = true;
                 const badge = document.getElementById('home-team-badge');
                 badge.className = "badge bg-success mb-4 px-3 py-2 w-100";
                 badge.innerHTML = `<i class="fa-solid fa-users me-2"></i> ${team}`;
-
                 confetti();
                 app.nav('dashboard');
             },
 
-            // --- MODAL GENÉRICO (FASES CÓDIGO) ---
             openModal: (id) => {
                 DATA.currentId = id;
                 const m = DATA.missions.find(x => x.id === id);
                 if(m.completed) return;
-                
                 document.getElementById('modal-title').innerText = m.title;
                 document.getElementById('modal-desc').innerText = m.desc;
                 document.getElementById('modal-odd').innerText = m.odd;
@@ -485,7 +560,6 @@ html_code = """
                 const inp = document.getElementById('user-input').value.trim().toUpperCase();
                 const m = DATA.missions.find(x => x.id === DATA.currentId);
                 const fb = document.getElementById('feedback-msg');
-
                 if(inp === m.code) {
                     m.completed = true;
                     fb.innerText = "Validé !"; fb.style.color = "#28a745";
