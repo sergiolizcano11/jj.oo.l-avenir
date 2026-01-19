@@ -1,398 +1,555 @@
 import streamlit as st
-import pandas as pd
-import os
-import qrcode
-from PIL import Image, ImageDraw, ImageFont
-import io
-import base64
-import random
-import time
-from datetime import datetime
-from st_audiorec import st_audiorec 
-from gtts import gTTS
+import streamlit.components.v1 as components
 
-# --- 1. CONFIGURACIÓN ---
+# --- CONFIGURACIÓN DE PÁGINA STREAMLIT ---
 st.set_page_config(
-    page_title="Le Lycée Olympique",
-    page_icon="🏟️",
-    layout="centered",
-    initial_sidebar_state="collapsed" 
+    page_title="Gymkhana Gen Z",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+    page_icon="🚀"
 )
 
-# --- 2. CSS "COMIC BOOK SPORTS" ---
+# Ocultamos la interfaz nativa de Streamlit para inmersión total
 st.markdown("""
-<style>
-    /* Fuente estilo cómic para títulos + fuente legible para texto */
-    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@400;700;900&display=swap');
-
-    :root {
-        --primary: #4D79FF;
-        --accent: #FFD93D;
-        --text: #2D3436;
-        --card-bg: #FFFFFF;
-    }
-
-    /* --- CAMBIO PRINCIPAL: FONDO DE CÓMIC --- */
-    .stApp {
-        /* IMPORTANTE: REEMPLAZA ESTA URL POR TU IMAGEN DE CÓMIC DE DEPORTES */
-        /* He puesto una de ejemplo estilo pop-art genérico */
-        background-image: url('https://img.freepik.com/free-vector/pop-art-comic-background_23-2148566476.jpg?w=1380&t=st=1708125000~exp=1708125600~hmac=example_token');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        font-family: 'Poppins', sans-serif; /* Fuente base legible */
-    }
-    
-    /* CAPA BLANCA FUERTE PARA LEGIBILIDAD (CRÍTICO EN FONDOS DE CÓMIC) */
-    .stApp::before {
-        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255, 255, 255, 0.94); /* 94% opaco para tapar bien el fondo ruidoso */
-        z-index: -1;
-        backdrop-filter: blur(2px); /* Un poco de desenfoque extra ayuda */
-    }
-
-    /* TARJETAS CON BORDE DE VIÑETA GRUESO */
-    .css-1r6slb0, .stDataFrame, .stForm, div[data-testid="stExpander"], .news-card, .photo-card, .mood-card, .trophy-case {
-        background: #FFFFFF;
-        border-radius: 12px;
-        padding: 20px;
-        /* Borde negro grueso tipo cómic */
-        border: 3px solid black;
-        /* Sombra sólida desplazada (pop art) */
-        box-shadow: 6px 6px 0px rgba(0,0,0,1);
-        margin-bottom: 25px;
-    }
-
-    /* HERO HEADER ESTILO TÍTULO DE CÓMIC */
-    .hero-header {
-        background: linear-gradient(45deg, #4D79FF, #00C6FF);
-        padding: 30px 20px;
-        border-radius: 0 0 20px 20px;
-        color: white;
-        text-align: center;
-        margin-bottom: 30px;
-        border-bottom: 5px solid black;
-        box-shadow: 0 10px 0 rgba(0,0,0,0.2);
-    }
-    .hero-header h1 { 
-        font-family: 'Bangers', cursive; /* Fuente de cómic */
-        font-weight: 400; 
-        font-size: 3rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 3px 3px 0px black; /* Sombra dura de texto */
-    }
-    .hero-header p {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-    }
-
-    /* TEXTOS */
-    h1, h2, h3, h4 { color: black !important; font-family: 'Bangers', cursive; letter-spacing: 1px; }
-    p, label, .stMarkdown { color: black !important; font-weight: 600; }
-
-    /* BOTONES "POW!" */
-    .stButton > button {
-        background: #FFD93D;
-        color: black;
-        border-radius: 8px;
-        border: 3px solid black;
-        border-bottom: 6px solid black;
-        padding: 12px;
-        font-family: 'Bangers', cursive;
-        font-size: 1.2rem;
-        text-transform: uppercase;
-        width: 100%;
-        transition: all 0.1s;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-3px);
-        background: #FFE066;
-        box-shadow: 0 3px 0 black;
-    }
-    
-    .stButton > button:active {
-        transform: translateY(4px);
-        border-bottom: 3px solid black;
-    }
-    
-    /* Inputs con borde grueso */
-    .stTextInput input, .stTextArea textarea, .stSelectbox div[data-baseweb="select"] {
-        background: #FFF;
-        border: 3px solid black;
-        border-radius: 8px;
-        color: black;
-        font-weight: 700;
-    }
-
-</style>
+    <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .block-container {padding: 0 !important; margin: 0 !important;}
+        iframe {height: 100vh !important;} 
+    </style>
 """, unsafe_allow_html=True)
 
-# --- 3. BASE DE DATOS ---
-FILE_ELEVES = 'eleves.csv'
-FILE_TEAMS = 'teams.csv'
-FILE_GALLERY = 'gallery.csv'
-FILE_NEWS = 'news_feed.csv'
-FILE_JOURNAL = 'journal.csv'
-FILE_SUGGESTIONS = 'suggestions.csv'
-
-def init_db():
-    cols_eleves = ['Pseudo', 'Avatar', 'Forces', 'Faiblesse', 'TeamName']
-    cols_teams = ['TeamName', 'Slogan', 'MembersCount', 'Points']
-    cols_gallery = ['TeamName', 'Uploader', 'ImageB64', 'Caption', 'Date']
-    cols_news = ['Date', 'Titre', 'Contenu', 'Type']
-    cols_journal = ['Pseudo', 'Date', 'Reflexion', 'Humeur']
-    cols_sugg = ['Date', 'Pseudo', 'Type', 'Message']
-
-    for file, cols in [(FILE_ELEVES, cols_eleves), (FILE_TEAMS, cols_teams), 
-                       (FILE_GALLERY, cols_gallery), (FILE_NEWS, cols_news), 
-                       (FILE_JOURNAL, cols_journal), (FILE_SUGGESTIONS, cols_sugg)]:
-        if not os.path.exists(file):
-            pd.DataFrame(columns=cols).to_csv(file, index=False)
-        else:
-            df = pd.read_csv(file)
-            for c in cols:
-                if c not in df.columns: df[c] = ""
-            df.to_csv(file, index=False)
-
-def load_data(file): return pd.read_csv(file)
-def save_data(df, file): df.to_csv(file, index=False)
-
-init_db()
-df_eleves = load_data(FILE_ELEVES)
-df_teams = load_data(FILE_TEAMS)
-df_gallery = load_data(FILE_GALLERY)
-df_news = load_data(FILE_NEWS)
-df_journal = load_data(FILE_JOURNAL)
-df_sugg = load_data(FILE_SUGGESTIONS)
-
-def auto_post(title, content, type_msg="Info 📢"):
-    global df_news
-    df_news = load_data(FILE_NEWS)
-    new_n = pd.DataFrame([[datetime.now().strftime("%d/%m %H:%M"), title, content, type_msg]],
-                       columns=['Date', 'Titre', 'Contenu', 'Type'])
-    df_news = pd.concat([new_n, df_news], ignore_index=True)
-    save_data(df_news, FILE_NEWS)
-
-def get_medals(pseudo):
-    medals = []
-    medals.append({"icon": "🥇", "name": "Début", "desc": "Profil créé", "unlocked": True})
-    user_data = df_eleves[df_eleves['Pseudo'] == pseudo]
-    has_team = False
-    if not user_data.empty:
-        team = user_data.iloc[0]['TeamName']
-        if team and team != "None" and str(team) != "nan": has_team = True
-    medals.append({"icon": "🛡️", "name": "Squad", "desc": "Rejoint une équipe", "unlocked": has_team})
-    has_photo = pseudo in df_gallery['Uploader'].values if 'Uploader' in df_gallery.columns else False
-    medals.append({"icon": "📸", "name": "Reporter", "desc": "Photo postée", "unlocked": has_photo})
-    has_journal = pseudo in df_journal['Pseudo'].values
-    medals.append({"icon": "✍️", "name": "Pensée", "desc": "Journal écrit", "unlocked": has_journal})
-    return medals
-
-# --- 4. NAVEGACIÓN ---
-if 'page' not in st.session_state: st.session_state['page'] = 'home'
-def nav(page_name): 
-    st.session_state['page'] = page_name
-    st.rerun()
-
-# --- SIDEBAR PROFESOR & BUZÓN ---
-with st.sidebar:
-    st.markdown("### 📬 Boîte à Idées")
-    with st.expander("Une idée ? Un problème ?"):
-        with st.form("suggestion_box"):
-            s_who = st.selectbox("C'est qui ?", ["Anonyme"] + list(df_eleves['Pseudo'].unique()))
-            s_type = st.selectbox("Sujet", ["💡 Idée géniale", "🐛 Problème", "❓ Question"])
-            s_msg = st.text_area("Ton message...")
-            if st.form_submit_button("Envoyer au Prof"):
-                if s_msg:
-                    new_s = pd.DataFrame([[datetime.now().strftime("%d/%m"), s_who, s_type, s_msg]], 
-                                       columns=['Date', 'Pseudo', 'Type', 'Message'])
-                    df_sugg = pd.concat([new_s, df_sugg], ignore_index=True)
-                    save_data(df_sugg, FILE_SUGGESTIONS)
-                    st.success("Merci ! Message reçu.")
-                else: st.error("Écris quelque chose !")
-
-    st.markdown("---")
-    st.header("👨‍🏫 Zone Prof")
-    if st.text_input("Code", type="password") == "admin":
-        st.success("Admin Connecté")
-        tab_journ, tab_sugg = st.tabs(["📖 Journaux", "📬 Idées reçues"])
-        with tab_journ:
-            if df_journal.empty: st.info("Vide.")
-            else:
-                student_filter = st.selectbox("Filtrer élève", ["Tous"] + list(df_journal['Pseudo'].unique()))
-                view_df = df_journal if student_filter == "Tous" else df_journal[df_journal['Pseudo'] == student_filter]
-                for i, row in view_df.iterrows():
-                    st.caption(f"{row['Date']} - {row['Pseudo']}")
-                    st.write(f"📝 {row['Reflexion']}")
-                    st.markdown("---")
-        with tab_sugg:
-            if df_sugg.empty: st.info("Boîte vide.")
-            else:
-                for i, row in df_sugg.iterrows():
-                    st.write(f"**{row['Type']}** par {row['Pseudo']}")
-                    st.info(row['Message'])
-        if st.button("Reset News"):
-            pd.DataFrame(columns=['Date','Titre','Contenu','Type']).to_csv(FILE_NEWS, index=False)
-            st.rerun()
-
-# ==========================================
-#              PÁGINAS DE LA APP
-# ==========================================
-
-# --- 1. HOME ---
-if st.session_state['page'] == 'home':
-    st.markdown("""
-    <div class="hero-header">
-        <h1>🏟️ Le Lycée Olympique</h1>
-        <p>Ton espace, tes règles, ton jeu !</p>
-    </div>
-    """, unsafe_allow_html=True)
+# --- CÓDIGO FRONTEND (HTML/CSS/JS) ---
+# Todo el diseño Glassmorphism y la lógica de animaciones vive aquí
+html_code = """
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gymkhana Gen Z</title>
     
-    st.markdown('<div class="mood-card">', unsafe_allow_html=True)
-    st.markdown("##### 👋 Mood du jour ?")
-    c1, c2, c3, c4 = st.columns(4)
-    if c1.button("🤩"): st.toast("Top !", icon="🔥")
-    if c2.button("🙂"): st.toast("Cool", icon="👍")
-    if c3.button("😐"): st.toast("Bof", icon="😐")
-    if c4.button("😴"): st.toast("Fatigué", icon="💤")
-    st.markdown('</div>', unsafe_allow_html=True)
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    st.markdown("### 📢 Quoi de neuf ?")
-    if df_news.empty: st.info("Le lycée est calme...")
-    for i, row in df_news.iterrows():
-        icon = "📢"
-        if "Équipe" in str(row['Type']): icon = "🛡️"
-        if "Photo" in str(row['Type']): icon = "📸"
-        st.markdown(f"""
-        <div class="news-card">
-            <div style="display:flex; justify-content:space-between; color:#666; font-size:0.8rem;">
-                <span>{icon} {row['Type']}</span><span>{row['Date']}</span>
+    <style>
+        /* --- VARIABLES GEN Z --- */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --neon-blue: #00f2fe;
+            --neon-pink: #fe00a1;
+            --text-color: #fff;
+            --font-main: 'Poppins', sans-serif;
+            --font-header: 'Montserrat', sans-serif;
+        }
+
+        /* --- BASE --- */
+        body {
+            font-family: var(--font-main);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            background: #0f0c29; 
+        }
+
+        /* Fondo Animado */
+        .bg-animation {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- GLASSMORPHISM --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .glass-panel:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            padding: 15px;
+            color: white;
+            text-align: center;
+            width: 100%;
+            font-family: var(--font-header);
+            transition: 0.3s;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+
+        /* --- BOTONES --- */
+        .btn-neon {
+            background: linear-gradient(90deg, var(--neon-blue), #4facfe);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            width: 100%;
+            font-family: var(--font-header);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+            transition: transform 0.2s;
+        }
+        .btn-neon:active { transform: scale(0.95); }
+
+        /* --- TRANSICIONES (SPA Logic) --- */
+        .view {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            height: 100%;
+            overflow-y: auto;
+            padding-bottom: 100px; /* Espacio para el Dock */
+        }
+
+        .active-view {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- MISIONES --- */
+        .mission-card {
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .mission-card.locked {
+            opacity: 0.6;
+            filter: grayscale(1);
+            pointer-events: none;
+        }
+        .mission-card.completed {
+            border: 2px solid var(--neon-blue);
+            background: rgba(0, 242, 254, 0.1);
+        }
+
+        /* --- OSCARS --- */
+        .oscar-card {
+            text-align: center;
+            padding: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.3); /* Gold border */
+            background: rgba(20, 20, 20, 0.6);
+        }
+        .text-gold {
+            background: linear-gradient(to bottom, #cfc09f 22%,#634f2c 24%, #cfc09f 26%, #cfc09f 27%,#ffecb3 40%,#3a2c0f 78%); 
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        /* --- DOCK MENU (iOS Style) --- */
+        .dock-nav {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 12px 30px;
+            border-radius: 50px;
+            display: flex;
+            gap: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .dock-item {
+            color: rgba(255,255,255,0.5);
+            font-size: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dock-item:hover, .dock-item.active {
+            color: var(--neon-blue);
+            transform: translateY(-10px) scale(1.2);
+            text-shadow: 0 0 15px var(--neon-blue);
+        }
+        
+        .dock-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--neon-blue);
+            border-radius: 50%;
+        }
+
+        /* --- MODAL --- */
+        .custom-modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .custom-modal.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal-content-glass {
+            background: #1a1a2e;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .custom-modal.show .modal-content-glass {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation"></div>
+
+    <section id="view-login" class="view active-view d-flex flex-column justify-content-center align-items-center p-4">
+        <div class="glass-panel p-5 text-center" style="max-width: 400px; width: 100%;">
+            <div class="mb-4">
+                <i class="fa-solid fa-rocket fa-4x text-white" style="filter: drop-shadow(0 0 15px var(--neon-pink)); animation: float 3s ease-in-out infinite;"></i>
             </div>
-            <h3 style="color:#4D79FF; margin:5px 0;">{row['Titre']}</h3>
-            <p>{row['Contenu']}</p>
-        </div>""", unsafe_allow_html=True)
+            <h1 class="fw-bold mb-0 text-white" style="font-family: 'Montserrat'; letter-spacing: 2px;">GYMKHANA</h1>
+            <p class="text-white-50 small mb-4" style="letter-spacing: 4px;">LYCÉE OLYMPIQUE</p>
+            
+            <input type="text" id="team-input" class="glass-input mb-4" placeholder="Nom de l'équipe...">
+            <button onclick="app.login()" class="btn-neon fw-bold">
+                COMMENCER <i class="fa-solid fa-arrow-right ms-2"></i>
+            </button>
+        </div>
+    </section>
 
-# --- 2. PERFIL ---
-elif st.session_state['page'] == 'profile':
-    st.markdown("<h1>👤 Mon Avatar</h1>", unsafe_allow_html=True)
-    st.markdown('<div class="css-1r6slb0">', unsafe_allow_html=True)
-    with st.form("my_profile"):
-        c1, c2 = st.columns([1,2])
-        with c1: 
-            av = st.selectbox("Avatar", ["🦊","🦁","🐯","🦄","🐲","⚡","🔥","🚀","🤖","👽","🦸","🥷"])
-            st.markdown(f"<div style='font-size:50px;text-align:center'>{av}</div>", unsafe_allow_html=True)
-        with c2: ps = st.text_input("Pseudo")
-        forces = st.multiselect("Forces", ["Vitesse","Force","Stratégie","Endurance","Créativité"])
-        if st.form_submit_button("💾 Sauvegarder"):
-            if ps and forces:
-                if ps not in df_eleves['Pseudo'].values:
-                    new = pd.DataFrame([[ps, av, ",".join(forces), "", "None"]], columns=df_eleves.columns)
-                    df_eleves = pd.concat([df_eleves, new], ignore_index=True)
-                    save_data(df_eleves, FILE_ELEVES)
-                    auto_post(f"Nouvel Élève !", f"{ps} ({av}) a rejoint le lycée !", "Bienvenue 👋")
-                    st.success("Profil créé !")
-                else: st.success(f"Salut {ps} !")
-    st.markdown('</div>', unsafe_allow_html=True)
+    <section id="view-dashboard" class="view p-3">
+        <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+            <div>
+                <small class="text-uppercase text-white-50 fw-bold" style="font-size: 0.7rem;">Équipe</small>
+                <div id="display-team" class="fw-bold h5 mb-0 text-white">...</div>
+            </div>
+            <div class="glass-panel px-3 py-1 mb-0 d-flex align-items-center">
+                <i class="fa-solid fa-star text-warning me-2"></i> 
+                <span class="fw-bold"><span id="completed-count">0</span>/4</span>
+            </div>
+        </div>
 
-    if ps: 
-        st.markdown("### 🏆 Mes Trophées")
-        st.markdown('<div class="trophy-case">', unsafe_allow_html=True)
-        my_medals = get_medals(ps)
-        cols = st.columns(len(my_medals))
-        for idx, medal in enumerate(my_medals):
-            with cols[idx]:
-                icon = medal['icon'] if medal['unlocked'] else "🔒"
-                color = "black" if medal['unlocked'] else "gray"
-                st.markdown(f"<div style='text-align:center; color:{color}; font-size:30px; filter:drop-shadow(2px 2px 0px black);'>{icon}</div>", unsafe_allow_html=True)
-                st.markdown(f"<div style='text-align:center; font-size:10px; font-weight:bold;'>{medal['name']}</div>", unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
+        <div class="glass-panel p-3 mb-4 d-flex justify-content-center align-items-center position-relative" style="height: 220px;">
+            <canvas id="progressChart"></canvas>
+            <div class="position-absolute text-center" style="pointer-events: none;">
+                <h2 id="percent-text" class="fw-bold m-0 text-white" style="font-size: 2.5rem; text-shadow: 0 0 10px rgba(0,0,0,0.5);">0%</h2>
+                <small class="text-white-50 text-uppercase" style="font-size: 0.6rem;">Progression</small>
+            </div>
+        </div>
 
-# --- 3. EQUIPOS ---
-elif st.session_state['page'] == 'teams':
-    st.markdown("<h1>🛡️ Les Équipes</h1>", unsafe_allow_html=True)
-    tab_create, tab_join = st.tabs(["✨ Créer", "🤝 Rejoindre"])
-    with tab_create:
-        with st.form("create_team"):
-            st.write("Fonde ta squad !")
-            t_name = st.text_input("Nom de l'Équipe"); t_slogan = st.text_input("Slogan")
-            leader_name = st.selectbox("Chef d'équipe", df_eleves['Pseudo'].unique())
-            if st.form_submit_button("🔥 Go !"):
-                if t_name and t_slogan:
-                    if t_name not in df_teams['TeamName'].values:
-                        new_t = pd.DataFrame([[t_name, t_slogan, 1, 0]], columns=df_teams.columns)
-                        df_teams = pd.concat([df_teams, new_t], ignore_index=True)
-                        save_data(df_teams, FILE_TEAMS)
-                        idx = df_eleves[df_eleves['Pseudo'] == leader_name].index[0]
-                        df_eleves.at[idx, 'TeamName'] = t_name
-                        save_data(df_eleves, FILE_ELEVES)
-                        auto_post(f"Nouvelle Équipe : {t_name} !", f"Slogan : « {t_slogan} »", "Équipe 🛡️")
-                        st.balloons()
-                    else: st.error("Nom pris.")
-    with tab_join:
-        if df_teams.empty: st.warning("Aucune équipe.")
-        for i, row in df_teams.iterrows():
-            with st.expander(f"🛡️ {row['TeamName']}"):
-                st.markdown(f"**« {row['Slogan']} »**")
-                members = df_eleves[df_eleves['TeamName'] == row['TeamName']]['Pseudo'].tolist()
-                st.write(f"Membres: {', '.join(members)}")
-                me = st.selectbox(f"Moi...", df_eleves['Pseudo'].unique(), key=f"j_{i}")
-                if st.button(f"Rejoindre {row['TeamName']}", key=f"btn_{i}"):
-                    idx = df_eleves[df_eleves['Pseudo'] == me].index[0]
-                    df_eleves.at[idx, 'TeamName'] = row['TeamName']
-                    save_data(df_eleves, FILE_ELEVES)
-                    auto_post("Recrutement !", f"{me} a rejoint {row['TeamName']} !", "Info 🤝")
-                    st.rerun()
+        <h6 class="text-uppercase text-white-50 fw-bold small mb-3 ps-2">Missions Actives</h6>
+        <div id="missions-list">
+            </div>
+    </section>
 
-# --- 4. GALERÍA ---
-elif st.session_state['page'] == 'gallery':
-    st.markdown("<h1>📸 Galerie</h1>", unsafe_allow_html=True)
-    with st.expander("📤 Poster une photo"):
-        uploader = st.selectbox("Qui poste ?", df_eleves['Pseudo'].unique()) 
-        team_aff = st.selectbox("Pour quelle équipe ?", df_teams['TeamName'].unique())
-        caption = st.text_input("Description"); uploaded_file = st.file_uploader("Image", type=['png', 'jpg'])
-        if st.button("Publier") and uploaded_file and uploader:
-            bytes_data = uploaded_file.getvalue()
-            b64_str = base64.b64encode(bytes_data).decode()
-            new_img = pd.DataFrame([[team_aff, uploader, b64_str, caption, datetime.now().strftime("%d/%m")]], columns=df_gallery.columns)
-            df_gallery = pd.concat([new_img, df_gallery], ignore_index=True)
-            save_data(df_gallery, FILE_GALLERY)
-            auto_post("Nouvelle Photo 📸", f"{uploader} ({team_aff}) a partagé un souvenir.", "Photo 📸")
-            st.balloons(); st.rerun()
-    st.write("---")
-    if not df_gallery.empty:
-        cols = st.columns(2)
-        for i, row in df_gallery.iterrows():
-            with cols[i % 2]:
-                st.markdown(f"""<div class="photo-card">
-                    <img src="data:image/png;base64,{row['ImageB64']}" style="width:100%; border-radius:10px; border:2px solid #000;">
-                    <p style="color:black; margin-top:5px;"><strong>{row['TeamName']}</strong><br>{row['Caption']}</p></div>""", unsafe_allow_html=True)
+    <section id="view-oscars" class="view p-3">
+        <div class="text-center mb-5 mt-3">
+            <i class="fa-solid fa-crown fa-3x text-warning mb-2"></i>
+            <h2 class="fw-bold text-white" style="font-family: 'Montserrat';">LES OSCARS</h2>
+            <p class="text-white-50">Cérémonie de remise des prix</p>
+        </div>
 
-# --- 5. JOURNAL ---
-elif st.session_state['page'] == 'journal':
-    st.markdown("<h1>📖 Mon Journal</h1>", unsafe_allow_html=True)
-    st.info("🔒 Espace privé.")
-    with st.form("journal_entry"):
-        author = st.selectbox("Identité", df_eleves['Pseudo'].unique())
-        mood_day = st.selectbox("Ressenti", ["Super", "Bien", "Fatigué", "Triste", "Fier"])
-        reflexion = st.text_area("Bilan de la séance :")
-        if st.form_submit_button("Enregistrer"):
-            if author and reflexion:
-                new_entry = pd.DataFrame([[author, datetime.now().strftime("%d/%m %H:%M"), reflexion, mood_day]], columns=['Pseudo', 'Date', 'Reflexion', 'Humeur'])
-                df_journal = pd.concat([new_entry, df_journal], ignore_index=True)
-                save_data(df_journal, FILE_JOURNAL)
-                st.success("Enregistré !")
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="glass-panel oscar-card">
+                    <i class="fa-solid fa-language fa-2x text-gold mb-2"></i>
+                    <h6 class="fw-bold small mb-1 text-white">Francophones d'Or</h6>
+                    <small class="text-white-50 d-block" style="font-size: 0.65rem;">Meilleur niveau linguistique</small>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="glass-panel oscar-card">
+                    <i class="fa-solid fa-users fa-2x text-gold mb-2"></i>
+                    <h6 class="fw-bold small mb-1 text-white">Esprit d'Équipe</h6>
+                    <small class="text-white-50 d-block" style="font-size: 0.65rem;">Meilleure coopération</small>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="glass-panel oscar-card">
+                    <i class="fa-solid fa-lightbulb fa-2x text-gold mb-2"></i>
+                    <h6 class="fw-bold small mb-1 text-white">Les Innovateurs</h6>
+                    <small class="text-white-50 d-block" style="font-size: 0.65rem;">Créativité maximale</small>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="glass-panel oscar-card">
+                    <i class="fa-solid fa-leaf fa-2x text-gold mb-2"></i>
+                    <h6 class="fw-bold small mb-1 text-white">Gardiens Planète</h6>
+                    <small class="text-white-50 d-block" style="font-size: 0.65rem;">Écologie & Durable</small>
+                </div>
+            </div>
+        </div>
+    </section>
 
-# --- NAVEGACIÓN ---
-st.markdown("---")
-cols = st.columns(6)
-labels = ["🏠", "👤", "🛡️", "📸", "📖", "🏆"]
-pages = ['home', 'profile', 'teams', 'gallery', 'journal', 'awards']
-for col, label, page in zip(cols, labels, pages):
-    with col:
-        if st.button(label, key=f"nav_{page}"): nav(page)
+    <div id="bottom-nav" class="dock-nav d-none">
+        <div class="dock-item active" onclick="app.nav('dashboard', this)">
+            <i class="fa-solid fa-gamepad"></i>
+        </div>
+        <div class="dock-item" onclick="app.nav('oscars', this)">
+            <i class="fa-solid fa-trophy"></i>
+        </div>
+    </div>
 
-if st.session_state['page'] == 'awards':
-    st.markdown("<h1>🏆 Oscars</h1>", unsafe_allow_html=True)
-    st.info("Vote final bientôt !")
+    <div id="customModal" class="custom-modal">
+        <div class="modal-content-glass">
+            <div class="mb-3">
+                <i id="modal-icon" class="fa-solid fa-user-secret fa-3x text-white"></i>
+            </div>
+            <h4 id="modal-title" class="fw-bold text-white mb-2">...</h4>
+            <p id="modal-desc" class="text-white-50 small mb-4">...</p>
+            
+            <input type="text" id="secret-code" class="glass-input text-uppercase fs-4 mb-4" placeholder="CODE" maxlength="6">
+            
+            <button onclick="app.validate()" class="btn-neon">Vérifier</button>
+            <button onclick="app.closeModal()" class="btn btn-link text-white-50 mt-3 text-decoration-none btn-sm">Annuler</button>
+            
+            <div id="feedback-msg" class="mt-3 small fw-bold"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const GAME_DATA = {
+            missions: [
+                { id: 1, title: "Économie (ODD 1)", group: "Les Banquiers", code: "JETON", completed: false, icon: "fa-coins" },
+                { id: 2, title: "Climat (ODD 13)", group: "Les Écologistes", code: "FUTUR", completed: false, icon: "fa-temperature-low" },
+                { id: 3, title: "Santé (ODD 3)", group: "Les Nutritionnistes", code: "SANTE", completed: false, icon: "fa-heart-pulse" },
+                { id: 4, title: "Urbanisme (ODD 11)", group: "Les Architectes", code: "VILLE", completed: false, icon: "fa-city" }
+            ],
+            teamName: "",
+            currentMissionId: null
+        };
+        
+        let progressChart = null;
+
+        // --- APP CONTROLLER ---
+        const app = {
+            login: () => {
+                const input = document.getElementById('team-input').value;
+                if (!input) return alert("Veuillez entrer un nom d'équipe !");
+                
+                GAME_DATA.teamName = input;
+                document.getElementById('display-team').innerText = input;
+                
+                // Transición Suave
+                app.switchView('view-login', 'view-dashboard');
+                document.getElementById('bottom-nav').classList.remove('d-none');
+                
+                // Inicializar
+                app.renderMissions();
+                setTimeout(app.initChart, 300);
+            },
+
+            nav: (targetView, el) => {
+                // Update Dock
+                document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+
+                // Animate Out current view
+                const current = document.querySelector('.active-view');
+                if(current) {
+                    current.style.opacity = 0;
+                    current.style.transform = 'translateY(-20px)';
+                    setTimeout(() => current.classList.remove('active-view'), 400);
+                }
+
+                // Animate In new view
+                setTimeout(() => {
+                    const next = document.getElementById(`view-${targetView}`);
+                    next.classList.add('active-view');
+                    next.style.opacity = 0;
+                    next.style.transform = 'translateY(20px)';
+                    
+                    // Force Reflow
+                    void next.offsetWidth;
+                    
+                    next.style.opacity = 1;
+                    next.style.transform = 'translateY(0)';
+                }, 400);
+            },
+
+            switchView: (from, to) => {
+                document.getElementById(from).classList.remove('active-view');
+                document.getElementById(to).classList.add('active-view');
+            },
+
+            renderMissions: () => {
+                const container = document.getElementById('missions-list');
+                container.innerHTML = "";
+
+                GAME_DATA.missions.forEach((m, i) => {
+                    const isLocked = i > 0 && !GAME_DATA.missions[i-1].completed;
+                    const statusClass = m.completed ? 'completed' : (isLocked ? 'locked' : '');
+                    const iconStatus = m.completed ? 'fa-check text-success' : (isLocked ? 'fa-lock text-white-50' : 'fa-play text-white');
+                    
+                    container.innerHTML += `
+                        <div class="glass-panel p-3 mission-card ${statusClass} d-flex align-items-center" 
+                             onclick="app.openModal(${m.id})">
+                            <div class="me-3 bg-dark rounded-circle d-flex justify-content-center align-items-center" 
+                                 style="width:45px; height:45px; box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                                <i class="fa-solid ${m.icon} text-white"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <small class="text-white-50 text-uppercase fw-bold" style="font-size:0.65rem">
+                                    Cherchez: ${m.group}
+                                </small>
+                                <h6 class="mb-0 fw-bold text-white">${m.title}</h6>
+                            </div>
+                            <div>
+                                <i class="fa-solid ${iconStatus}"></i>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                // Update stats
+                const completed = GAME_DATA.missions.filter(m => m.completed).length;
+                document.getElementById('completed-count').innerText = completed;
+            },
+
+            openModal: (id) => {
+                const m = GAME_DATA.missions.find(x => x.id === id);
+                if (m.completed) return; // Ya completada
+
+                GAME_DATA.currentMissionId = id;
+                document.getElementById('modal-title').innerText = m.title;
+                document.getElementById('modal-desc').innerText = `Trouvez le groupe "${m.group}" pour obtenir le code secret.`;
+                document.getElementById('secret-code').value = '';
+                document.getElementById('feedback-msg').innerText = '';
+                document.getElementById('customModal').classList.add('show');
+            },
+
+            closeModal: () => {
+                document.getElementById('customModal').classList.remove('show');
+            },
+
+            validate: () => {
+                const input = document.getElementById('secret-code').value.toUpperCase().trim();
+                const m = GAME_DATA.missions.find(x => x.id === GAME_DATA.currentMissionId);
+                const fb = document.getElementById('feedback-msg');
+
+                if (input === m.code) {
+                    m.completed = true;
+                    fb.innerHTML = '<span class="text-info"><i class="fa-solid fa-check"></i> Correct !</span>';
+                    
+                    // Confetti Effect
+                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+                    setTimeout(() => {
+                        app.closeModal();
+                        app.renderMissions();
+                        app.updateChart();
+                    }, 1500);
+                } else {
+                    fb.innerHTML = '<span class="text-danger">Code incorrect.</span>';
+                    // Shake animation input
+                    const inp = document.getElementById('secret-code');
+                    inp.style.borderColor = 'red';
+                    setTimeout(() => inp.style.borderColor = 'rgba(255,255,255,0.2)', 500);
+                }
+            },
+
+            initChart: () => {
+                const ctx = document.getElementById('progressChart').getContext('2d');
+                progressChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [0, 4],
+                            backgroundColor: ['#00f2fe', 'rgba(255,255,255,0.05)'],
+                            borderWidth: 0,
+                            borderRadius: 20,
+                            cutout: '85%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { animateScale: true, animateRotate: true },
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                    }
+                });
+            },
+
+            updateChart: () => {
+                const completed = GAME_DATA.missions.filter(m => m.completed).length;
+                const total = GAME_DATA.missions.length;
+                
+                progressChart.data.datasets[0].data = [completed, total - completed];
+                progressChart.update();
+                
+                document.getElementById('percent-text').innerText = Math.round((completed/total)*100) + '%';
+            }
+        };
+
+        // Animación Flotante CSS
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = `
+          @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+          }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>
+"""
+
+# Renderizamos el HTML en Streamlit con altura fija y scroll permitido
+components.html(html_code, height=900, scrolling=True)
