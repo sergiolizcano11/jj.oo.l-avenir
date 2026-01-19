@@ -99,6 +99,7 @@ html_code = """
             margin-top: 10px;
         }
         .btn-solid:active { background-color: #3a5bbf; transform: scale(0.98); }
+        .btn-solid:disabled { background-color: #555; cursor: not-allowed; opacity: 0.7; }
         
         .btn-outline {
             background: transparent; border: 2px solid #555;
@@ -165,6 +166,22 @@ html_code = """
         .journal-entry { border-left: 3px solid var(--accent); }
         .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #444; }
 
+        /* --- JUEGOS --- */
+        .game-opt {
+            background: #333; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
+        }
+        .game-opt:hover { background: #444; }
+        .game-opt.correct { border-color: var(--success); background: rgba(40, 167, 69, 0.2); }
+        .game-opt.wrong { border-color: #dc3545; background: rgba(220, 53, 69, 0.2); }
+
+        /* --- OSCARS --- */
+        .vote-card {
+            background: #252525; padding: 15px; border-radius: 8px; margin-bottom: 10px; 
+            display: flex; justify-content: space-between; align-items: center; border: 1px solid #444;
+        }
+        .oscar-btn-cat { cursor: pointer; transition: 0.2s; }
+        .oscar-btn-cat:active { transform: scale(0.95); }
+
         /* Modal */
         .custom-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -185,18 +202,14 @@ html_code = """
             <h2 style="font-family: var(--font-head);">CRÉEZ VOTRE PROFIL</h2>
             <p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p>
         </div>
-
         <div class="avatar-grid" id="sprite-container"></div>
-
         <div class="solid-panel mt-4">
             <label class="small text-secondary mb-2 d-block text-start">VOTRE NOM</label>
             <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
-            
             <label class="small text-secondary mb-2 d-block text-start mt-3">VOTRE SUPER-POUVOIR</label>
             <div class="trait-selector" id="trait-container"></div>
             <input type="hidden" id="selected-trait">
         </div>
-
         <button onclick="app.saveProfile()" class="btn-solid mt-2">ENTRER DANS L'APP <i class="fa-solid fa-arrow-right"></i></button>
     </section>
 
@@ -212,7 +225,7 @@ html_code = """
         </div>
         
         <div id="home-team-badge" class="badge bg-secondary mb-4 px-3 py-2 w-100" style="font-size: 0.9rem;">
-            <i class="fa-solid fa-users-slash me-2"></i> Pas d'équipe (Voir Phase 2)
+            <i class="fa-solid fa-users-slash me-2"></i> Pas d'équipe
         </div>
 
         <div class="row g-3">
@@ -220,6 +233,12 @@ html_code = """
                 <div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')">
                     <i class="fa-solid fa-list-check"></i>
                     <h3>PHASES</h3>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="home-btn" onclick="app.nav('games', 'nav-games')">
+                    <i class="fa-solid fa-gamepad text-success"></i>
+                    <h3>ARCADE</h3>
                 </div>
             </div>
             <div class="col-6">
@@ -231,13 +250,7 @@ html_code = """
             <div class="col-6">
                 <div class="home-btn" onclick="app.nav('oscars', 'nav-oscars')">
                     <i class="fa-solid fa-award text-warning"></i>
-                    <h3>ÉVALUATION</h3>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="home-btn" style="opacity: 0.6;" onclick="alert('Disponible en Juin!')">
-                    <i class="fa-solid fa-flag-checkered text-danger"></i>
-                    <h3>FINALE</h3>
+                    <h3>VOTE</h3>
                 </div>
             </div>
         </div>
@@ -256,10 +269,8 @@ html_code = """
 
     <section id="view-journal" class="view">
         <h4 class="fw-bold mb-3" style="font-family: var(--font-head);">JOURNAL DE BORD</h4>
-        <p class="text-secondary small mb-4">Réflexion après la séance & Photos</p>
-
         <div class="solid-panel">
-            <label class="small text-secondary mb-2">COMMENT TU TE SENS ?</label>
+            <label class="small text-secondary mb-2">MOOD</label>
             <div class="d-flex justify-content-between mb-3">
                 <div class="mood-btn" onclick="app.selectMood(this, '🤩')">🤩</div>
                 <div class="mood-btn" onclick="app.selectMood(this, '🙂')">🙂</div>
@@ -268,21 +279,75 @@ html_code = """
                 <div class="mood-btn" onclick="app.selectMood(this, '😤')">😤</div>
             </div>
             <input type="hidden" id="selected-mood">
+            <label class="small text-secondary mb-2">RÉFLEXION</label>
+            <textarea id="journal-text" class="solid-textarea" rows="2"></textarea>
+            <button onclick="app.saveJournal()" class="btn-solid">POSTER</button>
+        </div>
+        <div id="journal-feed"></div>
+    </section>
 
-            <label class="small text-secondary mb-2">TA RÉFLEXION</label>
-            <textarea id="journal-text" class="solid-textarea" rows="3" placeholder="Aujourd'hui, j'ai appris..."></textarea>
-
-            <label class="small text-secondary mb-2">PHOTO DU TRAVAIL</label>
-            <input type="file" id="journal-photo" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
-
-            <button onclick="app.saveJournal()" class="btn-solid">ENREGISTRER L'ENTRÉE</button>
+    <section id="view-games" class="view">
+        <h4 class="fw-bold mb-3" style="font-family: var(--font-head);">SALLE D'ARCADE</h4>
+        <p class="text-secondary small">Quiz Grammaire (Niveaux A2/B1)</p>
+        
+        <div id="game-menu">
+            <div class="solid-panel game-opt" onclick="app.startGame('num')">
+                <h5 class="mb-0 fw-bold"><i class="fa-solid fa-calculator text-primary me-2"></i> Les Nombres (1-100)</h5>
+            </div>
+            <div class="solid-panel game-opt" onclick="app.startGame('fut')">
+                <h5 class="mb-0 fw-bold"><i class="fa-solid fa-rocket text-warning me-2"></i> Futur Simple</h5>
+            </div>
+            <div class="solid-panel game-opt" onclick="app.startGame('part')">
+                <h5 class="mb-0 fw-bold"><i class="fa-solid fa-pizza-slice text-danger me-2"></i> Les Partitifs</h5>
+            </div>
         </div>
 
-        <hr class="border-secondary my-4">
-        
-        <h6 class="text-secondary mb-3">MES ENTRÉES</h6>
-        <div id="journal-feed">
+        <div id="game-interface" style="display:none;">
+            <div class="solid-panel">
+                <div class="d-flex justify-content-between">
+                    <span class="badge bg-secondary mb-3">Quiz</span>
+                    <span class="text-white fw-bold" id="game-score">Score: 0</span>
+                </div>
+                <h5 id="game-question" class="fw-bold mb-4 text-center">...</h5>
+                <div id="game-options"></div>
             </div>
+            <button onclick="app.exitGame()" class="btn btn-outline text-white w-100">Quitter</button>
+        </div>
+    </section>
+
+    <section id="view-oscars" class="view">
+        <h2 class="text-center fw-bold mb-4">VOTEZ !</h2>
+        <p class="text-center small text-secondary mb-4">1 vote par catégorie (Impossible de changer)</p>
+        
+        <div id="oscars-menu">
+            <div class="col-12 mb-3">
+                <div class="solid-panel text-center oscar-btn-cat" onclick="app.showNominees('ling')">
+                    <i class="fa-solid fa-comments text-warning fa-2x mb-2"></i>
+                    <h6>Francophones d'Or</h6>
+                    <small id="status-ling" class="text-secondary">Non voté</small>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <div class="solid-panel text-center oscar-btn-cat" onclick="app.showNominees('soc')">
+                    <i class="fa-solid fa-users text-warning fa-2x mb-2"></i>
+                    <h6>Esprit d'Équipe</h6>
+                    <small id="status-soc" class="text-secondary">Non voté</small>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <div class="solid-panel text-center oscar-btn-cat" onclick="app.showNominees('inno')">
+                    <i class="fa-solid fa-lightbulb text-warning fa-2x mb-2"></i>
+                    <h6>Les Innovateurs</h6>
+                    <small id="status-inno" class="text-secondary">Non voté</small>
+                </div>
+            </div>
+        </div>
+
+        <div id="oscars-voting" style="display:none;">
+            <h5 id="voting-cat-title" class="fw-bold mb-3 text-warning">...</h5>
+            <div id="nominees-list"></div>
+            <button onclick="app.exitVoting()" class="btn btn-link text-white w-100 mt-3">Retour</button>
+        </div>
     </section>
 
     <section id="view-debate" class="view">
@@ -299,33 +364,22 @@ html_code = """
         </div>
         <div class="solid-panel">
             <h6 class="fw-bold mb-3"><i class="fa-solid fa-users text-info"></i> L'ÉQUIPE</h6>
-            <p class="small text-secondary">Négociez avec la classe. L'équipe est-elle équilibrée ?</p>
             <input type="text" id="team-name-create" class="solid-input mb-3" placeholder="NOM DE L'ÉQUIPE">
             <div class="p-3 border rounded mb-3" style="border-color: #444 !important;">
                 <label class="small text-secondary mb-2">AUTO-VALIDATION</label>
                 <button id="check-mixed" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Équipe Mixte</button>
-                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Compétences Variées</button>
-                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Validé par la classe</button>
+                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Compétences</button>
+                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Validé</button>
             </div>
-            <button onclick="app.finalizeTeam()" class="btn-solid">CONFIRMER L'ÉQUIPE</button>
+            <button onclick="app.finalizeTeam()" class="btn-solid">CONFIRMER</button>
         </div>
-        <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary text-decoration-none w-100">Retour</button>
-    </section>
-
-    <section id="view-oscars" class="view">
-        <h2 class="text-center fw-bold mb-4">CRITÈRES</h2>
-        <div class="row g-3">
-            <div class="col-6"><div class="solid-panel text-center"><i class="fa-solid fa-comments text-warning fa-2x"></i><h6>Linguistique</h6></div></div>
-            <div class="col-6"><div class="solid-panel text-center"><i class="fa-solid fa-users text-warning fa-2x"></i><h6>Social</h6></div></div>
-            <div class="col-6"><div class="solid-panel text-center"><i class="fa-solid fa-leaf text-warning fa-2x"></i><h6>ODD</h6></div></div>
-            <div class="col-6"><div class="solid-panel text-center"><i class="fa-solid fa-lightbulb text-warning fa-2x"></i><h6>Innovation</h6></div></div>
-        </div>
+        <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
 
     <div id="app-dock" class="dock-nav" style="display:none;">
         <div id="nav-home" class="dock-item active" onclick="app.nav('home', this)"><i class="fa-solid fa-house"></i></div>
         <div id="nav-dash" class="dock-item" onclick="app.nav('dashboard', this)"><i class="fa-solid fa-list-check"></i></div>
-        <div id="nav-journal" class="dock-item" onclick="app.nav('journal', this)"><i class="fa-solid fa-book-open"></i></div>
+        <div id="nav-games" class="dock-item" onclick="app.nav('games', this)"><i class="fa-solid fa-gamepad"></i></div>
         <div id="nav-oscars" class="dock-item" onclick="app.nav('oscars', this)"><i class="fa-solid fa-award"></i></div>
     </div>
 
@@ -342,29 +396,48 @@ html_code = """
     </div>
 
     <script>
-        const SPRITES = [
-            "fa-dragon", "fa-ghost", "fa-robot", "fa-cat", 
-            "fa-dog", "fa-crow", "fa-spider", "fa-fish",
-            "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf",
-            "fa-user-astronaut", "fa-user-ninja", "fa-user-secret", "fa-child-reaching"
-        ];
-        const TRAITS = ["Fort", "Rapide", "Intelligent", "Sociable", "Créatif", "Organisé", "Drôle", "Calme"];
+        const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf"];
+        const TRAITS = ["Fort", "Rapide", "Intelligent", "Sociable", "Créatif"];
 
         const DATA = {
             user: { sprite: "", name: "", trait: "" },
             teamName: "",
             missions: [
-                { id: 1, type: "code", code: "MONNAIE", title: "L'Argent Solidaire", odd: "ODD 1 & 12", icon: "fa-coins", desc: "Sept-Oct: Création de la monnaie.", completed: false },
-                { id: 2, type: "team", title: "Équipes Inclusives", odd: "ODD 5 & 10", icon: "fa-users", desc: "Nov-Dec: Création et débat des équipes.", completed: false },
-                { id: 3, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13", icon: "fa-recycle", desc: "Jan-Fév: Design épreuves recyclées.", completed: false },
-                { id: 4, type: "code", code: "RULES", title: "Règlement", odd: "ODD 16", icon: "fa-scale-balanced", desc: "Fév-Mars: Normes de fair-play.", completed: false },
+                { id: 1, type: "code", code: "MONNAIE", title: "L'Argent Solidaire", odd: "ODD 1 & 12", icon: "fa-coins", desc: "Sept-Oct: Création monnaie.", completed: false },
+                { id: 2, type: "team", title: "Équipes Inclusives", odd: "ODD 5 & 10", icon: "fa-users", desc: "Nov-Dec: Création équipes.", completed: false },
+                { id: 3, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13", icon: "fa-recycle", desc: "Jan-Fév: Design épreuves.", completed: false },
+                { id: 4, type: "code", code: "RULES", title: "Règlement", odd: "ODD 16", icon: "fa-scale-balanced", desc: "Fév-Mars: Fair-play.", completed: false },
                 { id: 5, type: "code", code: "FOOD", title: "Ravitaillement", odd: "ODD 3", icon: "fa-apple-whole", desc: "Avril-Mai: Snacks sains.", completed: false },
-                { id: 6, type: "code", code: "MAP", title: "Plan Parcours", odd: "ODD 11", icon: "fa-map", desc: "Mai-Juin: Tracé du plan.", completed: false }
+                { id: 6, type: "code", code: "MAP", title: "Plan Parcours", odd: "ODD 11", icon: "fa-map", desc: "Mai-Juin: Tracé plan.", completed: false }
             ],
             journal: [],
-            currentId: null
+            votes: { ling: false, soc: false, inno: false },
+            nominees: ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team", "Les Olympiens"],
+            currentId: null,
+            score: 0
         };
-        let chart = null;
+
+        // --- PREGUNTAS MINIJUEGOS ---
+        const QUIZ = {
+            num: [
+                { q: "Combien coûte un stylo si 10 stylos coûtent 20€ ?", a: ["2€", "5€", "1€"], correct: 0 },
+                { q: "Quatre-vingt-dix-neuf c'est...", a: ["89", "99", "98"], correct: 1 },
+                { q: "70 + 15 = ?", a: ["Quatre-vingt-cinq", "Soixante-quinze", "Quatre-vingt-quinze"], correct: 0 }
+            ],
+            fut: [
+                { q: "Demain, je _____ (manger) sain.", a: ["mangerai", "mangerais", "mange"], correct: 0 },
+                { q: "Nous _____ (finir) le projet.", a: ["finirons", "finissons", "finiront"], correct: 0 },
+                { q: "Ils _____ (être) champions.", a: ["seront", "serons", "sont"], correct: 0 }
+            ],
+            part: [
+                { q: "Je veux _____ eau.", a: ["de l'", "du", "de la"], correct: 0 },
+                { q: "Il mange _____ pommes.", a: ["des", "de la", "du"], correct: 0 },
+                { q: "Tu prends _____ pain ?", a: ["du", "de la", "des"], correct: 0 }
+            ]
+        };
+
+        let currentQuiz = [];
+        let qIndex = 0;
 
         const app = {
             init: () => {
@@ -380,12 +453,9 @@ html_code = """
                     };
                     grid.appendChild(div);
                 });
-
                 const tCont = document.getElementById('trait-container');
                 TRAITS.forEach(t => {
-                    const span = document.createElement('span');
-                    span.className = "trait-tag";
-                    span.innerText = t;
+                    const span = document.createElement('span'); span.className = "trait-tag"; span.innerText = t;
                     span.onclick = () => {
                         document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
                         span.classList.add('selected');
@@ -412,13 +482,8 @@ html_code = """
                     else el.classList.add('active');
                 }
                 app.showView('view-' + viewName);
-                if(viewName === 'dashboard') {
-                    app.renderList();
-                    setTimeout(app.initChart, 100);
-                }
-                if(viewName === 'journal') {
-                    app.renderJournal();
-                }
+                if(viewName === 'dashboard') { app.renderList(); setTimeout(app.initChart, 100); }
+                if(viewName === 'journal') app.renderJournal();
             },
 
             showView: (id) => {
@@ -426,74 +491,103 @@ html_code = """
                 document.getElementById(id).classList.add('active-view');
             },
 
-            // --- JOURNAL LOGIC ---
+            // --- JUEGOS ---
+            startGame: (type) => {
+                currentQuiz = QUIZ[type];
+                qIndex = 0; DATA.score = 0;
+                document.getElementById('game-menu').style.display = 'none';
+                document.getElementById('game-interface').style.display = 'block';
+                app.renderQuestion();
+            },
+            renderQuestion: () => {
+                if(qIndex >= currentQuiz.length) {
+                    alert("Jeu terminé! Score: " + DATA.score);
+                    app.exitGame();
+                    return;
+                }
+                const q = currentQuiz[qIndex];
+                document.getElementById('game-score').innerText = "Score: " + DATA.score;
+                document.getElementById('game-question').innerText = q.q;
+                const opts = document.getElementById('game-options');
+                opts.innerHTML = "";
+                q.a.forEach((ans, idx) => {
+                    opts.innerHTML += `<div class="solid-panel game-opt text-center" onclick="app.checkAnswer(${idx})">${ans}</div>`;
+                });
+            },
+            checkAnswer: (idx) => {
+                const correct = currentQuiz[qIndex].correct;
+                const opts = document.querySelectorAll('.game-opt');
+                if(idx === correct) {
+                    opts[idx].classList.add('correct');
+                    DATA.score += 10;
+                    confetti({ particleCount: 50, spread: 30, origin: { y: 0.6 } });
+                } else {
+                    opts[idx].classList.add('wrong');
+                }
+                setTimeout(() => { qIndex++; app.renderQuestion(); }, 1000);
+            },
+            exitGame: () => {
+                document.getElementById('game-interface').style.display = 'none';
+                document.getElementById('game-menu').style.display = 'block';
+            },
+
+            // --- VOTACIÓN ---
+            showNominees: (cat) => {
+                if(DATA.votes[cat]) return alert("Vous avez déjà voté pour cette catégorie !");
+                document.getElementById('oscars-menu').style.display = 'none';
+                document.getElementById('oscars-voting').style.display = 'block';
+                document.getElementById('voting-cat-title').innerText = "Qui mérite cet Oscar ?";
+                
+                const list = document.getElementById('nominees-list');
+                list.innerHTML = "";
+                DATA.nominees.forEach(team => {
+                    // No votar por uno mismo (simulado)
+                    if(team === DATA.teamName) return; 
+                    list.innerHTML += `
+                    <div class="vote-card">
+                        <span class="text-white fw-bold">${team}</span>
+                        <button class="btn btn-sm btn-outline-warning text-warning border-warning" onclick="app.submitVote('${cat}', '${team}')">VOTER</button>
+                    </div>`;
+                });
+            },
+            submitVote: (cat, team) => {
+                if(confirm("Confirmer le vote pour " + team + " ?")) {
+                    DATA.votes[cat] = true;
+                    document.getElementById('status-' + cat).innerText = "Voté ✅";
+                    document.getElementById('status-' + cat).className = "text-success fw-bold";
+                    app.exitVoting();
+                    confetti();
+                }
+            },
+            exitVoting: () => {
+                document.getElementById('oscars-voting').style.display = 'none';
+                document.getElementById('oscars-menu').style.display = 'block';
+            },
+
+            // --- JOURNAL ---
             selectMood: (el, mood) => {
                 document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
                 el.classList.add('selected');
                 document.getElementById('selected-mood').value = mood;
             },
-
             saveJournal: () => {
                 const mood = document.getElementById('selected-mood').value;
                 const text = document.getElementById('journal-text').value;
-                const fileInput = document.getElementById('journal-photo');
-                
-                if(!mood || !text) return alert("Ajoutez une émotion et un texte !");
-
-                const entry = {
-                    date: new Date().toLocaleDateString(),
-                    mood: mood,
-                    text: text,
-                    image: null
-                };
-
-                if(fileInput.files && fileInput.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        entry.image = e.target.result;
-                        DATA.journal.unshift(entry);
-                        app.resetJournalForm();
-                        app.renderJournal();
-                        confetti();
-                    }
-                    reader.readAsDataURL(fileInput.files[0]);
-                } else {
-                    DATA.journal.unshift(entry);
-                    app.resetJournalForm();
-                    app.renderJournal();
-                    confetti();
-                }
-            },
-
-            resetJournalForm: () => {
-                document.getElementById('selected-mood').value = "";
-                document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+                if(!mood || !text) return alert("Remplissez tout !");
+                DATA.journal.unshift({ date: new Date().toLocaleDateString(), mood, text });
                 document.getElementById('journal-text').value = "";
-                document.getElementById('journal-photo').value = "";
+                app.renderJournal();
+                confetti();
             },
-
             renderJournal: () => {
                 const feed = document.getElementById('journal-feed');
                 feed.innerHTML = "";
-                if(DATA.journal.length === 0) {
-                    feed.innerHTML = '<p class="text-secondary text-center">Aucune entrée pour le moment.</p>';
-                    return;
-                }
                 DATA.journal.forEach(e => {
-                    let imgHtml = e.image ? `<img src="${e.image}" class="journal-img">` : '';
-                    feed.innerHTML += `
-                    <div class="solid-panel journal-entry">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="badge bg-secondary">${e.date}</span>
-                            <span style="font-size: 1.5rem;">${e.mood}</span>
-                        </div>
-                        <p class="mb-0 text-white">${e.text}</p>
-                        ${imgHtml}
-                    </div>`;
+                    feed.innerHTML += `<div class="solid-panel journal-entry"><div class="d-flex justify-content-between mb-2"><span class="badge bg-secondary">${e.date}</span><span style="font-size: 1.2rem;">${e.mood}</span></div><p class="mb-0 text-white">${e.text}</p></div>`;
                 });
             },
 
-            // --- FASES LOGIC ---
+            // --- FASES Y DEBATE ---
             renderList: () => {
                 const list = document.getElementById('missions-list');
                 list.innerHTML = "";
@@ -502,21 +596,9 @@ html_code = """
                     const locked = (!m.completed && m.id > 1 && !DATA.missions[m.id-2].completed) ? 'locked' : '';
                     const iconCheck = m.completed ? 'fa-check text-success' : (locked ? 'fa-lock text-secondary' : 'fa-play text-white');
                     const onClickAction = (m.id === 2 && !locked) ? `app.goToDebate()` : `app.openModal(${m.id})`;
-
-                    list.innerHTML += `
-                    <div class="solid-panel phase-card d-flex align-items-center ${status} ${locked}" onclick="${onClickAction}">
-                        <div class="me-3 text-center" style="width: 40px;">
-                            <i class="fa-solid ${m.icon} fa-xl text-secondary"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <span class="odd-badge">${m.odd}</span>
-                            <h6 class="mb-0 fw-bold text-white">${m.title}</h6>
-                        </div>
-                        <i class="fa-solid ${iconCheck}"></i>
-                    </div>`;
+                    list.innerHTML += `<div class="solid-panel phase-card d-flex align-items-center ${status} ${locked}" onclick="${onClickAction}"><div class="me-3 text-center" style="width: 40px;"><i class="fa-solid ${m.icon} fa-xl text-secondary"></i></div><div class="flex-grow-1"><span class="odd-badge">${m.odd}</span><h6 class="mb-0 fw-bold text-white">${m.title}</h6></div><i class="fa-solid ${iconCheck}"></i></div>`;
                 });
             },
-
             goToDebate: () => {
                 if(DATA.missions[1].completed) return;
                 document.getElementById('debate-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite} text-white"></i>`;
@@ -524,25 +606,18 @@ html_code = """
                 document.getElementById('debate-trait').innerText = DATA.user.trait;
                 app.showView('view-debate');
             },
-
             finalizeTeam: () => {
                 const team = document.getElementById('team-name-create').value;
-                const c1 = document.getElementById('check-mixed').classList.contains('active');
-                const c2 = document.getElementById('check-skills').classList.contains('active');
-                const c3 = document.getElementById('check-class').classList.contains('active');
-
-                if(!team) return alert("Nom de l'équipe ?");
-                if(!c1 || !c2 || !c3) return alert("Validez les critères !");
-
+                if(!team) return alert("Nom ?");
+                if(!document.getElementById('check-class').classList.contains('active')) return alert("Validez !");
                 DATA.teamName = team;
                 DATA.missions[1].completed = true;
-                const badge = document.getElementById('home-team-badge');
-                badge.className = "badge bg-success mb-4 px-3 py-2 w-100";
-                badge.innerHTML = `<i class="fa-solid fa-users me-2"></i> ${team}`;
+                DATA.nominees.push(team); // Add own team to list
+                document.getElementById('home-team-badge').innerText = "Équipe: " + team;
+                document.getElementById('home-team-badge').classList.replace('bg-secondary', 'bg-success');
                 confetti();
                 app.nav('dashboard');
             },
-
             openModal: (id) => {
                 DATA.currentId = id;
                 const m = DATA.missions.find(x => x.id === id);
@@ -555,7 +630,6 @@ html_code = """
                 document.getElementById('customModal').classList.add('show');
             },
             closeModal: () => document.getElementById('customModal').classList.remove('show'),
-
             validate: () => {
                 const inp = document.getElementById('user-input').value.trim().toUpperCase();
                 const m = DATA.missions.find(x => x.id === DATA.currentId);
@@ -569,27 +643,20 @@ html_code = """
                     fb.innerText = "Code Incorrect"; fb.style.color = "#dc3545";
                 }
             },
-
             initChart: () => {
                 if(chart) chart.destroy();
                 const ctx = document.getElementById('progressChart').getContext('2d');
-                chart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: { datasets: [{ data: [0, 6], backgroundColor: ['#4D79FF', '#333'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '80%', events: [] }
-                });
+                chart = new Chart(ctx, { type: 'doughnut', data: { datasets: [{ data: [0, 6], backgroundColor: ['#4D79FF', '#333'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '80%', events: [] } });
                 app.updateChart();
             },
             updateChart: () => {
                 if(!chart) return;
                 const c = DATA.missions.filter(m => m.completed).length;
-                const t = DATA.missions.length;
-                chart.data.datasets[0].data = [c, t-c];
+                chart.data.datasets[0].data = [c, 6-c];
                 chart.update();
-                document.getElementById('percent-text').innerText = Math.round((c/t)*100) + "%";
+                document.getElementById('percent-text').innerText = Math.round((c/6)*100) + "%";
             }
         };
-
         app.init();
     </script>
 </body>
