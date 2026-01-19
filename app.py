@@ -1,10 +1,11 @@
-from flask import Flask, render_template_string
+import streamlit as st
+import streamlit.components.v1 as components
 
-app = Flask(__name__)
+# Configuración de la página para que ocupe todo el ancho
+st.set_page_config(layout="wide", page_title="Gymkhana Gen Z")
 
-# Aquí guardamos todo el código Frontend (HTML + CSS + JS) en una sola variable
-# para que no tengas que crear múltiples archivos.
-PAGE_CONTENT = """
+# Este es tu código HTML/CSS/JS intacto
+html_code = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -31,7 +32,7 @@ PAGE_CONTENT = """
             margin: 0;
             background: #1a1a2e;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Importante para que el scroll lo maneje el contenedor */
         }
         .bg-animation {
             position: fixed;
@@ -141,7 +142,7 @@ PAGE_CONTENT = """
 
     <section id="view-dashboard" class="view p-3">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 id="display-team" class="fw-bold mb-0">...</h5>
+            <h5 id="display-team" class="fw-bold mb-0 text-white">...</h5>
             <span class="badge bg-dark border border-secondary"><i class="fa-solid fa-star text-warning"></i> <span id="medal-count">0</span>/4</span>
         </div>
 
@@ -156,7 +157,7 @@ PAGE_CONTENT = """
     </section>
 
     <section id="view-oscars" class="view p-3 text-center">
-        <h2 class="fw-bold mb-1">Les Oscars</h2>
+        <h2 class="fw-bold mb-1 text-white">Les Oscars</h2>
         <p class="text-white-50 small mb-4">Cérémonie de l'Innovation</p>
         <div class="row g-3">
             <div class="col-6"><div class="glass-panel oscar-card p-3"><i class="fa-solid fa-microphone-lines fa-2x text-gold mb-2"></i><h6 class="small fw-bold">Scénario</h6></div></div>
@@ -302,10 +303,6 @@ PAGE_CONTENT = """
 </html>
 """
 
-@app.route('/')
-def home():
-    return render_template_string(PAGE_CONTENT)
-
-if __name__ == '__main__':
-    # Ejecuta la app en el puerto 5000
-    app.run(debug=True, port=5000)
+# Renderizamos el HTML directamente. 
+# Usamos una altura de 900px para que quepa todo el diseño del móvil.
+components.html(html_code, height=900, scrolling=True)
