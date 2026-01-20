@@ -33,23 +33,28 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
+    # Fondo Blanco
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
+    # Borde Azul Olímpico
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
     
+    # Título
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
+    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0)
+    pdf.set_text_color(220, 0, 0) # Rojo
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
+    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51)
+    pdf.set_text_color(0, 153, 51) # Verde
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
     return pdf.output(dest='S').encode('latin-1')
@@ -60,7 +65,7 @@ with st.sidebar:
     st.title("Boîte à Outils")
     
     with st.expander("🗣️ Lecteur (TTS)"):
-        text_to_speak = st.text_input("Texte en français:", "Bonjour!")
+        text_to_speak = st.text_input("Texte en français:", "Allez les bleus!")
         if st.button("Écouter 🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang='fr')
@@ -126,7 +131,7 @@ html_code = """
             --accent: #FFB100;
             --success: #009933;
             --danger: #CC0000;
-            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-bg: rgba(255, 255, 255, 0.95);
             --text-main: #222222;
             --font-head: 'Montserrat', sans-serif;
             --font-body: 'Poppins', sans-serif;
@@ -134,7 +139,7 @@ html_code = """
         }
 
         body {
-            /* FONDO DEPORTIVO */
+            /* FONDO DEPORTIVO CON FILTRO CLARO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -148,10 +153,11 @@ html_code = """
 
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.4); z-index: -1;
+            background: rgba(255, 255, 255, 0.5); /* Filtro blanco para legibilidad */
+            z-index: -1;
         }
 
-        /* --- PANELES --- */
+        /* --- UI COMPONENTES --- */
         .solid-panel {
             background-color: var(--card-bg); border-radius: 15px; padding: 20px;
             margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1);
@@ -160,7 +166,7 @@ html_code = """
 
         /* --- MAPA DRAGGABLE --- */
         .map-container {
-            position: relative; width: 100%; height: 400px; background: #eee;
+            position: relative; width: 100%; height: 450px; background: #eee;
             border-radius: 15px; overflow: hidden; border: 4px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
@@ -174,15 +180,15 @@ html_code = """
             z-index: 5;
         }
         .map-pin {
-            position: absolute; width: 50px; height: 50px; background: var(--accent);
+            position: absolute; width: 55px; height: 55px; background: var(--accent);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-size: 1.5rem; z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-size: 1.8rem; z-index: 10;
             transform: translate(-50%, -50%);
         }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.1); }
 
-        /* --- BOTONES & INPUTS --- */
+        /* --- BOTONES --- */
         .btn-solid {
             background-color: var(--primary); color: white; border: none; border-radius: 10px;
             padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase;
@@ -190,20 +196,22 @@ html_code = """
             box-shadow: 0 4px 0 #004c99;
         }
         .btn-solid:active { transform: translateY(4px); box-shadow: none; }
+        
         .btn-outline {
             background: white; border: 2px solid #ccc; color: #555; border-radius: 10px;
             padding: 10px; width: 100%; font-weight: 700; margin-top: 5px; cursor: pointer;
         }
         .btn-outline.active { border-color: var(--success); color: var(--success); background: #e6ffea; }
+
+        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
         .solid-input, .solid-textarea {
             background-color: #f8f9fa; border: 2px solid #ddd; color: #333;
             padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem;
             margin-bottom: 10px; font-family: var(--font-body); text-align: center;
         }
         .solid-textarea { text-align: left; }
-        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
 
-        /* --- UI ELEMENTS --- */
+        /* --- THERMOS & HOME --- */
         .thermo-container { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
@@ -218,16 +226,21 @@ html_code = """
         .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
         .phase-card h6 { color: #333; }
+        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
+        
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
-        .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; }
+        .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
-        .journal-entry { background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; transition: 0.2s; }
-        .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
-        .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; }
+        
+        .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
+        .game-opt:active { transform: scale(0.98); }
         .game-opt.correct { border-color: var(--success); background: #d4edda; }
         .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
         
+        .journal-entry { background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #eee; }
+        
+        /* Modals & Utils */
         .view { display: none; padding: 20px; min-height: 100vh; }
         .active-view { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -235,21 +248,16 @@ html_code = """
         .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .custom-modal.show { display: flex; }
         .modal-content-solid { background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; text-align: center; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .avatar-item { background: white; border: 2px solid #eee; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
-        .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); }
-        .trait-tag { background: white; border: 1px solid #ccc; color: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; margin-right: 5px; }
-        .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; border-color: var(--accent); }
-        .radar-container { background: white; border-radius: 15px; padding: 10px; border: 1px solid #eee; height: 250px; }
-        .parchment { background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017; font-family: var(--font-body); }
-        .signature-pad { width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2.5rem; color: #000080; cursor: pointer; }
+        .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
+        .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
+        .vote-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
     </style>
 </head>
 <body>
 
     <section id="view-avatar" class="view active-view">
         <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">CRÉEZ VOTRE ATHLÈTE</h2><p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p></div>
-        <div class="avatar-grid" id="sprite-container"></div>
+        <div class="avatar-grid" id="sprite-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
         <div class="solid-panel mt-4">
             <label class="small text-secondary mb-2 d-block text-start">NOM</label>
             <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
@@ -291,11 +299,11 @@ html_code = """
 
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">PLAN DU CAMPUS</h4>
-        <p class="text-secondary small">Glissez les icônes sur la carte !</p>
+        <p class="text-secondary small">Glissez les icônes sur le collège !</p>
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://www.google.com/maps?q=Colegio+Santo+Tomas+Ciudad+Real&output=embed&t=k" 
+                src="https://maps.google.com/maps?q=38.975694,-3.944361&t=k&z=20&ie=UTF8&iwloc=&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
@@ -309,9 +317,9 @@ html_code = """
         <div class="solid-panel mt-3">
             <h6 class="text-dark mb-2"><i class="fa-solid fa-hand-pointer text-primary"></i> Organisez les épreuves</h6>
             <ul class="list-unstyled text-secondary small mb-0">
-                <li>🏋️ Déplacez la <b>Zone Obstacles</b></li>
-                <li>🍎 Placez le <b>Ravitaillement</b></li>
-                <li>🏁 Situez l'<b>Arrivée</b></li>
+                <li>🏋️ Zone Obstacles</li>
+                <li>🍎 Ravitaillement</li>
+                <li>🏁 Arrivée</li>
             </ul>
         </div>
         <button onclick="app.nav('home')" class="btn btn-link text-secondary w-100">Retour</button>
@@ -319,7 +327,7 @@ html_code = """
 
     <section id="view-debate" class="view">
         <div class="text-center mt-4 mb-3"><h2 style="font-family: var(--font-head); color: #222;">ZONE DE DÉBAT</h2><p class="text-secondary small">PHASE 2: ÉQUIPES</p></div>
-        <div class="radar-container mb-3" style="background: white;"><canvas id="radarChart"></canvas></div>
+        <div class="radar-container mb-3" style="background: white; border: 1px solid #eee; border-radius: 15px; padding: 10px;"><canvas id="radarChart"></canvas></div>
         <div class="solid-panel">
             <h6 class="fw-bold mb-3 text-dark">L'ÉQUIPE</h6>
             <input type="text" id="team-name-create" class="solid-input mb-3" placeholder="NOM DE L'ÉQUIPE">
@@ -336,11 +344,11 @@ html_code = """
 
     <section id="view-rules" class="view">
         <h4 class="fw-bold mb-3 text-dark">RÈGLEMENT</h4>
-        <div class="parchment mb-4">
+        <div class="parchment mb-4" style="background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017;">
             <h4 class="text-center">PACTE DE FAIR-PLAY</h4>
             <p class="small">Nous nous engageons à :</p>
             <ul class="small ps-3"><li>Respecter les adversaires.</li><li>Accepter la défaite.</li><li>Jouer sans tricher.</li></ul>
-            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)"></div></div>
+            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)" style="width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; color: #000080; cursor: pointer;">Cliquez pour signer</div></div>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
@@ -356,20 +364,28 @@ html_code = """
                 <div class="mood-btn" onclick="app.selectMood(this, '🥱')">🥱</div>
             </div>
             <input type="hidden" id="selected-mood">
+            
             <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="Réflexion..."></textarea>
+            
             <label class="small text-secondary mb-2 mt-2">PHOTO</label>
             <input type="file" id="journal-photo" class="custom-file-input" accept="image/*">
+            
             <button onclick="app.saveJournal()" class="btn-solid">POSTER L'ENTRÉE</button>
         </div>
         <div id="journal-feed" class="mt-4"></div>
     </section>
 
     <section id="view-games" class="view">
-        <h4 class="fw-bold mb-3 text-dark">ARCADE</h4>
+        <h4 class="fw-bold mb-3 text-dark">SALLE D'ARCADE</h4>
         <div id="game-menu">
-            <div class="solid-panel p-3 mb-2" onclick="app.startGame('num')"><h6 class="mb-0 text-dark fw-bold">123 Les Nombres</h6></div>
-            <div class="solid-panel p-3 mb-2" onclick="app.startGame('fut')"><h6 class="mb-0 text-dark fw-bold">🚀 Futur Simple</h6></div>
-            <div class="solid-panel p-3 mb-2" onclick="app.startGame('part')"><h6 class="mb-0 text-dark fw-bold">🍕 Partitifs</h6></div>
+            <div class="row g-2">
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('num')"><i class="fa-solid fa-calculator fa-2x text-primary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">NOMBRES</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('fut')"><i class="fa-solid fa-rocket fa-2x text-warning mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">FUTUR</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('part')"><i class="fa-solid fa-pizza-slice fa-2x text-danger mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">PARTITIFS</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('sport')"><i class="fa-solid fa-person-running fa-2x text-success mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">SPORT</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('imp')"><i class="fa-solid fa-bullhorn fa-2x text-info mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">IMPÉRATIF</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('odd')"><i class="fa-solid fa-earth-europe fa-2x text-primary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">QUIZ ODD</h6></div></div>
+            </div>
         </div>
         <div id="game-interface" style="display:none;">
             <div class="solid-panel"><h5 id="game-question" class="fw-bold mb-4 text-center text-dark">...</h5><div id="game-options"></div></div>
@@ -431,11 +447,16 @@ html_code = """
             currentId: null
         };
 
+        // --- PREGUNTAS JUEGOS AMPLIADAS ---
         const QUIZ = {
-            num: [{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0 }],
-            fut: [{ q: "Demain je ___ (manger)", a: ["mangerai", "mangerais", "mange"], c: 0 }],
-            part: [{ q: "Je veux ___ eau", a: ["de l'", "du", "de la"], c: 0 }]
+            num: [{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0 }, { q: "90 + 9 = ?", a: ["99", "89", "19"], c: 0 }],
+            fut: [{ q: "Demain je ___ (manger)", a: ["mangerai", "mangerais", "mange"], c: 0 }, { q: "Nous ___ (finir)", a: ["finirons", "finissons", "finiront"], c: 0 }],
+            part: [{ q: "Je veux ___ eau", a: ["de l'", "du", "de la"], c: 0 }, { q: "Il mange ___ pain", a: ["du", "de la", "des"], c: 0 }],
+            sport: [{ q: "Le sport dans l'eau ?", a: ["Natation", "Judo", "Tennis"], c: 0 }, { q: "Pour courir il faut des...", a: ["Baskets", "Gants", "Lunettes"], c: 0 }],
+            imp: [{ q: "(Courir) ___ vite !", a: ["Cours", "Coures", "Courir"], c: 0 }, { q: "(Arrêter) ___ de parler !", a: ["Arrêtez", "Arrêter", "Arrêtes"], c: 0 }],
+            odd: [{ q: "ODD 13 c'est pour...", a: ["Le Climat", "La Faim", "L'Eau"], c: 0 }, { q: "ODD 5 c'est...", a: ["Égalité", "Santé", "Villes"], c: 0 }]
         };
+        
         let currentQuiz = [], qIndex = 0, score = 0;
         let chart = null, radarChart = null;
 
@@ -443,7 +464,7 @@ html_code = """
             init: () => {
                 const grid = document.getElementById('sprite-container');
                 SPRITES.forEach(icon => {
-                    const div = document.createElement('div'); div.className = "avatar-item"; div.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+                    const div = document.createElement('div'); div.className = "avatar-item"; div.innerHTML = `<i class="fa-solid ${icon} fa-2x"></i>`;
                     div.onclick = () => { document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected')); div.classList.add('selected'); DATA.user.sprite = icon; };
                     grid.appendChild(div);
                 });
@@ -477,25 +498,18 @@ html_code = """
                 document.getElementById(id).classList.add('active-view');
             },
 
-            // --- DRAG & DROP LOGIC ---
+            // --- DRAG & DROP ---
             allowDrop: (ev) => { ev.preventDefault(); },
             drag: (ev) => { ev.dataTransfer.setData("text", ev.target.id); },
             drop: (ev) => {
                 ev.preventDefault();
                 var data = ev.dataTransfer.getData("text");
                 var el = document.getElementById(data);
-                
-                // Calcular posición relativa al contenedor
                 var rect = ev.currentTarget.getBoundingClientRect();
                 var x = ev.clientX - rect.left;
                 var y = ev.clientY - rect.top;
-                
-                // Convertir a porcentajes para que sea responsive
-                var xPct = (x / rect.width) * 100;
-                var yPct = (y / rect.height) * 100;
-                
-                el.style.left = xPct + "%";
-                el.style.top = yPct + "%";
+                el.style.left = ((x / rect.width) * 100) + "%";
+                el.style.top = ((y / rect.height) * 100) + "%";
             },
 
             // --- FASES ---
@@ -504,12 +518,10 @@ html_code = """
                 DATA.missions.forEach(m => {
                     const status = m.completed ? 'completed' : '';
                     const locked = (!m.completed && m.id > 1 && !DATA.missions[m.id-2].completed) ? 'locked' : '';
-                    const iconCheck = m.completed ? 'fa-check text-success' : (locked ? 'fa-lock text-secondary' : 'fa-play text-white');
-                    
+                    const iconCheck = m.completed ? 'fa-check text-success' : (locked ? 'fa-lock text-secondary' : 'fa-play text-primary');
                     let action = `app.openModal(${m.id})`;
                     if (m.id === 2 && !locked) action = `app.goToDebate()`;
                     if (m.id === 4 && !locked) action = `app.nav('rules')`;
-
                     list.innerHTML += `<div class="solid-panel phase-card d-flex align-items-center ${status} ${locked}" onclick="${action}"><div class="me-3 text-center" style="width: 40px;"><i class="fa-solid ${m.icon} fa-xl text-secondary"></i></div><div class="flex-grow-1"><span class="odd-badge">${m.odd}</span><h6 class="mb-0 fw-bold text-dark">${m.title}</h6></div><i class="fa-solid ${iconCheck}"></i></div>`;
                 });
             },
@@ -529,12 +541,11 @@ html_code = """
                 } else { document.getElementById('feedback-msg').innerText = "Incorrect"; document.getElementById('feedback-msg').style.color = "#dc3545"; }
             },
 
-            // --- DEBATE, RULES, JUEGOS ---
             goToDebate: () => { if(DATA.missions[1].completed) return; app.showView('view-debate'); setTimeout(app.initRadar, 200); },
             initRadar: () => {
                 if(radarChart) radarChart.destroy();
                 const ctx = document.getElementById('radarChart').getContext('2d');
-                radarChart = new Chart(ctx, { type: 'radar', data: { labels: TRAITS, datasets: [{ label: 'Équilibre', data: [8,6,7,9,5], backgroundColor: 'rgba(0, 102, 204, 0.4)', borderColor: '#0066CC', pointBackgroundColor: '#fff' }] }, options: { scales: { r: { grid: { color: '#ccc' }, angleLines: { color: '#ccc' }, suggesteMin: 0, suggestedMax: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+                radarChart = new Chart(ctx, { type: 'radar', data: { labels: TRAITS, datasets: [{ label: 'Équilibre', data: [8,6,7,9,5], backgroundColor: 'rgba(0, 102, 204, 0.4)', borderColor: '#0066cc', pointBackgroundColor: '#fff' }] }, options: { scales: { r: { grid: { color: '#ccc' }, angleLines: { color: '#ccc' }, suggesteMin: 0, suggestedMax: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
             },
             finalizeTeam: () => {
                 const team = document.getElementById('team-name-create').value; if(!team || !document.getElementById('check-class').classList.contains('active')) return alert("Nom + Validation requis!");
@@ -545,11 +556,10 @@ html_code = """
             signPact: (el) => { el.innerHTML = "<i>Signé : " + DATA.user.name + "</i>"; el.classList.add("signed"); el.style.fontFamily = "var(--font-hand)"; DATA.missions[3].completed = true; confetti(); setTimeout(() => { app.nav('dashboard'); }, 1500); },
             
             startGame: (t) => { currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); },
-            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin!"); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
+            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin! Score: "+score); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
             checkAnswer: (i) => { if(i===currentQuiz[qIndex].c){score+=10; confetti();} setTimeout(()=>{qIndex++; app.renderQuestion()},500); },
             exitGame: () => { document.getElementById('game-interface').style.display='none'; document.getElementById('game-menu').style.display='block'; },
             
-            // --- JOURNAL FIXED ---
             selectMood: (e,m) => { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); e.classList.add('selected'); document.getElementById('selected-mood').value=m; },
             saveJournal: () => { 
                 const m=document.getElementById('selected-mood').value, t=document.getElementById('journal-text').value, f=document.getElementById('journal-photo'); 
@@ -559,9 +569,7 @@ html_code = """
                     const r=new FileReader(); 
                     r.onload=(ev)=>{e.i=ev.target.result; DATA.journal.unshift(e); app.renderJournal();}; 
                     r.readAsDataURL(f.files[0]); 
-                } else { 
-                    DATA.journal.unshift(e); app.renderJournal(); 
-                } 
+                } else { DATA.journal.unshift(e); app.renderJournal(); } 
                 document.getElementById('journal-text').value=""; confetti(); 
             },
             renderJournal: () => { const c=document.getElementById('journal-feed'); c.innerHTML=""; DATA.journal.forEach(e=>{ c.innerHTML+=`<div class='journal-entry'><div class='d-flex justify-content-between'><span>${e.d}</span><span>${e.m}</span></div><p class='text-dark'>${e.t}</p>${e.i?`<img src='${e.i}' class='journal-img'>`:''}</div>`}); },
