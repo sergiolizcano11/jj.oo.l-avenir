@@ -95,16 +95,15 @@ html_code = """
         }
         .solid-textarea { text-align: left; }
 
-        /* --- MAPA REAL (GOOGLE MAPS SATÉLITE) --- */
+        /* --- MAPA --- */
         .map-container {
             position: relative; width: 100%; height: 350px; background: #000;
             border-radius: 15px; overflow: hidden; border: 2px solid #444;
         }
-        /* Iframe ajustado para X3G4+G6 Ciudad Real */
         .map-frame {
             width: 100%; height: 100%; border: 0; 
-            pointer-events: none; /* Bloquea el movimiento para que sea un fondo fijo */
-            filter: brightness(0.8) contrast(1.1); /* Estilo visual */
+            pointer-events: none; /* Fondo fijo */
+            filter: brightness(0.8) contrast(1.1);
         }
         .map-pin {
             position: absolute; width: 40px; height: 40px; background: var(--accent);
@@ -286,7 +285,7 @@ html_code = """
         
         <div class="map-container">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=X3G4+G6+Ciudad+Real&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
 
