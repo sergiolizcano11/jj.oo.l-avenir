@@ -6,3 +6,5 @@ streamlit-lottie
 Pillow
 fpdf
 requests
+gTTS
+streamlit-audiorec
