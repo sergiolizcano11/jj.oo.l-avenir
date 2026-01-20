@@ -1,6 +1,8 @@
 streamlit
+watchdog
 pandas
-qrcode
+openpyxl
+streamlit-lottie
 Pillow
-streamlit-audiorec
-gTTS
+fpdf
+requests
