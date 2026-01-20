@@ -33,28 +33,23 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
-    # Fondo Blanco
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
-    # Borde Azul Olímpico
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
     
-    # Título
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
-    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0) # Rojo
+    pdf.set_text_color(220, 0, 0)
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
-    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51) # Verde
+    pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
     return pdf.output(dest='S').encode('latin-1')
@@ -127,19 +122,19 @@ html_code = """
     <style>
         :root {
             /* PALETA VIVA OLÍMPICA */
-            --primary: #0066CC; /* Azul fuerte */
-            --accent: #FFB100;  /* Amarillo oro */
-            --success: #009933; /* Verde césped */
-            --danger: #CC0000;  /* Rojo pista */
-            --card-bg: rgba(255, 255, 255, 0.92); /* Blanco casi opaco */
-            --text-main: #222222; /* Negro suave para lectura */
+            --primary: #0066CC;
+            --accent: #FFB100;
+            --success: #009933;
+            --danger: #CC0000;
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --text-main: #222222;
             --font-head: 'Montserrat', sans-serif;
             --font-body: 'Poppins', sans-serif;
             --font-hand: 'Reenie Beanie', cursive;
         }
 
         body {
-            /* FONDO DEPORTIVO CON FILTRO CLARO */
+            /* FONDO DEPORTIVO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -151,159 +146,101 @@ html_code = """
             padding-bottom: 90px;
         }
 
-        /* Capa blanca semitransparente para aclarar el fondo */
         body::before {
             content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.4); /* Filtro blanco */
-            z-index: -1;
+            background: rgba(255, 255, 255, 0.4); z-index: -1;
         }
 
-        /* --- PANELES BLANCOS (Glassmorphism Light) --- */
+        /* --- PANELES --- */
         .solid-panel {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* Sombra suave */
-            backdrop-filter: blur(10px);
+            background-color: var(--card-bg); border-radius: 15px; padding: 20px;
+            margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px);
         }
 
-        /* --- BOTONES VIVOS --- */
-        .btn-solid {
-            background-color: var(--primary);
-            color: white; border: none; border-radius: 10px;
-            padding: 12px; width: 100%; font-weight: 800;
-            text-transform: uppercase; font-family: var(--font-head);
-            margin-top: 10px; cursor: pointer; transition: 0.2s;
-            box-shadow: 0 4px 0 #004c99; /* Efecto 3D */
-        }
-        .btn-solid:active { transform: translateY(4px); box-shadow: none; }
-
-        .btn-outline {
-            background: white; border: 2px solid #ccc;
-            color: #555; border-radius: 10px; padding: 10px; width: 100%;
-            font-weight: 700; margin-top: 5px; cursor: pointer;
-        }
-        .btn-outline.active {
-            border-color: var(--success); color: var(--success);
-            background: #e6ffea;
-        }
-
-        /* --- INPUTS CLAROS --- */
-        .solid-input, .solid-textarea {
-            background-color: #f8f9fa; border: 2px solid #ddd;
-            color: #333; padding: 12px; border-radius: 10px;
-            width: 100%; font-size: 1rem; margin-bottom: 10px;
-            font-family: var(--font-body); text-align: center;
-        }
-        .solid-textarea { text-align: left; }
-        .solid-input:focus { border-color: var(--primary); outline: none; }
-
-        /* --- MAPA --- */
+        /* --- MAPA DRAGGABLE --- */
         .map-container {
-            position: relative; width: 100%; height: 350px; background: #eee;
+            position: relative; width: 100%; height: 400px; background: #eee;
             border-radius: 15px; overflow: hidden; border: 4px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .map-frame {
             width: 100%; height: 100%; border: 0; 
-            pointer-events: none;
+            pointer-events: none; /* El mapa no se mueve, los pines sí */
+        }
+        /* Capa transparente para soltar los pines */
+        .map-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
         }
         .map-pin {
-            position: absolute; width: 45px; height: 45px; background: var(--accent);
+            position: absolute; width: 50px; height: 50px; background: var(--accent);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: 900; cursor: pointer; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); transform: translate(-50%, -50%);
-            transition: transform 0.2s; font-size: 1.4rem; z-index: 10;
+            color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-size: 1.5rem; z-index: 10;
+            transform: translate(-50%, -50%);
         }
-        .map-pin:active { transform: translate(-50%, -50%) scale(1.2); }
-        .map-pin.locked { background: #999; border-color: #ccc; color: #fff; }
+        .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.1); }
 
-        /* --- TERMÓMETROS --- */
-        .thermo-container {
-            background: white; border-radius: 15px; padding: 15px; 
-            margin-bottom: 20px; border: 1px solid #eee;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        /* --- BOTONES & INPUTS --- */
+        .btn-solid {
+            background-color: var(--primary); color: white; border: none; border-radius: 10px;
+            padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase;
+            font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s;
+            box-shadow: 0 4px 0 #004c99;
         }
-        .progress-bar-bg {
-            background: #e9ecef; height: 20px; border-radius: 10px; 
-            overflow: hidden; margin-top: 8px;
+        .btn-solid:active { transform: translateY(4px); box-shadow: none; }
+        .btn-outline {
+            background: white; border: 2px solid #ccc; color: #555; border-radius: 10px;
+            padding: 10px; width: 100%; font-weight: 700; margin-top: 5px; cursor: pointer;
         }
+        .btn-outline.active { border-color: var(--success); color: var(--success); background: #e6ffea; }
+        .solid-input, .solid-textarea {
+            background-color: #f8f9fa; border: 2px solid #ddd; color: #333;
+            padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem;
+            margin-bottom: 10px; font-family: var(--font-body); text-align: center;
+        }
+        .solid-textarea { text-align: left; }
+        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
+
+        /* --- UI ELEMENTS --- */
+        .thermo-container { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
         .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 35%; transition: width 1s ease-out; }
-
-        /* --- HOME GRID --- */
-        .home-btn {
-            background-color: white; border: none;
-            border-radius: 18px; padding: 20px 10px; text-align: center;
-            cursor: pointer; height: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; min-height: 110px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s;
-        }
+        
+        .home-btn { background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
         .home-btn:active { transform: scale(0.95); }
         .home-btn i { font-size: 2rem; margin-bottom: 8px; }
         .home-btn h3 { font-size: 0.8rem; margin: 0; font-weight: 800; color: #333; text-transform: uppercase; }
 
-        /* --- FASES --- */
-        .phase-card { 
-            cursor: pointer; border-left: 6px solid #ccc; background: white; 
-            padding: 15px; margin-bottom: 10px; border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        /* --- OTHERS --- */
+        .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
         .phase-card h6 { color: #333; }
-        
-        /* --- DOCK --- */
-        .dock-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background-color: white; border-top: 1px solid #eee;
-            display: flex; justify-content: space-around;
-            padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-        }
-        .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }
+        .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
+        .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
-
-        /* --- JOURNAL & PHOTO FIX --- */
-        .mood-btn { 
-            font-size: 2.5rem; background: #fff; border: 2px solid #eee; 
-            border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; 
-            text-align: center; margin: 0 3px; transition: 0.2s; 
-        }
-        .mood-btn.selected { 
-            background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); 
-        }
-        .file-upload-wrapper {
-            position: relative; overflow: hidden; display: inline-block; width: 100%;
-        }
-        /* Custom file input styling */
-        .custom-file-input {
-            width: 100%; padding: 10px; background: #222; color: white;
-            border-radius: 8px; cursor: pointer; margin-bottom: 10px;
-        }
-        .journal-entry { 
-            background: white; border-left: 4px solid var(--accent); 
-            padding: 15px; border-radius: 8px; margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #eee; }
-
-        /* --- OTHERS --- */
+        .journal-entry { background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; transition: 0.2s; }
+        .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
+        .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; }
+        .game-opt.correct { border-color: var(--success); background: #d4edda; }
+        .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
+        
         .view { display: none; padding: 20px; min-height: 100vh; }
         .active-view { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .avatar-item { background: white; border: 2px solid #eee; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
-        .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); }
-        .avatar-item i { color: #333; }
-        
-        .trait-tag { background: white; border: 1px solid #ccc; color: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; margin-right: 5px; }
-        .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; border-color: var(--accent); }
-        
         .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .custom-modal.show { display: flex; }
         .modal-content-solid { background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; text-align: center; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .avatar-item { background: white; border: 2px solid #eee; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
+        .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); }
+        .trait-tag { background: white; border: 1px solid #ccc; color: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; margin-right: 5px; }
+        .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; border-color: var(--accent); }
+        .radar-container { background: white; border-radius: 15px; padding: 10px; border: 1px solid #eee; height: 250px; }
         .parchment { background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017; font-family: var(--font-body); }
         .signature-pad { width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2.5rem; color: #000080; cursor: pointer; }
     </style>
@@ -311,11 +248,8 @@ html_code = """
 <body>
 
     <section id="view-avatar" class="view active-view">
-        <div class="text-center mt-4 mb-4">
-            <h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">CRÉEZ VOTRE ATHLÈTE</h2>
-            <p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p>
-        </div>
-        <div class="avatar-grid" id="sprite-container" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;"></div>
+        <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">CRÉEZ VOTRE ATHLÈTE</h2><p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p></div>
+        <div class="avatar-grid" id="sprite-container"></div>
         <div class="solid-panel mt-4">
             <label class="small text-secondary mb-2 d-block text-start">NOM</label>
             <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
@@ -328,28 +262,15 @@ html_code = """
 
     <section id="view-home" class="view">
         <div class="d-flex align-items-center justify-content-between mb-4 mt-3">
-            <div>
-                <h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1;">J.O. AVENIR</h1>
-                <small class="text-secondary fw-bold">LYCÉE OLYMPIQUE</small>
-            </div>
-            <div class="text-center" onclick="app.showView('view-avatar')" style="cursor:pointer">
-                <div id="mini-avatar" style="font-size: 2rem; color: var(--primary); background: white; padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div>
-            </div>
+            <div><h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1;">J.O. AVENIR</h1><small class="text-secondary fw-bold">LYCÉE OLYMPIQUE</small></div>
+            <div class="text-center" onclick="app.showView('view-avatar')" style="cursor:pointer"><div id="mini-avatar" style="font-size: 2rem; color: var(--primary); background: white; padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div></div>
         </div>
-        
         <div class="thermo-container">
-            <div class="d-flex justify-content-between align-items-end">
-                <h6 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-earth-americas text-primary me-2"></i> IMPACT GLOBAL</h6>
-                <small class="text-danger fw-bold">CLASSE</small>
-            </div>
+            <div class="d-flex justify-content-between align-items-end"><h6 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-earth-americas text-primary me-2"></i> IMPACT GLOBAL</h6><small class="text-danger fw-bold">CLASSE</small></div>
             <div class="progress-bar-bg"><div class="fill-global"></div></div>
             <small class="text-secondary" style="font-size: 0.7rem;">Objectif commun (ODD 17)</small>
         </div>
-
-        <div id="home-team-badge" class="badge bg-secondary mb-4 px-3 py-2 w-100" style="font-size: 0.9rem;">
-            <i class="fa-solid fa-users-slash me-2"></i> Pas d'équipe
-        </div>
-
+        <div id="home-team-badge" class="badge bg-secondary mb-4 px-3 py-2 w-100" style="font-size: 0.9rem;"><i class="fa-solid fa-users-slash me-2"></i> Pas d'équipe</div>
         <div class="row g-3">
             <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark"></i><h3>PHASES</h3></div></div>
             <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info"></i><h3>JOURNAL</h3></div></div>
@@ -370,17 +291,28 @@ html_code = """
 
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">PLAN DU CAMPUS</h4>
-        <p class="text-secondary small">X3G4+G6 Ciudad Real</p>
-        <div class="map-container">
-            <iframe class="map-frame" src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-            <div class="map-pin" style="top: 30%; left: 40%;" onclick="alert('Zone Obstacles')">🏋️</div>
-            <div class="map-pin" style="top: 60%; left: 60%;" onclick="alert('Grande Gymkhana')">🏁</div>
-            <div class="map-pin" style="top: 80%; left: 30%;" onclick="alert('Ravitaillement')">🍎</div>
-            <div class="map-pin locked" style="top: 20%; left: 80%;">🔒</div>
+        <p class="text-secondary small">Glissez les icônes sur la carte !</p>
+        
+        <div class="map-container" id="map-area">
+            <iframe class="map-frame" 
+                src="https://www.google.com/maps?q=Colegio+Santo+Tomas+Ciudad+Real&output=embed&t=k" 
+                frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+            </iframe>
+            
+            <div class="map-overlay" ondrop="app.drop(event)" ondragover="app.allowDrop(event)">
+                <div id="pin1" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 20%; left: 20%;">🏋️</div>
+                <div id="pin2" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 50%;">🏁</div>
+                <div id="pin3" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 80%; left: 30%;">🍎</div>
+            </div>
         </div>
+        
         <div class="solid-panel mt-3">
-            <h6 class="text-dark mb-2"><i class="fa-solid fa-location-dot text-danger"></i> Légende</h6>
-            <ul class="list-unstyled text-secondary small mb-0"><li>🏋️ Zone Obstacles (Jan-Fév)</li><li>🍎 Ravitaillement (Avril)</li><li>🏁 Arrivée Finale (Juin)</li></ul>
+            <h6 class="text-dark mb-2"><i class="fa-solid fa-hand-pointer text-primary"></i> Organisez les épreuves</h6>
+            <ul class="list-unstyled text-secondary small mb-0">
+                <li>🏋️ Déplacez la <b>Zone Obstacles</b></li>
+                <li>🍎 Placez le <b>Ravitaillement</b></li>
+                <li>🏁 Situez l'<b>Arrivée</b></li>
+            </ul>
         </div>
         <button onclick="app.nav('home')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
@@ -424,12 +356,9 @@ html_code = """
                 <div class="mood-btn" onclick="app.selectMood(this, '🥱')">🥱</div>
             </div>
             <input type="hidden" id="selected-mood">
-            
             <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="Réflexion..."></textarea>
-            
             <label class="small text-secondary mb-2 mt-2">PHOTO</label>
             <input type="file" id="journal-photo" class="custom-file-input" accept="image/*">
-            
             <button onclick="app.saveJournal()" class="btn-solid">POSTER L'ENTRÉE</button>
         </div>
         <div id="journal-feed" class="mt-4"></div>
@@ -548,6 +477,27 @@ html_code = """
                 document.getElementById(id).classList.add('active-view');
             },
 
+            // --- DRAG & DROP LOGIC ---
+            allowDrop: (ev) => { ev.preventDefault(); },
+            drag: (ev) => { ev.dataTransfer.setData("text", ev.target.id); },
+            drop: (ev) => {
+                ev.preventDefault();
+                var data = ev.dataTransfer.getData("text");
+                var el = document.getElementById(data);
+                
+                // Calcular posición relativa al contenedor
+                var rect = ev.currentTarget.getBoundingClientRect();
+                var x = ev.clientX - rect.left;
+                var y = ev.clientY - rect.top;
+                
+                // Convertir a porcentajes para que sea responsive
+                var xPct = (x / rect.width) * 100;
+                var yPct = (y / rect.height) * 100;
+                
+                el.style.left = xPct + "%";
+                el.style.top = yPct + "%";
+            },
+
             // --- FASES ---
             renderList: () => {
                 const list = document.getElementById('missions-list'); list.innerHTML = "";
@@ -584,7 +534,7 @@ html_code = """
             initRadar: () => {
                 if(radarChart) radarChart.destroy();
                 const ctx = document.getElementById('radarChart').getContext('2d');
-                radarChart = new Chart(ctx, { type: 'radar', data: { labels: TRAITS, datasets: [{ label: 'Équilibre', data: [8,6,7,9,5], backgroundColor: 'rgba(0, 102, 204, 0.4)', borderColor: '#0066cc', pointBackgroundColor: '#fff' }] }, options: { scales: { r: { grid: { color: '#ccc' }, angleLines: { color: '#ccc' }, suggesteMin: 0, suggestedMax: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
+                radarChart = new Chart(ctx, { type: 'radar', data: { labels: TRAITS, datasets: [{ label: 'Équilibre', data: [8,6,7,9,5], backgroundColor: 'rgba(0, 102, 204, 0.4)', borderColor: '#0066CC', pointBackgroundColor: '#fff' }] }, options: { scales: { r: { grid: { color: '#ccc' }, angleLines: { color: '#ccc' }, suggesteMin: 0, suggestedMax: 10, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
             },
             finalizeTeam: () => {
                 const team = document.getElementById('team-name-create').value; if(!team || !document.getElementById('check-class').classList.contains('active')) return alert("Nom + Validation requis!");
@@ -595,7 +545,7 @@ html_code = """
             signPact: (el) => { el.innerHTML = "<i>Signé : " + DATA.user.name + "</i>"; el.classList.add("signed"); el.style.fontFamily = "var(--font-hand)"; DATA.missions[3].completed = true; confetti(); setTimeout(() => { app.nav('dashboard'); }, 1500); },
             
             startGame: (t) => { currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); },
-            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin!"); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='solid-panel p-2 text-center' style='cursor:pointer' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
+            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin!"); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
             checkAnswer: (i) => { if(i===currentQuiz[qIndex].c){score+=10; confetti();} setTimeout(()=>{qIndex++; app.renderQuestion()},500); },
             exitGame: () => { document.getElementById('game-interface').style.display='none'; document.getElementById('game-menu').style.display='block'; },
             
