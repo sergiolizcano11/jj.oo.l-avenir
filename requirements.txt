@@ -1,8 +1,7 @@
 streamlit
-watchdog
 pandas
 openpyxl
-Pillow
 fpdf
 gTTS
 streamlit-audiorec
+watchdog
