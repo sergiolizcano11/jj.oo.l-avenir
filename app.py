@@ -3,10 +3,8 @@ import streamlit.components.v1 as components
 import pandas as pd
 from PIL import Image, ImageOps
 from fpdf import FPDF
-from streamlit_lottie import st_lottie
 from gtts import gTTS
 from st_audiorec import st_audiorec
-import requests
 import io
 
 # --- CONFIGURACIÓN DE PÁGINA ---
@@ -18,13 +16,6 @@ st.set_page_config(
 )
 
 # --- FUNCIONES BACKEND ---
-
-def load_lottieurl(url):
-    try:
-        r = requests.get(url)
-        if r.status_code != 200: return None
-        return r.json()
-    except: return None
 
 def generate_excel():
     # Simulación de datos de clase
@@ -40,34 +31,36 @@ def generate_excel():
         df.to_excel(writer, index=False, sheet_name='Suivi_Classe')
     return buffer.getvalue()
 
-def create_player_card(name, power, trait):
+def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
     
-    # Fondo estilo "Carta FIFA"
+    # Fondo oscuro
     pdf.set_fill_color(20, 20, 30)
     pdf.rect(0, 0, 210, 297, 'F')
     
     # Marco Dorado
-    pdf.set_draw_color(255, 215, 0) # Oro
+    pdf.set_draw_color(255, 215, 0)
     pdf.set_line_width(2)
     pdf.rect(50, 40, 110, 180)
     
-    # Texto
+    # Título
     pdf.set_text_color(255, 255, 255)
     pdf.set_font("Arial", 'B', 24)
     pdf.set_xy(0, 50)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
+    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(77, 121, 255) # Azul App
+    pdf.set_text_color(77, 121, 255) # Azul
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
+    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(255, 215, 0)
-    pdf.cell(210, 10, f"Spécialité: {trait}", 0, 1, 'C')
+    pdf.set_text_color(255, 215, 0) # Dorado
+    pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
-    # Stats simuladas
+    # Stats
     pdf.ln(20)
     pdf.set_font("Courier", 'B', 16)
     pdf.set_text_color(255, 255, 255)
@@ -76,24 +69,22 @@ def create_player_card(name, power, trait):
     pdf.set_x(70)
     pdf.cell(40, 10, "ODD: 90", 0, 1)
     pdf.set_x(70)
-    pdf.cell(40, 10, "FAIR-PLAY: 99", 0, 1)
+    pdf.cell(40, 10, "FAIR-PLAY: 100", 0, 1)
     
     return pdf.output(dest='S').encode('latin-1')
 
-# --- BARRA LATERAL (HERRAMIENTAS DUA & ADMIN) ---
+# --- BARRA LATERAL (HERRAMIENTAS) ---
 with st.sidebar:
-    # 1. ANIMACIÓN (Visual/Llamativo)
-    lottie_url = "https://lottie.host/embed/9c0d3a7e-1234-4b5a-8901-abcdef123456/example.json" 
-    st_lottie(load_lottieurl(lottie_url) or {"v": "No animation"}, height=100, key="logo_anim")
+    # Logo simple y seguro en lugar de Lottie
+    st.markdown("<h1 style='text-align: center;'>🏅</h1>", unsafe_allow_html=True)
+    st.title("Boîte à Outils")
     
-    st.title("🧰 Boîte à Outils")
+    # 1. ACCESIBILIDAD (DUA)
+    st.markdown("### ♿ DUA / Accessibilité")
     
-    # 2. HERRAMIENTAS DUA (Accesibilidad)
-    st.markdown("### ♿ Accessibilité (DUA)")
-    
-    with st.expander("🗣️ Lecteur de Texte (TTS)"):
-        st.caption("Écrivez une phrase pour l'écouter en français.")
-        text_to_speak = st.text_input("Texte:", "Bonjour tout le monde!")
+    with st.expander("🗣️ Lecteur (TTS)"):
+        st.caption("Écrivez pour écouter en français.")
+        text_to_speak = st.text_input("Texte:", "Bonjour!")
         if st.button("Écouter 🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang='fr')
@@ -101,56 +92,36 @@ with st.sidebar:
                 tts.write_to_fp(audio_bytes)
                 st.audio(audio_bytes, format='audio/mp3')
             except:
-                st.error("Erreur de connexion audio.")
+                st.error("Erreur audio.")
 
-    with st.expander("🎙️ Entraînement Oral"):
-        st.caption("Enregistrez votre prononciation.")
+    with st.expander("🎙️ Micro (Oral)"):
+        st.caption("Enregistrez-vous.")
         wav_audio_data = st_audiorec()
         if wav_audio_data is not None:
             st.audio(wav_audio_data, format='audio/wav')
-            st.success("Enregistré ! Ajoutez-le au Journal.")
+            st.success("Audio capturé !")
 
     st.divider()
 
-    # 3. ZONA ALUMNO (Descargas)
-    st.markdown("### 🎒 Zone Élève")
-    player_name = st.text_input("Ton Nom pour le diplôme:", "Athlète")
+    # 2. ALUMNO (Descargas)
+    st.markdown("### 🎒 Élève")
+    player_name = st.text_input("Ton Nom:", "Athlète")
     player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
-    if st.button("📄 Télécharger ma Carte"):
-        pdf_data = create_player_card(player_name, "Inconnu", player_trait)
-        st.download_button("📥 Download PDF", pdf_data, file_name="carte_joueur.pdf", mime="application/pdf")
+    if st.button("📄 Ma Carte Officielle"):
+        pdf_data = create_player_card(player_name, player_trait)
+        st.download_button("📥 Télécharger PDF", pdf_data, file_name="carte_jo.pdf", mime="application/pdf")
 
     st.divider()
 
-    # 4. ZONA ADMIN (Protegida)
-    st.markdown("### 🔐 Zone Professeur")
+    # 3. ADMIN
+    st.markdown("### 🔐 Professeur")
     password = st.text_input("Mot de passe:", type="password")
-    
     if password == "prof123":
-        st.success("Mode Admin: ACTIVÉ")
-        st.write("---")
-        st.markdown("**Gestion de Classe**")
-        
-        # Descargar Excel con Notas
+        st.success("Admin OK")
         excel_data = generate_excel()
-        st.download_button(
-            "📊 Télécharger Notes (Excel)",
-            data=excel_data,
-            file_name="suivi_classe_jo.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        
-        # Control Manual del Termómetro Global
-        new_global_score = st.slider("Score Global Classe (%)", 0, 100, 35)
-        st.caption(f"Score actuel affiché aux élèves: {new_global_score}%")
-        
-        if st.button("⚠️ Reset Année Scolaire"):
-            st.warning("Base de données effacée (Simulation)")
-            
-    elif password:
-        st.error("Mot de passe incorrect")
+        st.download_button("📊 Excel Classe", data=excel_data, file_name="notes.xlsx")
 
-# --- CSS PARA EL MAPA Y UI ---
+# --- CSS ---
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
@@ -163,10 +134,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- CÓDIGO HTML/JS (FRONTEND PRINCIPAL) ---
-# Nota: Pasamos el 'new_global_score' del admin al frontend inyectándolo en el HTML si fuera necesario,
-# pero por simplicidad visual mantenemos el bloque HTML estático aquí y las herramientas Python al lado.
-
+# --- FRONTEND HTML/JS ---
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -174,6 +142,7 @@ html_code = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>J.O. App</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Montserrat:wght@800&family=Reenie+Beanie&display=swap" rel="stylesheet">
@@ -195,6 +164,7 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 20, 0.85); z-index: -1; }
         
+        /* UI Common */
         .solid-panel { background-color: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         .btn-solid { background-color: var(--primary); color: white; border: none; border-radius: 8px; padding: 12px; width: 100%; font-weight: 700; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; }
         .btn-solid:active { transform: scale(0.95); }
@@ -203,44 +173,49 @@ html_code = """
         .solid-input, .solid-textarea { background-color: rgba(0,0,0,0.5); border: 1px solid #555; color: white; padding: 12px; border-radius: 8px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }
         .solid-textarea { text-align: left; }
         
-        /* MAPA */
+        /* Specifics */
         .map-container { position: relative; width: 100%; height: 350px; background: #000; border-radius: 15px; overflow: hidden; border: 2px solid #444; }
         .map-frame { width: 100%; height: 100%; border: 0; pointer-events: none; filter: brightness(0.8) contrast(1.1); }
         .map-pin { position: absolute; width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.8); transform: translate(-50%, -50%); transition: transform 0.2s; font-size: 1.2rem; z-index: 10; }
-        .map-pin:active { transform: translate(-50%, -50%) scale(1.2); }
         .map-pin.locked { background: #555; border-color: #777; color: #888; }
         
-        /* UI ELEMENTS */
         .thermo-container { background: rgba(0,0,0,0.6); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .progress-bar-bg { background: #444; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
         .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 35%; transition: width 1s ease-out; }
+        
         .radar-container { background: rgba(0,0,0,0.5); border-radius: 15px; padding: 10px; border: 1px solid #444; height: 250px; }
         .parchment { background: #fdfbf7; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: var(--font-body); position: relative; border: 10px solid #2C2C2C; }
         .signature-pad { width: 100%; height: 80px; border: 2px dashed #999; background: rgba(255,255,255,0.5); margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2rem; color: #000080; cursor: pointer; position: relative; }
         
-        /* GRID */
+        /* Grid Buttons */
         .home-btn { background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
         .home-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
         .home-btn i { font-size: 1.8rem; margin-bottom: 8px; }
         .home-btn h3 { font-size: 0.75rem; margin: 0; font-weight: 700; text-transform: uppercase; }
         
-        /* HELPERS */
+        /* Avatar */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: rgba(0,0,0,0.5); border: 2px solid #444; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
         .avatar-item.selected { background: rgba(77, 121, 255, 0.3); border-color: var(--primary); }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; }
         .trait-tag { background: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; border: 1px solid #444; font-size: 0.85rem; margin-right: 5px; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; }
+        
+        /* Phases */
         .phase-card { cursor: pointer; border-left: 4px solid #555; background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 8px; }
         .phase-card.completed { border-left-color: var(--success); background: rgba(40, 167, 69, 0.1); }
         .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
+        
+        /* App Structure */
         .view { display: none; padding: 20px; min-height: 100vh; }
         .active-view { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #1a1a1a; border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .dock-item { font-size: 1.4rem; color: #666; cursor: pointer; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
+        
+        /* Modal & Interactives */
         .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
         .custom-modal.show { display: flex; }
         .modal-content-solid { background: #222; border: 1px solid #444; border-radius: 12px; padding: 30px; width: 90%; max-width: 400px; text-align: center; }
