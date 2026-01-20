@@ -4,6 +4,8 @@ import pandas as pd
 from PIL import Image, ImageOps
 from fpdf import FPDF
 from streamlit_lottie import st_lottie
+from gtts import gTTS
+from st_audiorec import st_audiorec
 import requests
 import io
 
@@ -15,105 +17,156 @@ st.set_page_config(
     page_icon="🏅"
 )
 
-# --- FUNCIONES BACKEND (PYTHON) ---
+# --- FUNCIONES BACKEND ---
 
-# 1. Cargar Animación Lottie
 def load_lottieurl(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
+    try:
+        r = requests.get(url)
+        if r.status_code != 200: return None
+        return r.json()
+    except: return None
 
-# 2. Generar PDF (Carnet)
-def create_pdf(name, team):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", 'B', 16)
-    pdf.set_fill_color(240, 240, 240)
-    pdf.rect(10, 10, 190, 277, 'F')
-    
-    # Título
-    pdf.cell(0, 10, "CARNET OFFICIEL - J.O. DE L'AVENIR", 0, 1, 'C')
-    pdf.ln(10)
-    
-    pdf.set_font("Arial", '', 12)
-    pdf.cell(0, 10, f"Nom de l'Athlète: {name}", 0, 1)
-    pdf.cell(0, 10, f"Équipe: {team}", 0, 1)
-    pdf.cell(0, 10, "Année Scolaire: 2025-2026", 0, 1)
-    pdf.ln(20)
-    pdf.multi_cell(0, 10, "Ce document certifie la participation aux Jeux Olympiques de l'Avenir, un projet d'innovation éducative basé sur les ODD et le sport inclusif.")
-    
-    return pdf.output(dest='S').encode('latin-1')
-
-# 3. Generar Excel (Pandas)
 def generate_excel():
+    # Simulación de datos de clase
     data = {
-        'Phase': ['1. Monnaie', '2. Équipes', '3. Obstacles', '4. Règlement', '5. Ravitaillement', '6. Plan'],
-        'Mois': ['Sept-Oct', 'Nov-Déc', 'Jan-Fév', 'Fév-Mars', 'Avril-Mai', 'Mai-Juin'],
-        'ODD': ['1, 12', '5, 10', '13', '16', '3', '11'],
-        'Statut': ['Fait', 'Fait', 'En cours', 'À venir', 'À venir', 'À venir']
+        'Équipe': ['Les Titans', 'Eco-Warriors', 'Cyber-Français', 'Green Team'],
+        'Missions Complétées': [5, 4, 6, 3],
+        'Score Global': [1200, 950, 1400, 800],
+        'Statut Fair-Play': ['Signé', 'Signé', 'Signé', 'Non Signé']
     }
     df = pd.DataFrame(data)
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
-        df.to_excel(writer, index=False, sheet_name='Planning')
+        df.to_excel(writer, index=False, sheet_name='Suivi_Classe')
     return buffer.getvalue()
 
-# --- SIDEBAR (HERRAMIENTAS PYTHON) ---
+def create_player_card(name, power, trait):
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Fondo estilo "Carta FIFA"
+    pdf.set_fill_color(20, 20, 30)
+    pdf.rect(0, 0, 210, 297, 'F')
+    
+    # Marco Dorado
+    pdf.set_draw_color(255, 215, 0) # Oro
+    pdf.set_line_width(2)
+    pdf.rect(50, 40, 110, 180)
+    
+    # Texto
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Arial", 'B', 24)
+    pdf.set_xy(0, 50)
+    pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'B', 40)
+    pdf.set_text_color(77, 121, 255) # Azul App
+    pdf.cell(210, 25, name.upper(), 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'I', 18)
+    pdf.set_text_color(255, 215, 0)
+    pdf.cell(210, 10, f"Spécialité: {trait}", 0, 1, 'C')
+    
+    # Stats simuladas
+    pdf.ln(20)
+    pdf.set_font("Courier", 'B', 16)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_x(70)
+    pdf.cell(40, 10, "FRANÇAIS: 95", 0, 1)
+    pdf.set_x(70)
+    pdf.cell(40, 10, "ODD: 90", 0, 1)
+    pdf.set_x(70)
+    pdf.cell(40, 10, "FAIR-PLAY: 99", 0, 1)
+    
+    return pdf.output(dest='S').encode('latin-1')
+
+# --- BARRA LATERAL (HERRAMIENTAS DUA & ADMIN) ---
 with st.sidebar:
-    st.header("🧰 Zone Prof/Admin")
+    # 1. ANIMACIÓN (Visual/Llamativo)
+    lottie_url = "https://lottie.host/embed/9c0d3a7e-1234-4b5a-8901-abcdef123456/example.json" 
+    st_lottie(load_lottieurl(lottie_url) or {"v": "No animation"}, height=100, key="logo_anim")
     
-    # Animación Lottie
-    lottie_medal = load_lottieurl("https://lottie.host/embed/9c0d3a7e-1234-4b5a-8901-abcdef123456/example.json") # URL ejemplo, usamos fallback si falla
-    if lottie_medal:
-        st_lottie(lottie_medal, height=150)
-    else:
-        st.write("🏅")
+    st.title("🧰 Boîte à Outils")
+    
+    # 2. HERRAMIENTAS DUA (Accesibilidad)
+    st.markdown("### ♿ Accessibilité (DUA)")
+    
+    with st.expander("🗣️ Lecteur de Texte (TTS)"):
+        st.caption("Écrivez une phrase pour l'écouter en français.")
+        text_to_speak = st.text_input("Texte:", "Bonjour tout le monde!")
+        if st.button("Écouter 🔊"):
+            try:
+                tts = gTTS(text=text_to_speak, lang='fr')
+                audio_bytes = io.BytesIO()
+                tts.write_to_fp(audio_bytes)
+                st.audio(audio_bytes, format='audio/mp3')
+            except:
+                st.error("Erreur de connexion audio.")
 
-    # Descargar Excel (Pandas)
-    st.subheader("📊 Planning")
-    excel_data = generate_excel()
-    st.download_button(
-        label="Télécharger Planning (Excel)",
-        data=excel_data,
-        file_name="planning_jo_avenir.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    with st.expander("🎙️ Entraînement Oral"):
+        st.caption("Enregistrez votre prononciation.")
+        wav_audio_data = st_audiorec()
+        if wav_audio_data is not None:
+            st.audio(wav_audio_data, format='audio/wav')
+            st.success("Enregistré ! Ajoutez-le au Journal.")
 
     st.divider()
 
-    # Generar PDF (FPDF)
-    st.subheader("🆔 Carnet Athlète")
-    p_name = st.text_input("Nom", "Élève")
-    p_team = st.text_input("Équipe", "Sans équipe")
-    
-    if st.button("Générer PDF"):
-        pdf_bytes = create_pdf(p_name, p_team)
-        st.download_button(label="📥 Télécharger PDF", data=pdf_bytes, file_name="carnet_jo.pdf", mime="application/pdf")
+    # 3. ZONA ALUMNO (Descargas)
+    st.markdown("### 🎒 Zone Élève")
+    player_name = st.text_input("Ton Nom pour le diplôme:", "Athlète")
+    player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
+    if st.button("📄 Télécharger ma Carte"):
+        pdf_data = create_player_card(player_name, "Inconnu", player_trait)
+        st.download_button("📥 Download PDF", pdf_data, file_name="carte_joueur.pdf", mime="application/pdf")
 
     st.divider()
 
-    # Procesar Imagen (Pillow)
-    st.subheader("📸 Photo Officielle")
-    uploaded_file = st.file_uploader("Upload photo", type=['jpg', 'png'])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        # Filtro Blanco y Negro (Pillow)
-        gray_image = ImageOps.grayscale(image)
-        st.image(gray_image, caption="Photo d'accréditation")
+    # 4. ZONA ADMIN (Protegida)
+    st.markdown("### 🔐 Zone Professeur")
+    password = st.text_input("Mot de passe:", type="password")
+    
+    if password == "prof123":
+        st.success("Mode Admin: ACTIVÉ")
+        st.write("---")
+        st.markdown("**Gestion de Classe**")
+        
+        # Descargar Excel con Notas
+        excel_data = generate_excel()
+        st.download_button(
+            "📊 Télécharger Notes (Excel)",
+            data=excel_data,
+            file_name="suivi_classe_jo.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        
+        # Control Manual del Termómetro Global
+        new_global_score = st.slider("Score Global Classe (%)", 0, 100, 35)
+        st.caption(f"Score actuel affiché aux élèves: {new_global_score}%")
+        
+        if st.button("⚠️ Reset Année Scolaire"):
+            st.warning("Base de données effacée (Simulation)")
+            
+    elif password:
+        st.error("Mot de passe incorrect")
 
-# Ocultar elementos nativos del cuerpo principal
+# --- CSS PARA EL MAPA Y UI ---
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .block-container {padding: 0 !important; margin: 0 !important;}
-        iframe {height: 100vh !important;} 
+        iframe {height: 100vh !important;}
+        [data-testid="stSidebar"] { background-color: #1a1a1a; border-right: 1px solid #333; }
+        .stButton>button { width: 100%; border-radius: 8px; font-weight: bold; }
     </style>
 """, unsafe_allow_html=True)
 
-# --- CÓDIGO FRONTEND (HTML/JS) ---
+# --- CÓDIGO HTML/JS (FRONTEND PRINCIPAL) ---
+# Nota: Pasamos el 'new_global_score' del admin al frontend inyectándolo en el HTML si fuera necesario,
+# pero por simplicidad visual mantenemos el bloque HTML estático aquí y las herramientas Python al lado.
+
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -121,140 +174,64 @@ html_code = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>J.O. App</title>
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Montserrat:wght@800&family=Reenie+Beanie&display=swap" rel="stylesheet">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            --primary: #4D79FF;
-            --accent: #FFD93D;
-            --success: #28a745;
-            --danger: #dc3545;
-            --card-bg: rgba(30, 30, 30, 0.9);
-            --text-main: #FFFFFF;
-            --font-head: 'Montserrat', sans-serif;
-            --font-body: 'Poppins', sans-serif;
+            --primary: #4D79FF; --accent: #FFD93D; --success: #28a745; --danger: #dc3545;
+            --card-bg: rgba(30, 30, 30, 0.95); --text-main: #FFFFFF;
+            --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif;
             --font-hand: 'Reenie Beanie', cursive;
         }
-
         body {
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text-main);
-            font-family: var(--font-body);
-            margin: 0; padding: 0;
-            overflow-x: hidden;
-            padding-bottom: 90px;
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: var(--text-main); font-family: var(--font-body); margin: 0; padding: 0;
+            overflow-x: hidden; padding-bottom: 90px;
         }
-
-        body::before {
-            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 20, 0.85); z-index: -1;
-        }
-
-        /* --- UI COMPONENTES --- */
-        .solid-panel {
-            background-color: var(--card-bg); border-radius: 12px; padding: 20px;
-            margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-        }
-
-        .btn-solid {
-            background-color: var(--primary); color: white; border: none; border-radius: 8px;
-            padding: 12px; width: 100%; font-weight: 700; text-transform: uppercase;
-            font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s;
-        }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 20, 0.85); z-index: -1; }
+        
+        .solid-panel { background-color: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+        .btn-solid { background-color: var(--primary); color: white; border: none; border-radius: 8px; padding: 12px; width: 100%; font-weight: 700; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; }
         .btn-solid:active { transform: scale(0.95); }
-
-        .btn-outline {
-            background: transparent; border: 2px solid #555; color: #aaa;
-            border-radius: 8px; padding: 10px; width: 100%; font-weight: 700;
-            margin-top: 5px; cursor: pointer;
-        }
+        .btn-outline { background: transparent; border: 2px solid #555; color: #aaa; border-radius: 8px; padding: 10px; width: 100%; font-weight: 700; margin-top: 5px; cursor: pointer; }
         .btn-outline.active { border-color: var(--success); color: var(--success); background: rgba(40, 167, 69, 0.1); }
-
-        .solid-input, .solid-textarea {
-            background-color: rgba(0,0,0,0.5); border: 1px solid #555; color: white;
-            padding: 12px; border-radius: 8px; width: 100%; font-size: 1rem;
-            margin-bottom: 10px; font-family: var(--font-body); text-align: center;
-        }
+        .solid-input, .solid-textarea { background-color: rgba(0,0,0,0.5); border: 1px solid #555; color: white; padding: 12px; border-radius: 8px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }
         .solid-textarea { text-align: left; }
-
-        /* --- MAPA REAL --- */
-        .map-container {
-            position: relative; width: 100%; height: 350px; background: #000;
-            border-radius: 15px; overflow: hidden; border: 2px solid #444;
-        }
-        .map-frame {
-            width: 100%; height: 100%; border: 0; 
-            pointer-events: none; filter: brightness(0.8) contrast(1.1);
-        }
-        .map-pin {
-            position: absolute; width: 40px; height: 40px; background: var(--accent);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: bold; cursor: pointer; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.8); transform: translate(-50%, -50%);
-            transition: transform 0.2s; font-size: 1.2rem; z-index: 10;
-        }
+        
+        /* MAPA */
+        .map-container { position: relative; width: 100%; height: 350px; background: #000; border-radius: 15px; overflow: hidden; border: 2px solid #444; }
+        .map-frame { width: 100%; height: 100%; border: 0; pointer-events: none; filter: brightness(0.8) contrast(1.1); }
+        .map-pin { position: absolute; width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: bold; cursor: pointer; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.8); transform: translate(-50%, -50%); transition: transform 0.2s; font-size: 1.2rem; z-index: 10; }
         .map-pin:active { transform: translate(-50%, -50%) scale(1.2); }
         .map-pin.locked { background: #555; border-color: #777; color: #888; }
-
-        /* --- TERMÓMETROS --- */
-        .thermo-container {
-            background: rgba(0,0,0,0.6); border-radius: 15px; padding: 15px; 
-            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);
-        }
+        
+        /* UI ELEMENTS */
+        .thermo-container { background: rgba(0,0,0,0.6); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .progress-bar-bg { background: #444; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
         .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 35%; transition: width 1s ease-out; }
-
-        /* --- RADAR CHART --- */
         .radar-container { background: rgba(0,0,0,0.5); border-radius: 15px; padding: 10px; border: 1px solid #444; height: 250px; }
-
-        /* --- CONTRATO --- */
-        .parchment {
-            background: #fdfbf7; color: #333; padding: 20px; border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: var(--font-body);
-            position: relative; border: 10px solid #2C2C2C;
-        }
-        .parchment h4 { font-family: var(--font-head); color: #000; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 10px; }
-        .signature-pad {
-            width: 100%; height: 80px; border: 2px dashed #999;
-            background: rgba(255,255,255,0.5); margin-top: 20px;
-            display: flex; align-items: center; justify-content: center;
-            font-family: var(--font-hand); font-size: 2rem; color: #000080;
-            cursor: pointer; position: relative;
-        }
-        .signature-pad::after { content: 'Cliquez pour signer'; font-family: var(--font-body); font-size: 0.8rem; color: #999; position: absolute; bottom: 5px; }
-        .signature-pad.signed::after { content: ''; }
-
-        /* --- HOME GRID --- */
-        .home-btn {
-            background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px; padding: 15px 10px; text-align: center;
-            cursor: pointer; height: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; min-height: 110px;
-        }
+        .parchment { background: #fdfbf7; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); font-family: var(--font-body); position: relative; border: 10px solid #2C2C2C; }
+        .signature-pad { width: 100%; height: 80px; border: 2px dashed #999; background: rgba(255,255,255,0.5); margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2rem; color: #000080; cursor: pointer; position: relative; }
+        
+        /* GRID */
+        .home-btn { background-color: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; }
         .home-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.1); }
         .home-btn i { font-size: 1.8rem; margin-bottom: 8px; }
         .home-btn h3 { font-size: 0.75rem; margin: 0; font-weight: 700; text-transform: uppercase; }
-
-        /* --- AVATAR --- */
+        
+        /* HELPERS */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: rgba(0,0,0,0.5); border: 2px solid #444; border-radius: 10px; padding: 10px; text-align: center; cursor: pointer; }
         .avatar-item.selected { background: rgba(77, 121, 255, 0.3); border-color: var(--primary); }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; }
         .trait-tag { background: #333; padding: 5px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; border: 1px solid #444; font-size: 0.85rem; margin-right: 5px; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: bold; }
-
-        /* --- OTHERS --- */
         .phase-card { cursor: pointer; border-left: 4px solid #555; background: var(--card-bg); padding: 15px; margin-bottom: 10px; border-radius: 8px; }
         .phase-card.completed { border-left-color: var(--success); background: rgba(40, 167, 69, 0.1); }
         .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
@@ -270,7 +247,6 @@ html_code = """
         .mood-btn { font-size: 2rem; background: #333; border: 1px solid #444; border-radius: 10px; padding: 10px; cursor: pointer; flex: 1; text-align: center; margin: 0 2px; }
         .mood-btn.selected { background: var(--primary); border-color: var(--primary); transform: scale(1.1); }
         .journal-entry { border-left: 3px solid var(--accent); margin-bottom: 10px; }
-        .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; }
         .game-opt { background: #333; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; }
         .game-opt.correct { border-color: var(--success); background: rgba(40, 167, 69, 0.2); }
         .game-opt.wrong { border-color: #dc3545; background: rgba(220, 53, 69, 0.2); }
@@ -311,9 +287,7 @@ html_code = """
                 <h6 class="mb-0 fw-bold text-white"><i class="fa-solid fa-earth-americas text-warning me-2"></i> IMPACT GLOBAL</h6>
                 <small class="text-accent fw-bold">CLASSE</small>
             </div>
-            <div class="progress-bar-bg">
-                <div class="fill-global"></div>
-            </div>
+            <div class="progress-bar-bg"><div class="fill-global"></div></div>
             <small class="text-secondary" style="font-size: 0.65rem;">Objectif commun (ODD 17)</small>
         </div>
 
@@ -322,64 +296,28 @@ html_code = """
         </div>
 
         <div class="row g-2">
-            <div class="col-6">
-                <div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')">
-                    <i class="fa-solid fa-list-check text-white"></i>
-                    <h3>PHASES</h3>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="home-btn" onclick="app.nav('journal', 'nav-journal')">
-                    <i class="fa-solid fa-book-open text-info"></i>
-                    <h3>JOURNAL</h3>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="home-btn" onclick="app.nav('map', 'nav-games')">
-                    <i class="fa-solid fa-map-location-dot text-success"></i>
-                    <h3>PLAN</h3>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="home-btn" onclick="app.nav('games', 'nav-games')">
-                    <i class="fa-solid fa-gamepad text-primary"></i>
-                    <h3>ARCADE</h3>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="home-btn flex-row gap-3 py-3" style="min-height: auto;" onclick="app.nav('oscars', 'nav-oscars')">
-                    <i class="fa-solid fa-award text-accent mb-0"></i><h3 class="mb-0">VOTE & ÉVALUATION</h3>
-                </div>
-            </div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-white"></i><h3>PHASES</h3></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info"></i><h3>JOURNAL</h3></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-games')"><i class="fa-solid fa-map-location-dot text-success"></i><h3>PLAN</h3></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary"></i><h3>ARCADE</h3></div></div>
+            <div class="col-12"><div class="home-btn flex-row gap-3 py-3" style="min-height: auto;" onclick="app.nav('oscars', 'nav-oscars')"><i class="fa-solid fa-award text-accent mb-0"></i><h3 class="mb-0">VOTE & ÉVALUATION</h3></div></div>
         </div>
     </section>
 
     <section id="view-dashboard" class="view">
         <h4 class="fw-bold mb-3">PROGRESSION</h4>
-        
         <div class="thermo-container">
-            <div class="d-flex justify-content-between align-items-end">
-                <h6 class="mb-0 fw-bold text-white"><i class="fa-solid fa-people-group text-primary me-2"></i> MON ÉQUIPE</h6>
-                <small id="team-percent-text" class="text-primary fw-bold">0%</small>
-            </div>
-            <div class="progress-bar-bg">
-                <div id="team-progress-bar" class="fill-team"></div>
-            </div>
+            <div class="d-flex justify-content-between align-items-end"><h6 class="mb-0 fw-bold text-white"><i class="fa-solid fa-people-group text-primary me-2"></i> MON ÉQUIPE</h6><small id="team-percent-text" class="text-primary fw-bold">0%</small></div>
+            <div class="progress-bar-bg"><div id="team-progress-bar" class="fill-team"></div></div>
         </div>
-
         <div id="missions-list"></div>
     </section>
 
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3">PLAN DU CAMPUS</h4>
         <p class="text-secondary small">Localisation des épreuves</p>
-        
         <div class="map-container">
-            <iframe class="map-frame" 
-                src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" 
-                frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-            </iframe>
-
+            <iframe class="map-frame" src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
             <div class="map-pin" style="top: 30%; left: 40%;" onclick="alert('Zone Obstacles')">🏋️</div>
             <div class="map-pin" style="top: 60%; left: 60%;" onclick="alert('Grande Gymkhana')">🏁</div>
             <div class="map-pin" style="top: 80%; left: 30%;" onclick="alert('Ravitaillement')">🍎</div>
@@ -387,35 +325,22 @@ html_code = """
         </div>
         <div class="solid-panel mt-3">
             <h6 class="text-white mb-2"><i class="fa-solid fa-location-dot text-danger"></i> Légende</h6>
-            <ul class="list-unstyled text-secondary small mb-0">
-                <li>🏋️ Zone Obstacles (Jan-Fév)</li>
-                <li>🍎 Ravitaillement (Avril)</li>
-                <li>🏁 Arrivée Finale (Juin)</li>
-            </ul>
+            <ul class="list-unstyled text-secondary small mb-0"><li>🏋️ Zone Obstacles (Jan-Fév)</li><li>🍎 Ravitaillement (Avril)</li><li>🏁 Arrivée Finale (Juin)</li></ul>
         </div>
         <button onclick="app.nav('home')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
 
     <section id="view-debate" class="view">
-        <div class="text-center mt-4 mb-3">
-            <h2 style="font-family: var(--font-head);">ZONE DE DÉBAT</h2>
-            <p class="text-secondary small">PHASE 2: ÉQUIPES INCLUSIVES</p>
-        </div>
-        
-        <div class="radar-container mb-3">
-            <canvas id="radarChart"></canvas>
-        </div>
-        <p class="text-center text-white-50 small mb-3">Est-ce que votre équipe est équilibrée ?</p>
-
+        <div class="text-center mt-4 mb-3"><h2 style="font-family: var(--font-head);">ZONE DE DÉBAT</h2><p class="text-secondary small">PHASE 2: ÉQUIPES INCLUSIVES</p></div>
+        <div class="radar-container mb-3"><canvas id="radarChart"></canvas></div>
         <div class="solid-panel">
             <h6 class="fw-bold mb-3"><i class="fa-solid fa-users text-info"></i> L'ÉQUIPE</h6>
             <input type="text" id="team-name-create" class="solid-input mb-3" placeholder="NOM DE L'ÉQUIPE">
-            
             <div class="p-3 border rounded mb-3" style="border-color: #444 !important;">
                 <label class="small text-secondary mb-2">VALIDATION (ODD 5 & 10)</label>
-                <button id="check-mixed" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Équipe Mixte</button>
-                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Compétences Variées</button>
-                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')"><i class="fa-regular fa-square"></i> Validé par la classe</button>
+                <button id="check-mixed" class="btn-outline" onclick="this.classList.toggle('active')">Équipe Mixte</button>
+                <button id="check-skills" class="btn-outline" onclick="this.classList.toggle('active')">Compétences Variées</button>
+                <button id="check-class" class="btn-outline" onclick="this.classList.toggle('active')">Validé par la classe</button>
             </div>
             <button onclick="app.finalizeTeam()" class="btn-solid">CONFIRMER L'ÉQUIPE</button>
         </div>
@@ -427,15 +352,8 @@ html_code = """
         <div class="parchment mb-4">
             <h4 class="text-center">PACTE DE FAIR-PLAY</h4>
             <p class="small">Nous nous engageons à :</p>
-            <ul class="small ps-3">
-                <li>Respecter les adversaires (ODD 16).</li>
-                <li>Accepter la défaite.</li>
-                <li>Jouer sans tricher.</li>
-            </ul>
-            <div class="text-center mt-4">
-                <strong>Signature :</strong>
-                <div class="signature-pad" id="sign-pad" onclick="app.signPact(this)"></div>
-            </div>
+            <ul class="small ps-3"><li>Respecter les adversaires (ODD 16).</li><li>Accepter la défaite.</li><li>Jouer sans tricher.</li></ul>
+            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)"></div></div>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
@@ -452,8 +370,7 @@ html_code = """
             </div>
             <input type="hidden" id="selected-mood">
             <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="Réflexion..."></textarea>
-            <label class="small text-secondary mb-2 mt-2">PHOTO</label>
-            <input type="file" id="journal-photo" class="form-control bg-dark text-white border-secondary mb-3" accept="image/*">
+            <label class="small text-secondary mb-2 mt-2">PHOTO (Voir Sidebar pour Audio)</label>
             <button onclick="app.saveJournal()" class="btn-solid">POSTER</button>
         </div>
         <div id="journal-feed" class="mt-4"></div>
@@ -467,10 +384,7 @@ html_code = """
             <div class="solid-panel p-3 mb-2" onclick="app.startGame('part')"><h6 class="mb-0 text-white fw-bold"><i class="fa-solid fa-pizza-slice text-danger me-2"></i> Partitifs</h6></div>
         </div>
         <div id="game-interface" style="display:none;">
-            <div class="solid-panel">
-                <h5 id="game-question" class="fw-bold mb-4 text-center">...</h5>
-                <div id="game-options"></div>
-            </div>
+            <div class="solid-panel"><h5 id="game-question" class="fw-bold mb-4 text-center">...</h5><div id="game-options"></div></div>
             <button onclick="app.exitGame()" class="btn btn-outline text-white w-100">Quitter</button>
         </div>
     </section>
@@ -628,8 +542,8 @@ html_code = """
             exitGame: () => { document.getElementById('game-interface').style.display='none'; document.getElementById('game-menu').style.display='block'; },
             
             selectMood: (e,m) => { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); e.classList.add('selected'); document.getElementById('selected-mood').value=m; },
-            saveJournal: () => { const m=document.getElementById('selected-mood').value, t=document.getElementById('journal-text').value, f=document.getElementById('journal-photo'); if(!m||!t) return alert("Remplissez !"); const e={d:new Date().toLocaleDateString(), m, t, i:null}; if(f.files[0]){ const r=new FileReader(); r.onload=(ev)=>{e.i=ev.target.result; DATA.journal.unshift(e); app.renderJournal();}; r.readAsDataURL(f.files[0]); } else { DATA.journal.unshift(e); app.renderJournal(); } document.getElementById('journal-text').value=""; confetti(); },
-            renderJournal: () => { const c=document.getElementById('journal-feed'); c.innerHTML=""; DATA.journal.forEach(e=>{ c.innerHTML+=`<div class='solid-panel journal-entry'><div class='d-flex justify-content-between'><span>${e.d}</span><span>${e.m}</span></div><p class='text-white'>${e.t}</p>${e.i?`<img src='${e.i}' class='journal-img'>`:''}</div>`}); },
+            saveJournal: () => { const m=document.getElementById('selected-mood').value, t=document.getElementById('journal-text').value; if(!m||!t) return alert("Remplissez !"); const e={d:new Date().toLocaleDateString(), m, t, i:null}; DATA.journal.unshift(e); app.renderJournal(); document.getElementById('journal-text').value=""; confetti(); },
+            renderJournal: () => { const c=document.getElementById('journal-feed'); c.innerHTML=""; DATA.journal.forEach(e=>{ c.innerHTML+=`<div class='solid-panel journal-entry'><div class='d-flex justify-content-between'><span>${e.d}</span><span>${e.m}</span></div><p class='text-white'>${e.t}</p></div>`}); },
 
             showNominees: (c) => { if(DATA.votes[c]) return alert("Déjà voté!"); document.getElementById('oscars-menu').style.display='none'; document.getElementById('oscars-voting').style.display='block'; const l=document.getElementById('nominees-list'); l.innerHTML=""; DATA.nominees.forEach(t=>{ if(t!==DATA.teamName) l.innerHTML+=`<div class='vote-card'><span class='text-white fw-bold'>${t}</span><button class='btn btn-sm btn-outline-warning' onclick='app.submitVote("${c}","${t}")'>VOTER</button></div>` }); },
             submitVote: (c,t) => { if(confirm("Sûr?")){ DATA.votes[c]=true; app.exitVoting(); confetti(); } },
