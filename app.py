@@ -31,28 +31,23 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
-    # Fondo Blanco
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
-    # Borde Azul Olímpico
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
     
-    # Título
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
-    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0) # Rojo
+    pdf.set_text_color(220, 0, 0)
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
-    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51) # Verde
+    pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
     return pdf.output(dest='S').encode('latin-1')
@@ -124,6 +119,7 @@ html_code = """
 
     <style>
         :root {
+            /* PALETA VIVA OLÍMPICA */
             --primary: #0066CC; --accent: #FFB100; --success: #009933; --danger: #CC0000;
             --card-bg: rgba(255, 255, 255, 0.95); --text-main: #222222;
             --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif;
@@ -131,6 +127,7 @@ html_code = """
         }
 
         body {
+            /* FONDO DEPORTIVO CON FILTRO CLARO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--text-main); font-family: var(--font-body); margin: 0; padding: 0;
@@ -138,9 +135,9 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* --- MAPA DRAGGABLE CORREGIDO (ZOOM ALTO) --- */
+        /* --- MAPA DRAGGABLE ZOOM 17 --- */
         .map-container {
-            position: relative; width: 100%; height: 500px; /* Más alto para ver mejor */
+            position: relative; width: 100%; height: 500px; /* Altura cómoda */
             background: #eee; border-radius: 15px; overflow: hidden; 
             border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
@@ -153,10 +150,10 @@ html_code = """
             z-index: 5;
         }
         .map-pin {
-            position: absolute; width: 60px; height: 60px; background: var(--accent);
+            position: absolute; width: 50px; height: 50px; background: var(--accent);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 2rem; z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10;
             transform: translate(-50%, -50%); transition: transform 0.1s;
         }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
@@ -172,7 +169,8 @@ html_code = """
         /* Avatar & Traits */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
-        .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); border-width: 4px; }
+        .avatar-item:active { transform: scale(0.95); }
+        .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); }
         .avatar-item i { pointer-events: none; }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; }
         .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
@@ -193,7 +191,6 @@ html_code = """
         .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
         .custom-modal.show { display: flex; }
         .modal-content-solid { background: white; border-radius: 15px; padding: 30px; width: 90%; max-width: 400px; text-align: center; color: #333; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        
         .thermo-container { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
@@ -201,6 +198,12 @@ html_code = """
         .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
         .game-opt.correct { border-color: var(--success); background: #d4edda; }
         .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
+        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
+        .journal-entry { background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #eee; }
+        .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
+        .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
+        .vote-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -253,7 +256,7 @@ html_code = """
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=38.975694,-3.944361&t=k&z=20&output=embed" 
+                src="https://maps.google.com/maps?q=Colegio+Santo+Tomas+Ciudad+Real&t=k&z=17&ie=UTF8&iwloc=&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
@@ -414,7 +417,6 @@ html_code = """
 
         const app = {
             init: () => {
-                // GENERAR AVATARES (CORREGIDO)
                 const grid = document.getElementById('sprite-container');
                 SPRITES.forEach(icon => {
                     const div = document.createElement('div');
@@ -430,7 +432,6 @@ html_code = """
                     grid.appendChild(div);
                 });
 
-                // GENERAR HABILIDADES (CORREGIDO)
                 const tCont = document.getElementById('trait-container');
                 TRAITS.forEach(t => {
                     const span = document.createElement('span');
@@ -447,11 +448,7 @@ html_code = """
 
             saveProfile: () => {
                 const name = document.getElementById('player-name').value;
-                // Validación simplificada: Si ha seleccionado o no, le dejamos pasar para no frustrar, 
-                // pero alertamos si falta el nombre que es crítico.
-                if(!name) return alert("Le nom est obligatoire !");
-                if(!DATA.user.sprite) DATA.user.sprite = "fa-user"; // Fallback por si acaso
-                
+                if(!DATA.user.sprite || !name || !DATA.user.trait) return alert("Complétez votre profil ! (Avatar, Nom, Atout)");
                 DATA.user.name = name;
                 document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
                 app.showView('view-home');
@@ -558,6 +555,3 @@ html_code = """
     </script>
 </body>
 </html>
-"""
-
-components.html(html_code, height=900, scrolling=True)
