@@ -95,7 +95,7 @@ html_code = """
         }
         .solid-textarea { text-align: left; }
 
-        /* --- MAPA --- */
+        /* --- MAPA REAL --- */
         .map-container {
             position: relative; width: 100%; height: 350px; background: #000;
             border-radius: 15px; overflow: hidden; border: 2px solid #444;
@@ -285,7 +285,7 @@ html_code = """
         
         <div class="map-container">
             <iframe class="map-frame" 
-                src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" 
+                src="https://maps.google.com/maps?q=Carr.+de+Piedrabuena,+S/N,+13002+Ciudad+Real&t=k&z=19&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
 
