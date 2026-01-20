@@ -14,8 +14,7 @@ st.set_page_config(
     page_icon="🏅"
 )
 
-# --- FUNCIONES BACKEND (PYTHON) ---
-
+# --- FUNCIONES BACKEND ---
 def generate_excel():
     data = {
         'Équipe': ['Les Titans', 'Eco-Warriors', 'Cyber-Français', 'Green Team'],
@@ -32,41 +31,30 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
-    # Fondo Blanco
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
-    # Borde Azul Olímpico
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
-    
-    # Título
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
-    
-    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0) # Rojo
+    pdf.set_text_color(220, 0, 0)
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
-    
-    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51) # Verde
+    pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
-    
     return pdf.output(dest='S').encode('latin-1')
 
-# --- BARRA LATERAL (HERRAMIENTAS) ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.markdown("<h1 style='text-align: center;'>🏅</h1>", unsafe_allow_html=True)
     st.title("Boîte à Outils")
     
-    # ACCESIBILIDAD (DUA)
     with st.expander("🗣️ Lecteur (TTS)"):
-        st.caption("Écrivez pour écouter en français.")
-        text_to_speak = st.text_input("Texte:", "Bonjour tout le monde!")
+        text_to_speak = st.text_input("Texte:", "Bonjour!")
         if st.button("Écouter 🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang='fr')
@@ -81,20 +69,18 @@ with st.sidebar:
         wav_audio_data = st_audiorec()
         if wav_audio_data is not None:
             st.audio(wav_audio_data, format='audio/wav')
-            st.success("Audio capturé !")
+            st.success("Enregistré!")
 
     st.divider()
     
-    # ALUMNO
-    p_name = st.text_input("Ton Nom:", "Athlète")
-    p_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
+    player_name = st.text_input("Ton Nom:", "Athlète")
+    player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
     if st.button("📄 Ma Carte Officielle"):
-        pdf_data = create_player_card(p_name, p_trait)
+        pdf_data = create_player_card(player_name, player_trait)
         st.download_button("📥 Télécharger PDF", pdf_data, file_name="carte_jo.pdf", mime="application/pdf")
 
     st.divider()
     
-    # PROFESOR
     password = st.text_input("Mot de passe Prof:", type="password")
     if password == "prof123":
         st.success("Mode Admin")
@@ -130,15 +116,12 @@ html_code = """
 
     <style>
         :root {
-            /* PALETA VIVA OLÍMPICA */
             --primary: #0066CC; --accent: #FFB100; --success: #009933; --danger: #CC0000;
             --card-bg: rgba(255, 255, 255, 0.95); --text-main: #222222;
             --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif;
             --font-hand: 'Reenie Beanie', cursive;
         }
-
         body {
-            /* FONDO DEPORTIVO CON FILTRO CLARO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--text-main); font-family: var(--font-body); margin: 0; padding: 0;
@@ -146,31 +129,14 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* --- MAPA DRAGGABLE CORREGIDO (Zoom 19 - Santo Tomás) --- */
-        .map-container {
-            position: relative; width: 100%; height: 600px; /* Altura aumentada para mejor visión */
-            background: #eee; border-radius: 15px; overflow: hidden; 
-            border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .map-frame {
-            width: 100%; height: 100%; border: 0; 
-            pointer-events: none; /* Bloquea el mapa para que no se mueva al arrastrar iconos */
-        }
-        .map-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5;
-        }
-        /* Iconos un poco más grandes para moverlos mejor */
-        .map-pin {
-            position: absolute; width: 55px; height: 55px; background: var(--accent);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10;
-            transform: translate(-50%, -50%); transition: transform 0.1s;
-        }
+        /* MAPA */
+        .map-container { position: relative; width: 100%; height: 600px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .map-frame { width: 100%; height: 100%; border: 0; pointer-events: none; }
+        .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+        .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
 
-        /* UI Common */
+        /* UI */
         .solid-panel { background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
         .btn-solid { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 #004c99; }
         .btn-solid:active { transform: translateY(4px); box-shadow: none; }
@@ -178,21 +144,16 @@ html_code = """
         .btn-outline.active { border-color: var(--success); color: var(--success); background: #e6ffea; }
         .solid-input, .solid-textarea { background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }
         
-        /* Avatar & Traits */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
-        .avatar-item:active { transform: scale(0.95); }
         .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); }
-        .avatar-item i { pointer-events: none; }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; }
         .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }
 
-        /* Others */
         .home-btn { background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
         .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
-        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
         .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
@@ -270,7 +231,7 @@ html_code = """
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/maps?q=38.9763,-3.9443&t=k&z=19&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
@@ -320,11 +281,11 @@ html_code = """
 
     <section id="view-rules" class="view">
         <h4 class="fw-bold mb-3 text-dark">RÈGLEMENT</h4>
-        <div class="parchment mb-4" style="background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017;">
+        <div class="parchment mb-4">
             <h4 class="text-center">PACTE DE FAIR-PLAY</h4>
             <p class="small">Nous nous engageons à :</p>
             <ul class="small ps-3"><li>Respecter les adversaires.</li><li>Accepter la défaite.</li><li>Jouer sans tricher.</li></ul>
-            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)" style="width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; color: #000080; cursor: pointer;">Cliquez pour signer</div></div>
+            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)">Cliquez pour signer</div></div>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
@@ -400,7 +361,6 @@ html_code = """
     </div>
 
     <script>
-        // 16 AVATARES (CORREGIDO Y AMPLIADO)
         const SPRITES = [
             "fa-dragon", "fa-ghost", "fa-robot", "fa-cat", 
             "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf",
@@ -576,3 +536,6 @@ html_code = """
     </script>
 </body>
 </html>
+"""
+
+components.html(html_code, height=900, scrolling=True)
