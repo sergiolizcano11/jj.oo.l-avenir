@@ -36,20 +36,16 @@ def create_player_card(name, trait):
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
-    
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
-    
     pdf.set_font("Arial", 'B', 40)
     pdf.set_text_color(220, 0, 0)
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
-    
     pdf.set_font("Arial", 'I', 18)
     pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
-    
     return pdf.output(dest='S').encode('latin-1')
 
 # --- BARRA LATERAL ---
@@ -58,7 +54,7 @@ with st.sidebar:
     st.title("Boîte à Outils")
     
     with st.expander("🗣️ Lecteur (TTS)"):
-        text_to_speak = st.text_input("Texte en français:", "Bonjour!")
+        text_to_speak = st.text_input("Texte:", "Bonjour!")
         if st.button("Écouter 🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang='fr')
@@ -133,25 +129,25 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* --- MAPA DRAGGABLE ZOOM 19 (Santo Tomás) --- */
+        /* --- MAPA FIX (Zoom 19 - Santo Tomás) --- */
         .map-container {
-            position: relative; width: 100%; height: 550px; /* Más alto */
+            position: relative; width: 100%; height: 600px; /* Altura aumentada para mejor visión */
             background: #eee; border-radius: 15px; overflow: hidden; 
             border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .map-frame {
             width: 100%; height: 100%; border: 0; 
-            pointer-events: none;
+            pointer-events: none; /* Mapa estático, iconos móviles */
         }
         .map-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 5;
         }
         .map-pin {
-            position: absolute; width: 50px; height: 50px; background: var(--accent);
+            position: absolute; width: 60px; height: 60px; background: var(--accent);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.5rem; z-index: 10;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 2rem; z-index: 10;
             transform: translate(-50%, -50%); transition: transform 0.1s;
         }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
@@ -164,21 +160,16 @@ html_code = """
         .btn-outline.active { border-color: var(--success); color: var(--success); background: #e6ffea; }
         .solid-input, .solid-textarea { background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }
         
-        /* Avatar & Traits */
+        /* Avatar */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
-        .avatar-item:active { transform: scale(0.95); }
         .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); }
-        .avatar-item i { pointer-events: none; }
-        .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; }
-        .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
+        .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; margin-right: 5px; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }
+        .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; }
 
         /* Others */
         .home-btn { background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
-        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
         .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
@@ -192,6 +183,9 @@ html_code = """
         .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
         .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 35%; transition: width 1s ease-out; }
+        .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
+        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
         .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
         .game-opt.correct { border-color: var(--success); background: #d4edda; }
         .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
@@ -255,7 +249,7 @@ html_code = """
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://maps.google.com/?cid=15540682098433123425&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQ" 
+                src="https://maps.google.com/maps?q=Colegio+Santo+Tomas+de+Aquino+Ciudad+Real&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
@@ -302,11 +296,11 @@ html_code = """
 
     <section id="view-rules" class="view">
         <h4 class="fw-bold mb-3 text-dark">RÈGLEMENT</h4>
-        <div class="parchment mb-4" style="background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017;">
+        <div class="parchment mb-4">
             <h4 class="text-center">PACTE DE FAIR-PLAY</h4>
             <p class="small">Nous nous engageons à :</p>
             <ul class="small ps-3"><li>Respecter les adversaires.</li><li>Accepter la défaite.</li><li>Jouer sans tricher.</li></ul>
-            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)" style="width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; color: #000080; cursor: pointer;">Cliquez pour signer</div></div>
+            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)">Cliquez pour signer</div></div>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
