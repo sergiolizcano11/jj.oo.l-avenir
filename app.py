@@ -1,5 +1,11 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import pandas as pd
+from PIL import Image, ImageOps
+from fpdf import FPDF
+from streamlit_lottie import st_lottie
+import requests
+import io
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
@@ -9,7 +15,94 @@ st.set_page_config(
     page_icon="🏅"
 )
 
-# Ocultar elementos nativos
+# --- FUNCIONES BACKEND (PYTHON) ---
+
+# 1. Cargar Animación Lottie
+def load_lottieurl(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
+
+# 2. Generar PDF (Carnet)
+def create_pdf(name, team):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", 'B', 16)
+    pdf.set_fill_color(240, 240, 240)
+    pdf.rect(10, 10, 190, 277, 'F')
+    
+    # Título
+    pdf.cell(0, 10, "CARNET OFFICIEL - J.O. DE L'AVENIR", 0, 1, 'C')
+    pdf.ln(10)
+    
+    pdf.set_font("Arial", '', 12)
+    pdf.cell(0, 10, f"Nom de l'Athlète: {name}", 0, 1)
+    pdf.cell(0, 10, f"Équipe: {team}", 0, 1)
+    pdf.cell(0, 10, "Année Scolaire: 2025-2026", 0, 1)
+    pdf.ln(20)
+    pdf.multi_cell(0, 10, "Ce document certifie la participation aux Jeux Olympiques de l'Avenir, un projet d'innovation éducative basé sur les ODD et le sport inclusif.")
+    
+    return pdf.output(dest='S').encode('latin-1')
+
+# 3. Generar Excel (Pandas)
+def generate_excel():
+    data = {
+        'Phase': ['1. Monnaie', '2. Équipes', '3. Obstacles', '4. Règlement', '5. Ravitaillement', '6. Plan'],
+        'Mois': ['Sept-Oct', 'Nov-Déc', 'Jan-Fév', 'Fév-Mars', 'Avril-Mai', 'Mai-Juin'],
+        'ODD': ['1, 12', '5, 10', '13', '16', '3', '11'],
+        'Statut': ['Fait', 'Fait', 'En cours', 'À venir', 'À venir', 'À venir']
+    }
+    df = pd.DataFrame(data)
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Planning')
+    return buffer.getvalue()
+
+# --- SIDEBAR (HERRAMIENTAS PYTHON) ---
+with st.sidebar:
+    st.header("🧰 Zone Prof/Admin")
+    
+    # Animación Lottie
+    lottie_medal = load_lottieurl("https://lottie.host/embed/9c0d3a7e-1234-4b5a-8901-abcdef123456/example.json") # URL ejemplo, usamos fallback si falla
+    if lottie_medal:
+        st_lottie(lottie_medal, height=150)
+    else:
+        st.write("🏅")
+
+    # Descargar Excel (Pandas)
+    st.subheader("📊 Planning")
+    excel_data = generate_excel()
+    st.download_button(
+        label="Télécharger Planning (Excel)",
+        data=excel_data,
+        file_name="planning_jo_avenir.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    st.divider()
+
+    # Generar PDF (FPDF)
+    st.subheader("🆔 Carnet Athlète")
+    p_name = st.text_input("Nom", "Élève")
+    p_team = st.text_input("Équipe", "Sans équipe")
+    
+    if st.button("Générer PDF"):
+        pdf_bytes = create_pdf(p_name, p_team)
+        st.download_button(label="📥 Télécharger PDF", data=pdf_bytes, file_name="carnet_jo.pdf", mime="application/pdf")
+
+    st.divider()
+
+    # Procesar Imagen (Pillow)
+    st.subheader("📸 Photo Officielle")
+    uploaded_file = st.file_uploader("Upload photo", type=['jpg', 'png'])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        # Filtro Blanco y Negro (Pillow)
+        gray_image = ImageOps.grayscale(image)
+        st.image(gray_image, caption="Photo d'accréditation")
+
+# Ocultar elementos nativos del cuerpo principal
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
@@ -20,7 +113,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- CÓDIGO FRONTEND COMPLETO ---
+# --- CÓDIGO FRONTEND (HTML/JS) ---
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -50,7 +143,6 @@ html_code = """
         }
 
         body {
-            /* FONDO DEPORTIVO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
@@ -102,8 +194,7 @@ html_code = """
         }
         .map-frame {
             width: 100%; height: 100%; border: 0; 
-            pointer-events: none; /* Fondo fijo */
-            filter: brightness(0.8) contrast(1.1);
+            pointer-events: none; filter: brightness(0.8) contrast(1.1);
         }
         .map-pin {
             position: absolute; width: 40px; height: 40px; background: var(--accent);
@@ -285,7 +376,7 @@ html_code = """
         
         <div class="map-container">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=Carr.+de+Piedrabuena,+S/N,+13002+Ciudad+Real&t=k&z=19&output=embed" 
+                src="https://maps.app.goo.gl/MKZqyuBrgKR5iKPY8" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
 
