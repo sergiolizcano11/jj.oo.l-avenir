@@ -31,23 +31,28 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
+    # Fondo Blanco
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
+    # Borde Azul Olímpico
     pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
     
+    # Título
     pdf.set_font("Arial", 'B', 24)
     pdf.set_text_color(0, 0, 0)
     pdf.set_xy(0, 40)
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
+    # Nombre
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0)
+    pdf.set_text_color(220, 0, 0) # Rojo
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
+    # Trait
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51)
+    pdf.set_text_color(0, 153, 51) # Verde
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
     return pdf.output(dest='S').encode('latin-1')
