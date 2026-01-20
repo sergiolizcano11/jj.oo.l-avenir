@@ -5,7 +5,6 @@ from fpdf import FPDF
 from gtts import gTTS
 from st_audiorec import st_audiorec
 import io
-import base64
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
@@ -15,10 +14,8 @@ st.set_page_config(
     page_icon="🏅"
 )
 
-# --- FUNCIONES BACKEND (PYTHON) ---
-
+# --- FUNCIONES BACKEND ---
 def generate_excel():
-    # Genera un Excel real con datos de la clase
     data = {
         'Équipe': ['Les Titans', 'Eco-Warriors', 'Cyber-Français', 'Green Team'],
         'Missions Complétées': [5, 4, 6, 3],
@@ -32,12 +29,11 @@ def generate_excel():
     return buffer.getvalue()
 
 def create_player_card(name, trait):
-    # Genera un PDF (Carnet)
     pdf = FPDF()
     pdf.add_page()
     pdf.set_fill_color(255, 255, 255)
     pdf.rect(0, 0, 210, 297, 'F')
-    pdf.set_draw_color(0, 102, 204) # Azul Olímpico
+    pdf.set_draw_color(0, 102, 204)
     pdf.set_line_width(3)
     pdf.rect(20, 20, 170, 257)
     
@@ -47,24 +43,22 @@ def create_player_card(name, trait):
     pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
     
     pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0) # Rojo
+    pdf.set_text_color(220, 0, 0)
     pdf.cell(210, 25, name.upper(), 0, 1, 'C')
     
     pdf.set_font("Arial", 'I', 18)
-    pdf.set_text_color(0, 153, 51) # Verde
+    pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     
     return pdf.output(dest='S').encode('latin-1')
 
-# --- BARRA LATERAL (HERRAMIENTAS PROFESOR & DUA) ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.markdown("<h1 style='text-align: center;'>🏅</h1>", unsafe_allow_html=True)
     st.title("Boîte à Outils")
     
-    # DUA: TEXT TO SPEECH
     with st.expander("🗣️ Lecteur (TTS)"):
-        st.caption("Écrivez pour écouter en français.")
-        text_to_speak = st.text_input("Texte:", "Bonjour tout le monde!")
+        text_to_speak = st.text_input("Texte en français:", "Bonjour!")
         if st.button("Écouter 🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang='fr')
@@ -74,35 +68,28 @@ with st.sidebar:
             except:
                 st.error("Erreur audio.")
 
-    # DUA: MICROFONO
     with st.expander("🎙️ Micro (Oral)"):
-        st.caption("Enregistrez-vous.")
         wav_audio_data = st_audiorec()
         if wav_audio_data is not None:
             st.audio(wav_audio_data, format='audio/wav')
-            st.success("Audio capturé !")
+            st.success("Enregistré!")
 
     st.divider()
-
-    # ZONA ALUMNO
-    st.markdown("### 🎒 Élève")
-    p_name = st.text_input("Ton Nom:", "Athlète")
-    p_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
+    
+    player_name = st.text_input("Ton Nom:", "Athlète")
+    player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
     if st.button("📄 Ma Carte Officielle"):
-        pdf_data = create_player_card(p_name, p_trait)
+        pdf_data = create_player_card(player_name, player_trait)
         st.download_button("📥 Télécharger PDF", pdf_data, file_name="carte_jo.pdf", mime="application/pdf")
 
     st.divider()
-
-    # ZONA ADMIN
-    st.markdown("### 🔐 Professeur")
-    password = st.text_input("Mot de passe:", type="password")
+    
+    password = st.text_input("Mot de passe Prof:", type="password")
     if password == "prof123":
-        st.success("Accès Autorisé")
-        excel_data = generate_excel()
-        st.download_button("📊 Télécharger Excel Classe", data=excel_data, file_name="notes_jo.xlsx")
+        st.success("Mode Admin")
+        st.download_button("📊 Excel Classe", data=generate_excel(), file_name="notes.xlsx")
 
-# --- ESTILOS CSS GLOBALES ---
+# --- CSS ---
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
@@ -115,7 +102,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- FRONTEND HTML/JS (INTERFAZ VISUAL) ---
+# --- FRONTEND HTML/JS ---
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -132,7 +119,6 @@ html_code = """
 
     <style>
         :root {
-            /* PALETA VIVA (Glass Light) */
             --primary: #0066CC; --accent: #FFB100; --success: #009933; --danger: #CC0000;
             --card-bg: rgba(255, 255, 255, 0.95); --text-main: #222222;
             --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif;
@@ -140,23 +126,22 @@ html_code = """
         }
 
         body {
-            /* FONDO DEPORTIVO */
             background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
             color: var(--text-main); font-family: var(--font-body); margin: 0; padding: 0;
             overflow-x: hidden; padding-bottom: 90px;
         }
-        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.6); z-index: -1; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* --- MAPA DRAGGABLE CORREGIDO (Zoom 17 - Santo Tomás) --- */
+        /* --- MAPA DRAGGABLE ZOOM 19 (Santo Tomás) --- */
         .map-container {
-            position: relative; width: 100%; height: 500px;
+            position: relative; width: 100%; height: 550px; /* Más alto */
             background: #eee; border-radius: 15px; overflow: hidden; 
             border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         .map-frame {
-            width: 100%; height: 120%; border: 0; margin-top: -10%;
-            pointer-events: none; /* EL MAPA NO SE MUEVE, LOS PINES SÍ */
+            width: 100%; height: 100%; border: 0; 
+            pointer-events: none;
         }
         .map-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -171,31 +156,29 @@ html_code = """
         }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
 
-        /* --- ESTILOS GENERALES --- */
-        .solid-panel { background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
+        /* UI Common */
+        .solid-panel { background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
         .btn-solid { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 #004c99; }
         .btn-solid:active { transform: translateY(4px); box-shadow: none; }
         .btn-outline { background: white; border: 2px solid #ccc; color: #555; border-radius: 10px; padding: 10px; width: 100%; font-weight: 700; margin-top: 5px; cursor: pointer; }
         .btn-outline.active { border-color: var(--success); color: var(--success); background: #e6ffea; }
         .solid-input, .solid-textarea { background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }
-        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
-
-        /* --- HOME & FASES --- */
-        .home-btn { background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .home-btn:active { transform: scale(0.95); }
-        .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
-        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
-
-        /* --- AVATAR --- */
+        
+        /* Avatar & Traits */
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
         .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }
+        .avatar-item:active { transform: scale(0.95); }
         .avatar-item.selected { background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); }
+        .avatar-item i { pointer-events: none; }
         .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; }
         .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
         .trait-tag.selected { background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }
 
-        /* --- MISC --- */
+        /* Others */
+        .home-btn { background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
+        .phase-card { cursor: pointer; border-left: 6px solid #ccc; background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .phase-card.completed { border-left-color: var(--success); background: #f0fff4; }
+        .odd-badge { font-size: 0.65rem; background: #333; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-weight: bold; margin-bottom: 4px; display: inline-block; }
         .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }
         .dock-item { font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }
         .dock-item.active { color: var(--primary); transform: translateY(-5px); }
@@ -212,6 +195,7 @@ html_code = """
         .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
         .game-opt.correct { border-color: var(--success); background: #d4edda; }
         .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
+        .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
         .journal-entry { background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .journal-img { width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #eee; }
         .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
@@ -271,29 +255,29 @@ html_code = """
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=Colegio+Santo+Tomas+Ciudad+Real&t=k&z=17&ie=UTF8&iwloc=&output=embed" 
+                src="https://maps.google.com/?cid=15540682098433123425&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQ" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
             <div class="map-overlay" ondrop="app.drop(event)" ondragover="app.allowDrop(event)">
-                <div id="pin1" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 20%; left: 20%; background:#FFD93D;">🚀</div>
-                <div id="pin2" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 50%; background:#FF6B6B;">🏁</div>
-                <div id="pin3" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 80%; left: 30%; background:#4D79FF;">🍎</div>
-                <div id="pin4" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 70%; background:#28a745;">♻️</div>
-                <div id="pin5" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 70%; left: 70%; background:#17a2b8;">💧</div>
-                <div id="pin6" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 40%; left: 40%; background:#e83e8c;">🏥</div>
+                <div id="pin1" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
+                <div id="pin2" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 30%; background:#FF6B6B;">🏁</div>
+                <div id="pin3" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 50%; background:#4D79FF;">🍎</div>
+                <div id="pin4" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 70%; background:#28a745;">♻️</div>
+                <div id="pin5" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 10%; background:#17a2b8;">💧</div>
+                <div id="pin6" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 30%; background:#e83e8c;">🏥</div>
+                <div id="pin7" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 50%; background:#6f42c1;">⛺</div>
+                <div id="pin8" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 70%; background:#fd7e14;">📊</div>
+                <div id="pin9" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 10%; background:#20c997;">🎤</div>
             </div>
         </div>
         
         <div class="solid-panel mt-3">
-            <h6 class="text-dark mb-2 fw-bold">Légende Gymkhana</h6>
+            <h6 class="text-dark mb-2"><i class="fa-solid fa-hand-pointer text-primary"></i> Organisez les épreuves</h6>
             <div class="row g-2 small text-secondary">
-                <div class="col-6">🚀 Départ</div>
-                <div class="col-6">🏁 Arrivée</div>
-                <div class="col-6">🍎 Ravitaillement</div>
-                <div class="col-6">♻️ Recyclage</div>
-                <div class="col-6">💧 Point d'Eau</div>
-                <div class="col-6">🏥 Premiers Secours</div>
+                <div class="col-4">🚀 Départ</div> <div class="col-4">🏁 Arrivée</div> <div class="col-4">🍎 Ravito</div>
+                <div class="col-4">♻️ Recyclage</div> <div class="col-4">💧 Eau</div> <div class="col-4">🏥 Secours</div>
+                <div class="col-4">⛺ Base</div> <div class="col-4">📊 Score</div> <div class="col-4">🎤 Jueces</div>
             </div>
         </div>
         <button onclick="app.nav('home')" class="btn btn-link text-secondary w-100">Retour</button>
@@ -318,11 +302,11 @@ html_code = """
 
     <section id="view-rules" class="view">
         <h4 class="fw-bold mb-3 text-dark">RÈGLEMENT</h4>
-        <div class="parchment mb-4">
+        <div class="parchment mb-4" style="background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017;">
             <h4 class="text-center">PACTE DE FAIR-PLAY</h4>
             <p class="small">Nous nous engageons à :</p>
             <ul class="small ps-3"><li>Respecter les adversaires.</li><li>Accepter la défaite.</li><li>Jouer sans tricher.</li></ul>
-            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)">Cliquez pour signer</div></div>
+            <div class="text-center mt-4"><strong>Signature :</strong><div class="signature-pad" id="sign-pad" onclick="app.signPact(this)" style="width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: 'Reenie Beanie', cursive; font-size: 2.5rem; color: #000080; cursor: pointer;">Cliquez pour signer</div></div>
         </div>
         <button onclick="app.nav('dashboard')" class="btn btn-link text-secondary w-100">Retour</button>
     </section>
