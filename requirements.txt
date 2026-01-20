@@ -2,9 +2,7 @@ streamlit
 watchdog
 pandas
 openpyxl
-streamlit-lottie
 Pillow
 fpdf
-requests
 gTTS
 streamlit-audiorec
