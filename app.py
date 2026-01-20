@@ -129,14 +129,40 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* MAPA */
-        .map-container { position: relative; width: 100%; height: 600px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .map-frame { width: 100%; height: 100%; border: 0; pointer-events: none; }
-        .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
-        .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
+        /* --- MAPA ROTADO 90 GRADOS --- */
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 650px; /* Altura ajustada para la rotación */
+            background: #eee; border-radius: 15px; overflow: hidden;
+            border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            /* Centramos el iframe para rotarlo */
+            display: flex; justify-content: center; align-items: center;
+        }
+        .map-frame {
+            /* Truco CSS: Hacemos el iframe más grande y lo rotamos */
+            width: 150%;
+            height: 150%;
+            border: 0;
+            pointer-events: none;
+            /* ROTACIÓN AQUÍ */
+            transform: rotate(90deg);
+            flex-shrink: 0; /* Evita que se deforme en el flex container */
+        }
+        .map-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5;
+        }
+        .map-pin {
+            position: absolute; width: 55px; height: 55px; background: var(--accent);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10;
+            transform: translate(-50%, -50%); transition: transform 0.1s;
+        }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
 
-        /* UI */
+        /* UI Common */
         .solid-panel { background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
         .btn-solid { background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 #004c99; }
         .btn-solid:active { transform: translateY(4px); box-shadow: none; }
@@ -231,7 +257,7 @@ html_code = """
         
         <div class="map-container" id="map-area">
             <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=38.9763,-3.9443&t=k&z=19&output=embed" 
+                src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
                 frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
             </iframe>
             
