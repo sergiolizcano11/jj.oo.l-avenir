@@ -133,21 +133,18 @@ html_code = """
         .map-container {
             position: relative;
             width: 100%;
-            height: 650px; /* Altura ajustada para la rotación */
+            height: 650px;
             background: #eee; border-radius: 15px; overflow: hidden;
             border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            /* Centramos el iframe para rotarlo */
             display: flex; justify-content: center; align-items: center;
         }
         .map-frame {
-            /* Truco CSS: Hacemos el iframe más grande y lo rotamos */
             width: 150%;
             height: 150%;
             border: 0;
             pointer-events: none;
-            /* ROTACIÓN AQUÍ */
             transform: rotate(90deg);
-            flex-shrink: 0; /* Evita que se deforme en el flex container */
+            flex-shrink: 0;
         }
         .map-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -399,7 +396,7 @@ html_code = """
             user: { sprite: "", name: "", trait: "" },
             teamName: "",
             missions: [
-                { id: 1, type: "code", code: "MONNAIE", title: "L'Argent Solidaire", odd: "ODD 1 & 12", icon: "fa-coins", desc: "Sept-Oct: Création monnaie.", completed: false },
+                { id: 1, type: "code", code: "MONNAIE", title: "Conférence ODD", odd: "Tous les ODD", icon: "fa-coins", desc: "Sept-Oct: Création monnaie.", completed: false },
                 { id: 2, type: "team", title: "Équipes Inclusives", odd: "ODD 5 & 10", icon: "fa-users", desc: "Nov-Dec: Création équipes.", completed: false },
                 { id: 3, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13", icon: "fa-recycle", desc: "Jan-Fév: Design épreuves.", completed: false },
                 { id: 4, type: "rules", title: "Règlement", odd: "ODD 16", icon: "fa-scale-balanced", desc: "Fév-Mars: Fair-play.", completed: false },
