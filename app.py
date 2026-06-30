@@ -101,7 +101,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- FRONTEND HTML/JS (MEJORADO) ---
+# --- FRONTEND HTML/JS ---
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -169,7 +169,10 @@ html_code = """
         .thermo-container { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
-        .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 35%; transition: width 1s ease-out; }
+        
+        /* BARRA GLOBAL: Empieza en 0% */
+        .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
+        
         .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
         .game-opt.correct { border-color: var(--success); background: #d4edda; }
         .game-opt.wrong { border-color: var(--danger); background: #f8d7da; }
@@ -331,6 +334,7 @@ html_code = """
         </div>
         <div id="game-interface" style="display:none;">
             <div class="solid-panel">
+                <!-- BOTÓN DE AUDIO (DUA) INTEGRADO EN EL JUEGO -->
                 <div class="d-flex justify-content-center align-items-center mb-3">
                     <h5 id="game-question" class="fw-bold mb-0 text-center text-dark">...</h5>
                     <button class="tts-btn" onclick="app.speakQuestion()">🔊</button>
@@ -479,6 +483,12 @@ html_code = """
                     document.getElementById('home-team-badge').innerText = "Équipe: " + DATA.teamName; 
                     document.getElementById('home-team-badge').classList.replace('bg-secondary', 'bg-success');
                 }
+                
+                // Barra de impacto Global interactiva (Crece de 0% hacia arriba con el XP)
+                const xpMax = 500; // Limite de XP necesario para llenar la barra global de la clase
+                let globalPct = Math.min(((DATA.user.xp || 0) / xpMax) * 100, 100);
+                const globalBar = document.querySelector('.fill-global');
+                if(globalBar) globalBar.style.width = globalPct + "%";
             },
 
             saveProfile: () => {
@@ -566,18 +576,35 @@ html_code = """
                 setTimeout(() => { app.nav('dashboard'); }, 1500); 
             },
             
-            // --- DUA NATIVO: Lector de texto en Arcade ---
-            speakQuestion: () => {
-                const text = document.getElementById('game-question').innerText;
+            // --- DUA NATIVO: Funciones de lectura (Text-to-Speech) ---
+            speakText: (text) => {
+                window.speechSynthesis.cancel(); // Detiene cualquier audio previo
                 const msg = new SpeechSynthesisUtterance();
                 msg.text = text;
-                msg.lang = 'fr-FR'; // Forzar pronunciación francesa
+                msg.lang = 'fr-FR'; // Fuerza la lectura con fonética francesa
                 window.speechSynthesis.speak(msg);
+            },
+            
+            speakQuestion: () => {
+                const text = document.getElementById('game-question').innerText;
+                app.speakText(text);
             },
 
             startGame: (t) => { currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); },
             renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin! Score: "+score); app.addXP(score); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
-            checkAnswer: (i) => { if(i===currentQuiz[qIndex].c){score+=10; confetti();} setTimeout(()=>{qIndex++; app.renderQuestion()},500); },
+            
+            checkAnswer: (i) => { 
+                // Leer la respuesta seleccionada (Fonética CUA/DUA)
+                app.speakText(currentQuiz[qIndex].a[i]);
+                
+                if(i===currentQuiz[qIndex].c){
+                    score+=10; 
+                    confetti();
+                } 
+                // Aumentado el setTimeout a 1200ms para que dé tiempo a escuchar la palabra completa
+                setTimeout(()=>{qIndex++; app.renderQuestion()}, 1200); 
+            },
+            
             exitGame: () => { document.getElementById('game-interface').style.display='none'; document.getElementById('game-menu').style.display='block'; },
             
             selectMood: (e,m) => { document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); e.classList.add('selected'); document.getElementById('selected-mood').value=m; },
