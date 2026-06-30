@@ -48,7 +48,7 @@ def create_player_card(name, trait):
     pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
     return pdf.output(dest='S').encode('latin-1')
 
-# --- BARRA LATERAL ---
+# --- BARRA LATERAL (Profesor) ---
 with st.sidebar:
     st.markdown("<h1 style='text-align: center;'>🏅</h1>", unsafe_allow_html=True)
     st.title("Boîte à Outils")
@@ -73,6 +73,7 @@ with st.sidebar:
 
     st.divider()
     
+    st.markdown("### 🖨️ Imprimer la Carte")
     player_name = st.text_input("Ton Nom:", "Athlète")
     player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
     if st.button("📄 Ma Carte Officielle"):
@@ -81,12 +82,13 @@ with st.sidebar:
 
     st.divider()
     
+    st.markdown("### 🔐 Zone Professeur")
     password = st.text_input("Mot de passe Prof:", type="password")
     if password == "prof123":
         st.success("Mode Admin")
-        st.download_button("📊 Excel Classe", data=generate_excel(), file_name="notes.xlsx")
+        st.download_button("📊 Télécharger Excel Classe", data=generate_excel(), file_name="notes.xlsx")
 
-# --- CSS ---
+# --- CSS BASE ---
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
@@ -99,7 +101,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- FRONTEND HTML/JS ---
+# --- FRONTEND HTML/JS (MEJORADO) ---
 html_code = """
 <!DOCTYPE html>
 <html lang="es">
@@ -130,33 +132,10 @@ html_code = """
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
         /* --- MAPA ROTADO 90 GRADOS --- */
-        .map-container {
-            position: relative;
-            width: 100%;
-            height: 650px;
-            background: #eee; border-radius: 15px; overflow: hidden;
-            border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            display: flex; justify-content: center; align-items: center;
-        }
-        .map-frame {
-            width: 150%;
-            height: 150%;
-            border: 0;
-            pointer-events: none;
-            transform: rotate(90deg);
-            flex-shrink: 0;
-        }
-        .map-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5;
-        }
-        .map-pin {
-            position: absolute; width: 55px; height: 55px; background: var(--accent);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10;
-            transform: translate(-50%, -50%); transition: transform 0.1s;
-        }
+        .map-container { position: relative; width: 100%; height: 650px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; }
+        .map-frame { width: 150%; height: 150%; border: 0; pointer-events: none; transform: rotate(90deg); flex-shrink: 0; }
+        .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
+        .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
         .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
 
         /* UI Common */
@@ -202,6 +181,15 @@ html_code = """
         .vote-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
         .parchment { background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017; font-family: var(--font-body); }
         .signature-pad { width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2.5rem; color: #000080; cursor: pointer; }
+        
+        /* GAMIFICACIÓN: BADGE XP */
+        .xp-badge {
+            background: var(--accent); color: #000; font-weight: 900;
+            padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff;
+        }
+        .tts-btn { background: transparent; border: none; font-size: 1.5rem; margin-left: 10px; cursor: pointer; transition: 0.2s;}
+        .tts-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
@@ -221,8 +209,11 @@ html_code = """
 
     <section id="view-home" class="view">
         <div class="d-flex align-items-center justify-content-between mb-4 mt-3">
-            <div><h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1;">J.O. AVENIR</h1><small class="text-secondary fw-bold">LYCÉE OLYMPIQUE</small></div>
-            <div class="text-center" onclick="app.showView('view-avatar')" style="cursor:pointer"><div id="mini-avatar" style="font-size: 2rem; color: var(--primary); background: white; padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div></div>
+            <div>
+                <h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1;">J.O. AVENIR</h1>
+                <div class="xp-badge mt-1"><i class="fa-solid fa-star"></i> <span id="xp-counter">0</span> XP</div>
+            </div>
+            <div class="text-center" onclick="app.nav('avatar')" style="cursor:pointer"><div id="mini-avatar" style="font-size: 2.2rem; color: var(--primary); background: white; padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div></div>
         </div>
         <div class="thermo-container">
             <div class="d-flex justify-content-between align-items-end"><h6 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-earth-americas text-primary me-2"></i> IMPACT GLOBAL</h6><small class="text-danger fw-bold">CLASSE</small></div>
@@ -251,13 +242,8 @@ html_code = """
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">PLAN DU CAMPUS</h4>
         <p class="text-secondary small">Glissez les icônes sur le collège !</p>
-        
         <div class="map-container" id="map-area">
-            <iframe class="map-frame" 
-                src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" 
-                frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-            </iframe>
-            
+            <iframe class="map-frame" src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
             <div class="map-overlay" ondrop="app.drop(event)" ondragover="app.allowDrop(event)">
                 <div id="pin1" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
                 <div id="pin2" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 30%; background:#FF6B6B;">🏁</div>
@@ -273,7 +259,6 @@ html_code = """
                 <div id="pin12" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 70%; background:#6c757d;">🚧</div>
             </div>
         </div>
-        
         <div class="solid-panel mt-3">
             <h6 class="text-dark mb-2"><i class="fa-solid fa-hand-pointer text-primary"></i> Organisez les épreuves</h6>
             <div class="row g-2 small text-secondary">
@@ -345,7 +330,13 @@ html_code = """
             </div>
         </div>
         <div id="game-interface" style="display:none;">
-            <div class="solid-panel"><h5 id="game-question" class="fw-bold mb-4 text-center text-dark">...</h5><div id="game-options"></div></div>
+            <div class="solid-panel">
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <h5 id="game-question" class="fw-bold mb-0 text-center text-dark">...</h5>
+                    <button class="tts-btn" onclick="app.speakQuestion()">🔊</button>
+                </div>
+                <div id="game-options"></div>
+            </div>
             <button onclick="app.exitGame()" class="btn btn-outline w-100">Quitter</button>
         </div>
     </section>
@@ -392,8 +383,9 @@ html_code = """
         ];
         const TRAITS = ["Fort", "Rapide", "Stratège", "Sociable", "Créatif"];
 
-        const DATA = {
-            user: { sprite: "", name: "", trait: "" },
+        // BASE DE DATOS (CON SOPORTE LOCALSTORAGE)
+        let DATA = {
+            user: { sprite: "", name: "", trait: "", xp: 0 },
             teamName: "",
             missions: [
                 { id: 1, type: "code", code: "MONNAIE", title: "Conférence ODD", odd: "Tous les ODD", icon: "fa-coins", desc: "Sept-Oct: Création monnaie.", completed: false },
@@ -423,10 +415,18 @@ html_code = """
 
         const app = {
             init: () => {
+                // RECUPERAR DATOS GUARDADOS EN LOCALSTORAGE
+                const savedData = localStorage.getItem("jo_avenir_data");
+                if(savedData) {
+                    DATA = JSON.parse(savedData);
+                }
+
+                // Generar UI
                 const grid = document.getElementById('sprite-container');
                 SPRITES.forEach(icon => {
                     const div = document.createElement('div');
                     div.className = "avatar-item";
+                    if(DATA.user.sprite === icon) div.classList.add('selected');
                     div.innerHTML = `<i class="fa-solid ${icon}"></i>`;
                     div.onclick = function() {
                         document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
@@ -440,6 +440,7 @@ html_code = """
                 TRAITS.forEach(t => {
                     const span = document.createElement('span');
                     span.className = "trait-tag";
+                    if(DATA.user.trait === t) span.classList.add('selected');
                     span.innerText = t;
                     span.onclick = function() {
                         document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
@@ -448,13 +449,44 @@ html_code = """
                     };
                     tCont.appendChild(span);
                 });
+
+                // Si ya estaba logueado, saltar a home
+                if(DATA.user.name !== "") {
+                    document.getElementById('player-name').value = DATA.user.name;
+                    app.updateHeader();
+                    app.showView('view-home');
+                    document.getElementById('app-dock').style.display = 'flex';
+                }
+            },
+
+            saveData: () => {
+                localStorage.setItem("jo_avenir_data", JSON.stringify(DATA));
+                app.updateHeader();
+            },
+
+            addXP: (amount) => {
+                DATA.user.xp = (DATA.user.xp || 0) + amount;
+                app.saveData();
+                confetti();
+            },
+
+            updateHeader: () => {
+                document.getElementById('xp-counter').innerText = DATA.user.xp || 0;
+                if(DATA.user.sprite) {
+                    document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
+                }
+                if(DATA.teamName !== "") {
+                    document.getElementById('home-team-badge').innerText = "Équipe: " + DATA.teamName; 
+                    document.getElementById('home-team-badge').classList.replace('bg-secondary', 'bg-success');
+                }
             },
 
             saveProfile: () => {
                 const name = document.getElementById('player-name').value;
                 if(!DATA.user.sprite || !name || !DATA.user.trait) return alert("Complétez votre profil !");
                 DATA.user.name = name;
-                document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
+                if(DATA.user.xp === undefined) DATA.user.xp = 0;
+                app.saveData();
                 app.showView('view-home');
                 document.getElementById('app-dock').style.display = 'flex';
             },
@@ -508,8 +540,9 @@ html_code = """
                 const inp = document.getElementById('user-input').value.trim().toUpperCase();
                 const m = DATA.missions.find(x => x.id === DATA.currentId);
                 if(inp === m.code) {
-                    m.completed = true; document.getElementById('feedback-msg').innerText = "Validé !"; document.getElementById('feedback-msg').style.color = "#28a745"; confetti();
-                    setTimeout(() => { app.closeModal(); app.renderList(); app.updateThermo(); }, 1000);
+                    m.completed = true; document.getElementById('feedback-msg').innerText = "Validé ! +50 XP"; document.getElementById('feedback-msg').style.color = "#28a745"; 
+                    app.addXP(50);
+                    setTimeout(() => { app.closeModal(); app.renderList(); app.updateThermo(); }, 1200);
                 } else { document.getElementById('feedback-msg').innerText = "Incorrect"; document.getElementById('feedback-msg').style.color = "#dc3545"; }
             },
 
@@ -522,13 +555,28 @@ html_code = """
             finalizeTeam: () => {
                 const team = document.getElementById('team-name-create').value; if(!team || !document.getElementById('check-class').classList.contains('active')) return alert("Nom + Validation requis!");
                 DATA.teamName = team; DATA.missions[1].completed = true; DATA.nominees.push(team);
-                document.getElementById('home-team-badge').innerText = "Équipe: " + team; document.getElementById('home-team-badge').classList.replace('bg-secondary', 'bg-success');
-                confetti(); app.nav('dashboard');
+                app.addXP(100);
+                app.nav('dashboard');
             },
-            signPact: (el) => { el.innerHTML = "<i>Signé : " + DATA.user.name + "</i>"; el.classList.add("signed"); el.style.fontFamily = "var(--font-hand)"; DATA.missions[3].completed = true; confetti(); setTimeout(() => { app.nav('dashboard'); }, 1500); },
+            signPact: (el) => { 
+                if(DATA.missions[3].completed) return;
+                el.innerHTML = "<i>Signé : " + DATA.user.name + "</i>"; el.classList.add("signed"); el.style.fontFamily = "var(--font-hand)"; 
+                DATA.missions[3].completed = true; 
+                app.addXP(50);
+                setTimeout(() => { app.nav('dashboard'); }, 1500); 
+            },
             
+            // --- DUA NATIVO: Lector de texto en Arcade ---
+            speakQuestion: () => {
+                const text = document.getElementById('game-question').innerText;
+                const msg = new SpeechSynthesisUtterance();
+                msg.text = text;
+                msg.lang = 'fr-FR'; // Forzar pronunciación francesa
+                window.speechSynthesis.speak(msg);
+            },
+
             startGame: (t) => { currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); },
-            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin! Score: "+score); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
+            renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin! Score: "+score); app.addXP(score); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
             checkAnswer: (i) => { if(i===currentQuiz[qIndex].c){score+=10; confetti();} setTimeout(()=>{qIndex++; app.renderQuestion()},500); },
             exitGame: () => { document.getElementById('game-interface').style.display='none'; document.getElementById('game-menu').style.display='block'; },
             
@@ -539,15 +587,15 @@ html_code = """
                 const e={d:new Date().toLocaleDateString(), m, t, i:null}; 
                 if(f.files && f.files[0]){ 
                     const r=new FileReader(); 
-                    r.onload=(ev)=>{e.i=ev.target.result; DATA.journal.unshift(e); app.renderJournal();}; 
+                    r.onload=(ev)=>{e.i=ev.target.result; DATA.journal.unshift(e); app.addXP(20); app.renderJournal();}; 
                     r.readAsDataURL(f.files[0]); 
-                } else { DATA.journal.unshift(e); app.renderJournal(); } 
-                document.getElementById('journal-text').value=""; confetti(); 
+                } else { DATA.journal.unshift(e); app.addXP(20); app.renderJournal(); } 
+                document.getElementById('journal-text').value=""; 
             },
             renderJournal: () => { const c=document.getElementById('journal-feed'); c.innerHTML=""; DATA.journal.forEach(e=>{ c.innerHTML+=`<div class='journal-entry'><div class='d-flex justify-content-between'><span>${e.d}</span><span>${e.m}</span></div><p class='text-dark'>${e.t}</p>${e.i?`<img src='${e.i}' class='journal-img'>`:''}</div>`}); },
 
             showNominees: (c) => { if(DATA.votes[c]) return alert("Déjà voté!"); document.getElementById('oscars-menu').style.display='none'; document.getElementById('oscars-voting').style.display='block'; const l=document.getElementById('nominees-list'); l.innerHTML=""; DATA.nominees.forEach(t=>{ if(t!==DATA.teamName) l.innerHTML+=`<div class='vote-card'><span class='text-dark fw-bold'>${t}</span><button class='btn btn-sm btn-outline-warning' onclick='app.submitVote("${c}","${t}")'>VOTER</button></div>` }); },
-            submitVote: (c,t) => { if(confirm("Sûr?")){ DATA.votes[c]=true; app.exitVoting(); confetti(); } },
+            submitVote: (c,t) => { if(confirm("Sûr?")){ DATA.votes[c]=true; app.addXP(10); app.exitVoting(); } },
             exitVoting: () => { document.getElementById('oscars-voting').style.display='none'; document.getElementById('oscars-menu').style.display='block'; },
 
             updateThermo: () => {
@@ -555,6 +603,8 @@ html_code = """
                 document.getElementById('team-progress-bar').style.width = pct + "%"; document.getElementById('team-percent-text').innerText = pct + "%";
             }
         };
+        
+        // Iniciar la App
         app.init();
     </script>
 </body>
