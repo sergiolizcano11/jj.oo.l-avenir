@@ -32,7 +32,8 @@ translations = {
         'admin': "🔐 Zone Professeur", 'pass': "Mot de passe Prof:",
         'chap_control': "Contrôle de l'Histoire", 'chap': "Chapitre:", 
         'data_link': "Lien Base de Données:", 'reset': "🗑️ Effacer (Test)",
-        'chap_titles': {1: "Chapitre 1: L'Appel", 2: "Chapitre 2: L'Équipe", 3: "Chapitre 3: L'Action", 4: "Chapitre 4: Le Défi", 5: "Chapitre 5: La Gloire"}
+        'chap_titles': {1: "Chapitre 1: L'Appel", 2: "Chapitre 2: L'Équipe", 3: "Chapitre 3: L'Action", 4: "Chapitre 4: Le Défi", 5: "Chapitre 5: La Gloire"},
+        'journal_title': "JOURNAL DE BORD", 'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO", 'post': "POSTER L'ENTRÉE"
     },
     'Español': {
         'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'tts_help': "Escribe para escuchar.", 
@@ -42,7 +43,8 @@ translations = {
         'admin': "🔐 Zona Profesor", 'pass': "Contraseña:",
         'chap_control': "Control Historia", 'chap': "Capítulo:", 
         'data_link': "Enlace Base de Datos:", 'reset': "🗑️ Borrar (Test)",
-        'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: El Reto", 5: "Cap. 5: La Gloria"}
+        'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: El Reto", 5: "Cap. 5: La Gloria"},
+        'journal_title': "DIARIO DE A BORDO", 'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO", 'post': "PUBLICAR ENTRADA"
     },
     'English': {
         'tools': "Toolkit", 'tts': "🗣️ Text Reader", 'tts_help': "Type to listen.", 
@@ -52,7 +54,8 @@ translations = {
         'admin': "🔐 Teacher Zone", 'pass': "Password:",
         'chap_control': "Story Control", 'chap': "Chapter:", 
         'data_link': "Database Link:", 'reset': "🗑️ Delete (Test)",
-        'chap_titles': {1: "Chapter 1: The Call", 2: "Chapter 2: The Team", 3: "Chapter 3: The Action", 4: "Chapter 4: Challenge", 5: "Chapter 5: Glory"}
+        'chap_titles': {1: "Chapter 1: The Call", 2: "Chapter 2: The Team", 3: "Chapter 3: The Action", 4: "Chapter 4: Challenge", 5: "Chapter 5: Glory"},
+        'journal_title': "LOGBOOK / DIARY", 'mood': "MOOD", 'reflection': "Reflection...", 'photo': "PHOTO", 'post': "POST ENTRY"
     }
 }
 t = translations[st.session_state.lang]
@@ -198,7 +201,7 @@ html_code = f"""
         .solid-panel {{ background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }}
         .btn-solid {{ background-color: var(--primary); color: white; border: none; border-radius: 10px; padding: 12px; width: 100%; font-weight: 800; text-transform: uppercase; font-family: var(--font-head); margin-top: 10px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 0 #004c99; }}
         .btn-solid:active {{ transform: translateY(4px); box-shadow: none; }}
-        .solid-input {{ background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }}
+        .solid-input, .solid-textarea {{ background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }}
         
         .avatar-grid {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }}
         .avatar-item {{ background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }}
@@ -233,6 +236,13 @@ html_code = f"""
         .medal.unlocked.silver {{ background: #c0c0c0; color: white; border-color: #888; box-shadow: 0 0 10px rgba(192,192,192,0.5); }}
         .medal.unlocked.gold {{ background: #ffd700; color: white; border-color: #b8860b; box-shadow: 0 0 15px rgba(255,215,0,0.8); }}
 
+        /* ESTILOS DEL DIARIO */
+        .mood-btn {{ font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }}
+        .mood-btn.selected {{ background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }}
+        .journal-entry {{ background: white; border-left: 4px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }}
+        .journal-img {{ width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid #eee; }}
+        .custom-file-input {{ width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }}
+
         /* ESTRELLA DORADA FINAL */
         #golden-star {{ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; text-shadow: 0 0 20px #FFD700; cursor: pointer; z-index: 100; display: none; animation: pulse-star 1.5s infinite; }}
         @keyframes pulse-star {{ 0% {{ transform: translate(-50%, -50%) scale(1); }} 50% {{ transform: translate(-50%, -50%) scale(1.3); }} 100% {{ transform: translate(-50%, -50%) scale(1); }} }}
@@ -245,20 +255,7 @@ html_code = f"""
 </head>
 <body>
 
-    <section id="view-avatar" class="view active-view">
-        <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">CRÉEZ VOTRE ATHLÈTE</h2><p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p></div>
-        <div class="avatar-grid" id="sprite-container"></div>
-        <div class="solid-panel mt-4">
-            <label class="small text-secondary mb-2 d-block text-start">NOM</label>
-            <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
-            <label class="small text-secondary mb-2 d-block text-start mt-3">SUPER-POUVOIR</label>
-            <div class="trait-selector" id="trait-container"></div>
-            <input type="hidden" id="selected-trait">
-        </div>
-        <button onclick="app.saveProfile()" class="btn-solid mt-2">ENTRER DANS LE STADE <i class="fa-solid fa-person-running"></i></button>
-    </section>
-
-    <section id="view-home" class="view">
+    <section id="view-home" class="view active-view">
         <div class="d-flex align-items-center justify-content-between mb-2 mt-3">
             <div>
                 <h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1; margin:0;">J.O. AVENIR</h1>
@@ -282,16 +279,30 @@ html_code = f"""
         <div class="row g-3">
             <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark mb-2"></i><h3 class="mb-0">MISSIONS</h3></div></div>
             <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-map')"><i class="fa-solid fa-map-location-dot text-success mb-2"></i><h3 class="mb-0">PLAN</h3></div></div>
-            <div class="col-12"><div class="home-btn flex-row gap-3 py-3" style="min-height: auto;" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-0"></i><h3 class="mb-0">ARCADE / TESTS</h3></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info mb-2"></i><h3 class="mb-0">JOURNAL</h3></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-2"></i><h3 class="mb-0">ARCADE</h3></div></div>
         </div>
     </section>
 
-    <!-- MISSIONS & ZONA SECRETA -->
+    <!-- ACCRÉDITATION (PERFIL) -->
+    <section id="view-avatar" class="view">
+        <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">CRÉEZ VOTRE ATHLÈTE</h2><p class="text-secondary small">CHOISISSEZ VOTRE CHAMPION</p></div>
+        <div class="avatar-grid" id="sprite-container"></div>
+        <div class="solid-panel mt-4">
+            <label class="small text-secondary mb-2 d-block text-start">NOM</label>
+            <input type="text" id="player-name" class="solid-input" placeholder="Pseudo...">
+            <label class="small text-secondary mb-2 d-block text-start mt-3">SUPER-POUVOIR</label>
+            <div class="trait-selector" id="trait-container"></div>
+            <input type="hidden" id="selected-trait">
+        </div>
+        <button onclick="app.saveProfile()" class="btn-solid mt-2">ENTRER DANS LE STADE <i class="fa-solid fa-person-running"></i></button>
+    </section>
+
+    <!-- PROGRESSION & CODES -->
     <section id="view-dashboard" class="view">
         <h4 class="fw-bold mb-3 text-dark">PROGRESSION</h4>
         <div id="missions-list"></div>
         
-        <!-- ZONA SECRETA PARA CÓDIGOS -->
         <div class="secret-box">
             <h6 class="fw-bold text-dark"><i class="fa-solid fa-user-secret text-danger"></i> CODES SECRETS</h6>
             <p class="small text-secondary mb-2">As-tu un code caché ? Remplissez pour obtenir de l'XP !</p>
@@ -304,10 +315,9 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">Retour</button>
     </section>
 
-    <!-- MAPA CON HUEVO DE PASCUA -->
+    <!-- MAPA -->
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">PLAN DU CAMPUS</h4>
-        <p class="text-secondary small">Glissez les icônes sur le collège !</p>
         <div class="map-container" id="map-area">
             <iframe class="map-frame" src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
             <div class="map-overlay" ondrop="app.drop(event)" ondragover="app.allowDrop(event)">
@@ -317,7 +327,6 @@ html_code = f"""
                 <div id="pin4" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 70%; background:#28a745;">♻️</div>
                 <div id="pin5" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 10%; background:#17a2b8;">💧</div>
                 <div id="pin6" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 30%; left: 30%; background:#e83e8c;">🏥</div>
-                <!-- ESTRELLA DORADA FINAL OCULTA -->
                 <div id="golden-star" onclick="app.claimUltimateReward()">🌟</div>
             </div>
             <div class="map-hud">
@@ -328,18 +337,45 @@ html_code = f"""
                 </div>
             </div>
         </div>
-        <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">Retour</button>
+        <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">Retour</button>
     </section>
 
-    <!-- ARCADE / PRUEBAS INTERDISCIPLINARES -->
+    <!-- DIARIO DE A BORDO -->
+    <section id="view-journal" class="view">
+        <h4 class="fw-bold mb-3 text-dark">{t['journal_title']}</h4>
+        <div class="solid-panel">
+            <label class="small text-secondary mb-2">{t['mood']}</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="mood-btn" onclick="app.selectMood(this, '🤩')">🤩</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '🙂')">🙂</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '😐')">😐</div>
+                <div class="mood-btn" onclick="app.selectMood(this, '🥱')">🥱</div>
+            </div>
+            <input type="hidden" id="selected-mood">
+            <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="{t['reflection']}"></textarea>
+            <label class="small text-secondary mb-2 mt-2">{t['photo']}</label>
+            <input type="file" id="journal-photo" class="custom-file-input" accept="image/*">
+            <button onclick="app.saveJournal()" class="btn-solid">{t['post']}</button>
+        </div>
+        <div id="journal-feed" class="mt-4"></div>
+        <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">Retour</button>
+    </section>
+
+    <!-- ARCADE COMPLETO (10 JUEGOS) -->
     <section id="view-games" class="view">
-        <h4 class="fw-bold mb-3 text-dark">ARCADE INTERDISCIPLINAIRE</h4>
+        <h4 class="fw-bold mb-3 text-dark">ARCADE & DÉFIS</h4>
         <div id="game-menu">
             <div class="row g-2">
-                <div class="col-6"><div class="solid-panel p-3 text-center" onclick="app.startGame('bio')"><i class="fa-solid fa-leaf fa-2x text-success mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">SVT (ODD 12/13)</h6></div></div>
-                <div class="col-6"><div class="solid-panel p-3 text-center" onclick="app.startGame('geo')"><i class="fa-solid fa-globe fa-2x text-info mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">GÉO & HIST</h6></div></div>
-                <div class="col-6"><div class="solid-panel p-3 text-center" onclick="app.startGame('math')"><i class="fa-solid fa-calculator fa-2x text-primary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">MATHS</h6></div></div>
-                <div class="col-6"><div class="solid-panel p-3 text-center" onclick="app.startGame('fra')"><i class="fa-solid fa-comment-dots fa-2x text-danger mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">FRANÇAIS</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('num')"><i class="fa-solid fa-calculator fa-2x text-primary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">NOMBRES</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('fut')"><i class="fa-solid fa-rocket fa-2x text-warning mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">FUTUR</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('part')"><i class="fa-solid fa-pizza-slice fa-2x text-danger mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">PARTITIFS</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('sport')"><i class="fa-solid fa-person-running fa-2x text-success mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">SPORT</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('imp')"><i class="fa-solid fa-bullhorn fa-2x text-info mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">IMPÉRATIF</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('odd')"><i class="fa-solid fa-earth-europe fa-2x text-primary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">QUIZ ODD</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('bio')"><i class="fa-solid fa-leaf fa-2x text-success mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">SVT (ODD)</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('geo')"><i class="fa-solid fa-globe fa-2x text-info mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">GÉO & HIST</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('math')"><i class="fa-solid fa-square-root-variable fa-2x text-secondary mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">MATHS</h6></div></div>
+                <div class="col-6"><div class="solid-panel p-3 mb-2 text-center" onclick="app.startGame('fra')"><i class="fa-solid fa-comment-dots fa-2x text-danger mb-2"></i><br><h6 class="mb-0 text-dark fw-bold small">FRANÇAIS</h6></div></div>
             </div>
         </div>
         <div id="game-interface" style="display:none;">
@@ -359,10 +395,11 @@ html_code = f"""
         <div id="nav-home" class="dock-item active" onclick="app.nav('home', this)"><i class="fa-solid fa-house"></i></div>
         <div id="nav-dash" class="dock-item" onclick="app.nav('dashboard', this)"><i class="fa-solid fa-list-check"></i></div>
         <div id="nav-map" class="dock-item" onclick="app.nav('map', this)"><i class="fa-solid fa-map"></i></div>
+        <div id="nav-journal" class="dock-item" onclick="app.nav('journal', this)"><i class="fa-solid fa-book-open"></i></div>
         <div id="nav-games" class="dock-item" onclick="app.nav('games', this)"><i class="fa-solid fa-gamepad"></i></div>
     </div>
 
-    <!-- MODAL MISIONES NORMALES -->
+    <!-- MODALS -->
     <div id="customModal" class="custom-modal">
         <div class="modal-content-solid">
             <h4 id="modal-title" class="fw-bold mb-2">...</h4>
@@ -388,12 +425,14 @@ html_code = f"""
 
     <script>
         const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf"];
-        const TRAITS = ["Vitesse", "Force", "Stratégie", "Créativité"];
+        const TRAITS = ["Vitesse", "Force", "Stratège", "Créativité"];
 
         // CÓDIGOS SECRETOS INDEPENDIENTES
         const SECRET_CODES = {{
             "PARIS2024": {{ xp: 100, msg: "Bonus Olympique ! (+100 XP)" }},
-            "COUBERTIN": {{ xp: 50, msg: "Histoire trouvée ! (+50 XP)" }}
+            "BIO-ECO24": {{ xp: 50, msg: "Expert en Recyclage (SVT) ! (+50 XP)" }},
+            "GEO-OLYMP": {{ xp: 50, msg: "Historien des Jeux (Géo) ! (+50 XP)" }},
+            "MATH-VIT": {{ xp: 50, msg: "Génie des Calculs (Maths) ! (+50 XP)" }}
         }};
 
         let DATA = {{
@@ -404,11 +443,18 @@ html_code = f"""
                 {{ id: 2, type: "code", code: "ECO", title: "Obstacles Avenir", odd: "ODD 13", icon: "fa-recycle", desc: "Design d'épreuves.", completed: false }},
                 {{ id: 3, type: "code", code: "MAP", title: "Plan Parcours", odd: "ODD 11", icon: "fa-map", desc: "Tracé sur le campus.", completed: false }}
             ],
+            journal: [],
             currentId: null
         }};
 
-        // PRUEBAS DE ARCADE POR ASIGNATURA (4º ESO)
+        // ARCADE COMPLETO (10 JUEGOS)
         const QUIZ = {{
+            num: [{{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0 }}, {{ q: "90 + 9 = ?", a: ["99", "89", "19"], c: 0 }}],
+            fut: [{{ q: "Demain je ___ (manger)", a: ["mangerai", "mangerais", "mange"], c: 0 }}, {{ q: "Nous ___ (finir)", a: ["finirons", "finissons", "finiront"], c: 0 }}],
+            part: [{{ q: "Je veux ___ eau", a: ["de l'", "du", "de la"], c: 0 }}, {{ q: "Il mange ___ pain", a: ["du", "de la", "des"], c: 0 }}],
+            sport: [{{ q: "Le sport dans l'eau ?", a: ["Natation", "Judo", "Tennis"], c: 0 }}, {{ q: "Pour courir il faut des...", a: ["Baskets", "Gants", "Lunettes"], c: 0 }}],
+            imp: [{{ q: "(Courir) ___ vite !", a: ["Cours", "Coures", "Courir"], c: 0 }}, {{ q: "(Arrêter) ___ de parler !", a: ["Arrêtez", "Arrêter", "Arrêtes"], c: 0 }}],
+            odd: [{{ q: "ODD 13 c'est pour...", a: ["Le Climat", "La Faim", "L'Eau"], c: 0 }}, {{ q: "ODD 5 c'est...", a: ["Égalité", "Santé", "Villes"], c: 0 }}],
             bio: [
                 {{ q: "Où jeter une bouteille en plastique ? (ODD 12)", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0 }}, 
                 {{ q: "Quel gaz cause l'effet de serre ? (ODD 13)", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0 }}
@@ -434,6 +480,7 @@ html_code = f"""
                 const savedData = localStorage.getItem("jo_avenir_data");
                 if(savedData) DATA = JSON.parse(savedData);
                 if(!DATA.user.usedCodes) DATA.user.usedCodes = [];
+                if(!DATA.journal) DATA.journal = [];
 
                 const grid = document.getElementById('sprite-container');
                 SPRITES.forEach(icon => {{
@@ -491,7 +538,6 @@ html_code = f"""
                 if (xp >= 300) document.getElementById('m-silver').classList.add('unlocked', 'silver');
                 if (xp >= 500) document.getElementById('m-gold').classList.add('unlocked', 'gold');
 
-                // BARRA GLOBAL Y ESTRELLA MISTERIOSA
                 const globalMax = 1000; 
                 let globalPct = Math.min((xp / globalMax) * 100, 100);
                 const globalBar = document.querySelector('.fill-global');
@@ -540,6 +586,7 @@ html_code = f"""
                 if(el) {{ if(typeof el === 'string') document.getElementById(el).classList.add('active'); else el.classList.add('active'); }}
                 app.showView('view-' + viewName);
                 if(viewName === 'dashboard') {{ app.renderList(); }}
+                if(viewName === 'journal') {{ app.renderJournal(); }}
             }},
 
             showView: (id) => {{
@@ -585,13 +632,25 @@ html_code = f"""
                 }} else {{ document.getElementById('feedback-msg').innerText = "Incorrect"; document.getElementById('feedback-msg').style.color = "#dc3545"; }}
             }},
 
-            speakText: (text) => {{
-                window.speechSynthesis.cancel();
-                const msg = new SpeechSynthesisUtterance(); msg.text = text; msg.lang = 'fr-FR'; 
-                window.speechSynthesis.speak(msg);
+            // LÓGICA DEL DIARIO JS
+            selectMood: (e,m) => {{ document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); e.classList.add('selected'); document.getElementById('selected-mood').value=m; }},
+            saveJournal: () => {{ 
+                const m=document.getElementById('selected-mood').value, t=document.getElementById('journal-text').value, f=document.getElementById('journal-photo'); 
+                if(!m||!t) return alert("Remplissez !"); 
+                const e={{d:new Date().toLocaleDateString(), m, t, i:null}}; 
+                if(f.files && f.files[0]){{ 
+                    const r=new FileReader(); 
+                    r.onload=(ev)=>{{e.i=ev.target.result; DATA.journal.unshift(e); app.addXP(20); app.saveData(); app.renderJournal();}}; 
+                    r.readAsDataURL(f.files[0]); 
+                }} else {{ DATA.journal.unshift(e); app.addXP(20); app.saveData(); app.renderJournal(); }} 
+                document.getElementById('journal-text').value=""; 
+                document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected'));
+                document.getElementById('selected-mood').value="";
             }},
-            speakQuestion: () => {{ app.speakText(document.getElementById('game-question').innerText); }},
+            renderJournal: () => {{ const c=document.getElementById('journal-feed'); c.innerHTML=""; if(!DATA.journal) DATA.journal=[]; DATA.journal.forEach(e=>{{ c.innerHTML+=`<div class='journal-entry'><div class='d-flex justify-content-between'><span>${{e.d}}</span><span>${{e.m}}</span></div><p class='text-dark'>${{e.t}}</p>${{e.i?`<img src='${{e.i}}' class='journal-img'>`:''}}</div>`}}); }},
 
+            speakText: (text) => {{ window.speechSynthesis.cancel(); const msg = new SpeechSynthesisUtterance(); msg.text = text; msg.lang = 'fr-FR'; window.speechSynthesis.speak(msg); }},
+            speakQuestion: () => {{ app.speakText(document.getElementById('game-question').innerText); }},
             startGame: (t) => {{ currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); }},
             renderQuestion: () => {{ if(qIndex>=currentQuiz.length){{ alert("Fin! Score: "+score); app.addXP(score); app.exitGame(); return;}} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${{i}})'>${{ans}}</div>`}}); }},
             checkAnswer: (i) => {{ app.speakText(currentQuiz[qIndex].a[i]); if(i===currentQuiz[qIndex].c){{score+=10; confetti();}} setTimeout(()=>{{qIndex++; app.renderQuestion()}}, 1200); }},
