@@ -5,6 +5,9 @@ from fpdf import FPDF
 from gtts import gTTS
 from st_audiorec import st_audiorec
 import io
+import qrcode
+import tempfile
+import os
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
@@ -15,14 +18,15 @@ st.set_page_config(
 )
 
 # --- FUNCIONES BACKEND ---
-def generate_excel():
-    data = {
+def get_mock_data():
+    return pd.DataFrame({
         'Équipe': ['Les Titans', 'Eco-Warriors', 'Cyber-Français', 'Green Team'],
-        'Missions Complétées': [5, 4, 6, 3],
-        'Score Global': [1200, 950, 1400, 800],
-        'Statut Fair-Play': ['Signé', 'Signé', 'Signé', 'Non Signé']
-    }
-    df = pd.DataFrame(data)
+        'Missions Validées': [5, 4, 6, 3],
+        'XP Moyen': [850, 620, 1100, 450],
+        'Fair-Play': ['Oui', 'Oui', 'Oui', 'Non']
+    })
+
+def generate_excel(df):
     buffer = io.BytesIO()
     with pd.ExcelWriter(buffer, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Suivi_Classe')
@@ -31,28 +35,47 @@ def generate_excel():
 def create_player_card(name, trait):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_fill_color(255, 255, 255)
+    
+    # Diseño de la tarjeta
+    pdf.set_fill_color(250, 250, 250)
     pdf.rect(0, 0, 210, 297, 'F')
     pdf.set_draw_color(0, 102, 204)
-    pdf.set_line_width(3)
-    pdf.rect(20, 20, 170, 257)
-    pdf.set_font("Arial", 'B', 24)
-    pdf.set_text_color(0, 0, 0)
+    pdf.set_line_width(4)
+    pdf.rect(15, 15, 180, 267)
+    
+    pdf.set_font("Arial", 'B', 28)
+    pdf.set_text_color(0, 51, 153)
     pdf.set_xy(0, 40)
-    pdf.cell(210, 15, "J.O. DE L'AVENIR", 0, 1, 'C')
-    pdf.set_font("Arial", 'B', 40)
-    pdf.set_text_color(220, 0, 0)
-    pdf.cell(210, 25, name.upper(), 0, 1, 'C')
-    pdf.set_font("Arial", 'I', 18)
+    pdf.cell(210, 15, "ACCRÉDITATION OFFICIELLE", 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'B', 45)
+    pdf.set_text_color(220, 20, 60)
+    pdf.cell(210, 30, name.upper(), 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'I', 20)
     pdf.set_text_color(0, 153, 51)
-    pdf.cell(210, 10, f"Atout: {trait}", 0, 1, 'C')
+    pdf.cell(210, 15, f"Spécialité : {trait}", 0, 1, 'C')
+    
+    # Generar QR dinámico
+    qr = qrcode.make(f"Athlete: {name} | Spécialité: {trait} | Statut: Autorisé")
+    
+    # Usar un archivo temporal seguro para la imagen del QR
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
+        qr.save(tmpfile.name)
+        # Posicionar el QR en el PDF
+        pdf.image(tmpfile.name, x=75, y=120, w=60)
+    
+    # Limpiar el archivo temporal
+    os.remove(tmpfile.name)
+    
     return pdf.output(dest='S').encode('latin-1')
 
-# --- BARRA LATERAL (Profesor) ---
+# --- BARRA LATERAL ---
 with st.sidebar:
     st.markdown("<h1 style='text-align: center;'>🏅</h1>", unsafe_allow_html=True)
     st.title("Boîte à Outils")
     
+    # DUA
     with st.expander("🗣️ Lecteur (TTS)"):
         text_to_speak = st.text_input("Texte:", "Bonjour!")
         if st.button("Écouter 🔊"):
@@ -73,22 +96,36 @@ with st.sidebar:
 
     st.divider()
     
-    st.markdown("### 🖨️ Imprimer la Carte")
+    # ALUMNO
+    st.markdown("### 🎒 Carte Élève")
     player_name = st.text_input("Ton Nom:", "Athlète")
     player_trait = st.selectbox("Ton Atout:", ["Vitesse", "Force", "Stratégie", "Créativité"])
-    if st.button("📄 Ma Carte Officielle"):
+    if st.button("📄 Ma Carte (+ QR)"):
         pdf_data = create_player_card(player_name, player_trait)
-        st.download_button("📥 Télécharger PDF", pdf_data, file_name="carte_jo.pdf", mime="application/pdf")
+        st.download_button("📥 Télécharger PDF", pdf_data, file_name="carte_jo_qr.pdf", mime="application/pdf")
 
     st.divider()
     
+    # PROFESOR: SUPER DASHBOARD
     st.markdown("### 🔐 Zone Professeur")
     password = st.text_input("Mot de passe Prof:", type="password")
     if password == "prof123":
-        st.success("Mode Admin")
-        st.download_button("📊 Télécharger Excel Classe", data=generate_excel(), file_name="notes.xlsx")
+        st.success("Accès Admin Autorisé")
+        
+        # Muestra datos en vivo
+        df_classe = get_mock_data()
+        
+        st.markdown("**📊 KPI de la Classe**")
+        col1, col2 = st.columns(2)
+        col1.metric("Missions Totales", "18")
+        col2.metric("XP Classe", "3120 XP")
+        
+        st.markdown("**📈 Performance (XP)**")
+        st.bar_chart(df_classe.set_index('Équipe')['XP Moyen'])
+        
+        st.download_button("📥 Télécharger Rapport Excel", data=generate_excel(df_classe), file_name="rapport_complet.xlsx")
 
-# --- CSS BASE ---
+# --- CSS ---
 st.markdown("""
     <style>
         #MainMenu {visibility: hidden;}
@@ -131,12 +168,56 @@ html_code = """
         }
         body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.5); z-index: -1; }
 
-        /* --- MAPA ROTADO 90 GRADOS --- */
-        .map-container { position: relative; width: 100%; height: 650px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2); display: flex; justify-content: center; align-items: center; }
-        .map-frame { width: 150%; height: 150%; border: 0; pointer-events: none; transform: rotate(90deg); flex-shrink: 0; }
+        /* --- MAPA PREMIUM (ROTADO + HUD FLOTANTE + ANIMACIÓN) --- */
+        .map-container {
+            position: relative; width: 100%; height: 650px;
+            background: #eee; border-radius: 15px; overflow: hidden;
+            border: 4px solid white; box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .map-frame {
+            width: 150%; height: 150%; border: 0; pointer-events: none;
+            transform: rotate(90deg); flex-shrink: 0; filter: contrast(1.1) saturate(1.1);
+        }
         .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
-        .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.4); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
-        .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.2); }
+        
+        .map-pin {
+            position: absolute; width: 55px; height: 55px; background: var(--accent);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.5); font-size: 1.8rem; z-index: 10;
+            transform: translate(-50%, -50%); transition: transform 0.1s;
+        }
+        .map-pin:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.1); }
+        
+        /* Animación de Pulso para pines principales */
+        .pin-pulse { animation: gps-pulse 2s infinite; }
+        @keyframes gps-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 177, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 177, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 177, 0, 0); }
+        }
+
+        /* Leyenda Flotante (Glassmorphism HUD) */
+        .map-hud {
+            position: absolute; bottom: 15px; left: 15px; right: 15px;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
+            border-radius: 12px; padding: 15px; z-index: 20;
+            border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            pointer-events: none; /* Para no molestar al arrastrar por encima */
+        }
+
+        /* --- MEDALLAS (GAMIFICACIÓN) --- */
+        .medal-box { display: flex; gap: 10px; margin-top: 10px; }
+        .medal {
+            width: 40px; height: 40px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 1.2rem;
+            background: #eee; color: #aaa; border: 2px solid #ccc;
+            transition: 0.3s;
+        }
+        .medal.unlocked.bronze { background: #cd7f32; color: white; border-color: #8c5622; box-shadow: 0 0 10px rgba(205,127,50,0.5); }
+        .medal.unlocked.silver { background: #c0c0c0; color: white; border-color: #888; box-shadow: 0 0 10px rgba(192,192,192,0.5); }
+        .medal.unlocked.gold { background: #ffd700; color: white; border-color: #b8860b; box-shadow: 0 0 15px rgba(255,215,0,0.8); }
 
         /* UI Common */
         .solid-panel { background-color: var(--card-bg); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(10px); }
@@ -169,8 +250,6 @@ html_code = """
         .thermo-container { background: white; border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid #eee; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
         .fill-team { background: linear-gradient(90deg, #4D79FF, #00d2ff); height: 100%; width: 0%; transition: width 1s ease-out; }
-        
-        /* BARRA GLOBAL: Empieza en 0% */
         .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
         
         .game-opt { background: #f0f0f0; padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; text-align: center; font-weight: bold; transition: 0.2s; }
@@ -184,13 +263,7 @@ html_code = """
         .vote-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
         .parchment { background: #fffbe6; color: #333; padding: 20px; border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid #d4a017; font-family: var(--font-body); }
         .signature-pad { width: 100%; height: 100px; border: 2px dashed #ccc; background: white; margin-top: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-hand); font-size: 2.5rem; color: #000080; cursor: pointer; }
-        
-        /* GAMIFICACIÓN: BADGE XP */
-        .xp-badge {
-            background: var(--accent); color: #000; font-weight: 900;
-            padding: 5px 15px; border-radius: 20px; font-size: 0.9rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff;
-        }
+        .xp-badge { background: var(--accent); color: #000; font-weight: 900; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 2px solid #fff; }
         .tts-btn { background: transparent; border: none; font-size: 1.5rem; margin-left: 10px; cursor: pointer; transition: 0.2s;}
         .tts-btn:active { transform: scale(0.9); }
     </style>
@@ -215,6 +288,12 @@ html_code = """
             <div>
                 <h1 style="font-family: var(--font-head); font-weight: 900; font-size: 2rem; color: #222; line-height: 1;">J.O. AVENIR</h1>
                 <div class="xp-badge mt-1"><i class="fa-solid fa-star"></i> <span id="xp-counter">0</span> XP</div>
+                <!-- SISTEMA DE MEDALLAS -->
+                <div class="medal-box">
+                    <div id="m-bronze" class="medal"><i class="fa-solid fa-medal"></i></div>
+                    <div id="m-silver" class="medal"><i class="fa-solid fa-medal"></i></div>
+                    <div id="m-gold" class="medal"><i class="fa-solid fa-trophy"></i></div>
+                </div>
             </div>
             <div class="text-center" onclick="app.nav('avatar')" style="cursor:pointer"><div id="mini-avatar" style="font-size: 2.2rem; color: var(--primary); background: white; padding: 5px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1);"></div></div>
         </div>
@@ -245,10 +324,13 @@ html_code = """
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">PLAN DU CAMPUS</h4>
         <p class="text-secondary small">Glissez les icônes sur le collège !</p>
+        
+        <!-- MAPA CON HUD FLOTANTE -->
         <div class="map-container" id="map-area">
             <iframe class="map-frame" src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+            
             <div class="map-overlay" ondrop="app.drop(event)" ondragover="app.allowDrop(event)">
-                <div id="pin1" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
+                <div id="pin1" class="map-pin pin-pulse" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
                 <div id="pin2" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 30%; background:#FF6B6B;">🏁</div>
                 <div id="pin3" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 50%; background:#4D79FF;">🍎</div>
                 <div id="pin4" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 10%; left: 70%; background:#28a745;">♻️</div>
@@ -261,16 +343,19 @@ html_code = """
                 <div id="pin11" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 50%; background:#343a40;">📸</div>
                 <div id="pin12" class="map-pin" draggable="true" ondragstart="app.drag(event)" style="top: 50%; left: 70%; background:#6c757d;">🚧</div>
             </div>
-        </div>
-        <div class="solid-panel mt-3">
-            <h6 class="text-dark mb-2"><i class="fa-solid fa-hand-pointer text-primary"></i> Organisez les épreuves</h6>
-            <div class="row g-2 small text-secondary">
-                <div class="col-3">🚀 Départ</div> <div class="col-3">🏁 Arrivée</div> <div class="col-3">🍎 Ravito</div> <div class="col-3">♻️ Recyclage</div>
-                <div class="col-3">💧 Eau</div> <div class="col-3">🏥 Secours</div> <div class="col-3">⛺ Base</div> <div class="col-3">📊 Score</div>
-                <div class="col-3">🎤 Jueces</div> <div class="col-3">🏆 Podio</div> <div class="col-3">📸 Prensa</div> <div class="col-3">🚧 Obstacles</div>
+
+            <!-- HUD (Panel de control transparente integrado en el mapa) -->
+            <div class="map-hud">
+                <h6 class="text-dark mb-2 fw-bold" style="font-family: var(--font-head); font-size: 0.85rem;"><i class="fa-solid fa-hand-pointer text-primary"></i> LÉGENDE GYMKHANA</h6>
+                <div class="row g-1 small text-dark" style="font-size: 0.7rem; font-weight: bold;">
+                    <div class="col-3">🚀 Départ</div> <div class="col-3">🏁 Arrivée</div> <div class="col-3">🍎 Ravito</div> <div class="col-3">♻️ Recyclage</div>
+                    <div class="col-3">💧 Eau</div> <div class="col-3">🏥 Secours</div> <div class="col-3">⛺ Base</div> <div class="col-3">📊 Score</div>
+                    <div class="col-3">🎤 Jueces</div> <div class="col-3">🏆 Podio</div> <div class="col-3">📸 Prensa</div> <div class="col-3">🚧 Obstacles</div>
+                </div>
             </div>
         </div>
-        <button onclick="app.nav('home')" class="btn btn-link text-secondary w-100">Retour</button>
+        
+        <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">Retour</button>
     </section>
 
     <section id="view-debate" class="view">
@@ -334,7 +419,6 @@ html_code = """
         </div>
         <div id="game-interface" style="display:none;">
             <div class="solid-panel">
-                <!-- BOTÓN DE AUDIO (DUA) INTEGRADO EN EL JUEGO -->
                 <div class="d-flex justify-content-center align-items-center mb-3">
                     <h5 id="game-question" class="fw-bold mb-0 text-center text-dark">...</h5>
                     <button class="tts-btn" onclick="app.speakQuestion()">🔊</button>
@@ -387,7 +471,6 @@ html_code = """
         ];
         const TRAITS = ["Fort", "Rapide", "Stratège", "Sociable", "Créatif"];
 
-        // BASE DE DATOS (CON SOPORTE LOCALSTORAGE)
         let DATA = {
             user: { sprite: "", name: "", trait: "", xp: 0 },
             teamName: "",
@@ -419,13 +502,9 @@ html_code = """
 
         const app = {
             init: () => {
-                // RECUPERAR DATOS GUARDADOS EN LOCALSTORAGE
                 const savedData = localStorage.getItem("jo_avenir_data");
-                if(savedData) {
-                    DATA = JSON.parse(savedData);
-                }
+                if(savedData) DATA = JSON.parse(savedData);
 
-                // Generar UI
                 const grid = document.getElementById('sprite-container');
                 SPRITES.forEach(icon => {
                     const div = document.createElement('div');
@@ -454,7 +533,6 @@ html_code = """
                     tCont.appendChild(span);
                 });
 
-                // Si ya estaba logueado, saltar a home
                 if(DATA.user.name !== "") {
                     document.getElementById('player-name').value = DATA.user.name;
                     app.updateHeader();
@@ -475,18 +553,23 @@ html_code = """
             },
 
             updateHeader: () => {
-                document.getElementById('xp-counter').innerText = DATA.user.xp || 0;
-                if(DATA.user.sprite) {
-                    document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
-                }
+                const xp = DATA.user.xp || 0;
+                document.getElementById('xp-counter').innerText = xp;
+                
+                if(DATA.user.sprite) document.getElementById('mini-avatar').innerHTML = `<i class="fa-solid ${DATA.user.sprite}"></i>`;
+                
                 if(DATA.teamName !== "") {
                     document.getElementById('home-team-badge').innerText = "Équipe: " + DATA.teamName; 
                     document.getElementById('home-team-badge').classList.replace('bg-secondary', 'bg-success');
                 }
                 
-                // Barra de impacto Global interactiva (Crece de 0% hacia arriba con el XP)
-                const xpMax = 500; // Limite de XP necesario para llenar la barra global de la clase
-                let globalPct = Math.min(((DATA.user.xp || 0) / xpMax) * 100, 100);
+                // Medallas
+                if (xp >= 100) document.getElementById('m-bronze').classList.add('unlocked', 'bronze');
+                if (xp >= 300) document.getElementById('m-silver').classList.add('unlocked', 'silver');
+                if (xp >= 500) document.getElementById('m-gold').classList.add('unlocked', 'gold');
+
+                // Barra Global
+                let globalPct = Math.min((xp / 500) * 100, 100);
                 const globalBar = document.querySelector('.fill-global');
                 if(globalBar) globalBar.style.width = globalPct + "%";
             },
@@ -576,32 +659,23 @@ html_code = """
                 setTimeout(() => { app.nav('dashboard'); }, 1500); 
             },
             
-            // --- DUA NATIVO: Funciones de lectura (Text-to-Speech) ---
             speakText: (text) => {
-                window.speechSynthesis.cancel(); // Detiene cualquier audio previo
+                window.speechSynthesis.cancel();
                 const msg = new SpeechSynthesisUtterance();
                 msg.text = text;
-                msg.lang = 'fr-FR'; // Fuerza la lectura con fonética francesa
+                msg.lang = 'fr-FR'; 
                 window.speechSynthesis.speak(msg);
             },
-            
-            speakQuestion: () => {
-                const text = document.getElementById('game-question').innerText;
-                app.speakText(text);
-            },
+            speakQuestion: () => { app.speakText(document.getElementById('game-question').innerText); },
 
             startGame: (t) => { currentQuiz = QUIZ[t]; qIndex=0; score=0; document.getElementById('game-menu').style.display='none'; document.getElementById('game-interface').style.display='block'; app.renderQuestion(); },
             renderQuestion: () => { if(qIndex>=currentQuiz.length){ alert("Fin! Score: "+score); app.addXP(score); app.exitGame(); return;} const q=currentQuiz[qIndex]; document.getElementById('game-question').innerText=q.q; const o=document.getElementById('game-options'); o.innerHTML=""; q.a.forEach((ans,i)=>{ o.innerHTML+=`<div class='game-opt' onclick='app.checkAnswer(${i})'>${ans}</div>`}); },
             
             checkAnswer: (i) => { 
-                // Leer la respuesta seleccionada (Fonética CUA/DUA)
                 app.speakText(currentQuiz[qIndex].a[i]);
-                
                 if(i===currentQuiz[qIndex].c){
-                    score+=10; 
-                    confetti();
+                    score+=10; confetti();
                 } 
-                // Aumentado el setTimeout a 1200ms para que dé tiempo a escuchar la palabra completa
                 setTimeout(()=>{qIndex++; app.renderQuestion()}, 1200); 
             },
             
@@ -631,11 +705,11 @@ html_code = """
             }
         };
         
-        // Iniciar la App
         app.init();
     </script>
 </body>
 </html>
 """
 
+components.html(html_code, height=900, scrolling=True)
 components.html(html_code, height=900, scrolling=True)
