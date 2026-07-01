@@ -29,7 +29,7 @@ translations = {
         'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'tts_help': "Écrivez pour écouter.", 
         'listen': "Écouter 🔊", 'mic': "🎙️ Micro (Oral)", 'mic_help': "Enregistrez-vous.",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Ton Atout:", 
-        'traits': ["Vitesse", "Force", "Stratégie", "Créativité"], 'download_pdf': "📄 Ma Carte (+ QR)",
+        'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte (+ QR)",
         'admin': "🔐 Zone Professeur", 'pass': "Mot de passe Prof:",
         'chap_control': "Contrôle de l'Histoire", 'chap': "Chapitre:", 
         'data_link': "Lien Base de Données:", 'reset': "🗑️ Effacer (Test)",
@@ -63,7 +63,7 @@ translations = {
         'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'tts_help': "Escribe para escuchar.", 
         'listen': "Escuchar 🔊", 'mic': "🎙️ Micrófono", 'mic_help': "Grábate.",
         'card': "🎒 Carnet Alumno", 'name': "Tu Nombre:", 'trait': "Tu Habilidad:", 
-        'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad"], 'download_pdf': "📄 Mi Carnet (+ QR)",
+        'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet (+ QR)",
         'admin': "🔐 Zona Profesor", 'pass': "Contraseña:",
         'chap_control': "Control Historia", 'chap': "Capítulo:", 
         'data_link': "Enlace Base de Datos:", 'reset': "🗑️ Borrar (Test)",
@@ -97,7 +97,7 @@ translations = {
         'tools': "Toolkit", 'tts': "🗣️ Text Reader", 'tts_help': "Type to listen.", 
         'listen': "Listen 🔊", 'mic': "🎙️ Microphone", 'mic_help': "Record.",
         'card': "🎒 Student ID", 'name': "Name:", 'trait': "Skill:", 
-        'traits': ["Speed", "Strength", "Strategy", "Creativity"], 'download_pdf': "📄 Download ID (+ QR)",
+        'traits': ["Speed", "Strength", "Strategy", "Creativity", "Eloquence"], 'download_pdf': "📄 Download ID (+ QR)",
         'admin': "🔐 Teacher Zone", 'pass': "Password:",
         'chap_control': "Story Control", 'chap': "Chapter:", 
         'data_link': "Database Link:", 'reset': "🗑️ Delete (Test)",
@@ -215,9 +215,7 @@ with st.sidebar:
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
         col2.markdown(f"<div style='text-align:center; font-weight:bold;'>{t['chap']} {st.session_state.chapter}</div>", unsafe_allow_html=True)
-        
-        # AHORA LLEGA HASTA EL CAPITULO 6
-        if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1) 
+        if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
         
         st.text_input(t['data_link'], "https://docs.google.com/forms/...")
         if st.button(t['reset']): st.warning("Données effacées!")
@@ -272,9 +270,12 @@ html_code = f"""
         .btn-outline {{ background: white; border: 2px solid #ccc; color: #555; border-radius: 10px; padding: 10px; width: 100%; font-weight: 700; margin-top: 5px; cursor: pointer; }}
         .solid-input, .solid-textarea {{ background-color: #f8f9fa; border: 2px solid #ddd; color: #333; padding: 12px; border-radius: 10px; width: 100%; font-size: 1rem; margin-bottom: 10px; font-family: var(--font-body); text-align: center; }}
         
-        .avatar-grid {{ display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }}
-        .avatar-item {{ background: white; border: 2px solid #ccc; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: transform 0.1s; }}
-        .avatar-item.selected {{ background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); }}
+        .avatar-grid {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }}
+        .avatar-item {{ background: white; border: 2px solid #ccc; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; transition: transform 0.1s; font-size: 1.5rem; color: #333; }}
+        .avatar-item.selected {{ background: #e6f0ff; border-color: var(--primary); border-width: 4px; box-shadow: 0 0 10px rgba(0,102,204,0.3); transform: scale(1.1); }}
+        .avatar-item.locked {{ background: #444; border-color: #222; color: #777; }}
+        .avatar-item.unlocked {{ background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }}
+        
         .trait-selector {{ display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; }}
         .trait-tag {{ background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }}
         .trait-tag.selected {{ background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }}
@@ -353,7 +354,6 @@ html_code = f"""
         </div>
     </section>
 
-    <!-- ACCRÉDITATION (PERFIL) -->
     <section id="view-avatar" class="view">
         <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">{t['create_athlete']}</h2><p class="text-secondary small">{t['choose_champ']}</p></div>
         <div class="avatar-grid" id="sprite-container"></div>
@@ -367,7 +367,6 @@ html_code = f"""
         <button onclick="app.saveProfile()" class="btn-solid mt-2">{t['enter_stadium']} <i class="fa-solid fa-person-running"></i></button>
     </section>
 
-    <!-- PROGRESSION & CODES -->
     <section id="view-dashboard" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['progression']}</h4>
         <div id="missions-list"></div>
@@ -384,7 +383,6 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">{t['back']}</button>
     </section>
 
-    <!-- MAPA -->
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['campus_map']}</h4>
         <div class="map-container" id="map-area">
@@ -409,7 +407,6 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">{t['back']}</button>
     </section>
 
-    <!-- DIARIO DE A BORDO -->
     <section id="view-journal" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['journal_title']}</h4>
         <div class="solid-panel">
@@ -430,7 +427,6 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">{t['back']}</button>
     </section>
 
-    <!-- ARCADE COMPLETO (10 JUEGOS) -->
     <section id="view-games" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['arcade_title']}</h4>
         <div id="game-menu">
@@ -459,7 +455,6 @@ html_code = f"""
         </div>
     </section>
 
-    <!-- DOCK MENU -->
     <div id="app-dock" class="dock-nav" style="display:none;">
         <div id="nav-home" class="dock-item active" onclick="app.nav('home', this)"><i class="fa-solid fa-house"></i></div>
         <div id="nav-dash" class="dock-item" onclick="app.nav('dashboard', this)"><i class="fa-solid fa-list-check"></i></div>
@@ -468,7 +463,6 @@ html_code = f"""
         <div id="nav-games" class="dock-item" onclick="app.nav('games', this)"><i class="fa-solid fa-gamepad"></i></div>
     </div>
 
-    <!-- MODALS -->
     <div id="customModal" class="custom-modal">
         <div class="modal-content-solid">
             <h4 id="modal-title" class="fw-bold mb-2">...</h4>
@@ -481,7 +475,6 @@ html_code = f"""
         </div>
     </div>
     
-    <!-- MODAL RECOMPENSA FINAL OCULTA -->
     <div id="ultimateModal" class="custom-modal">
         <div class="modal-content-solid" style="border: 4px solid #FFD700; background: linear-gradient(135deg, #fff 0%, #fff8dc 100%);">
             <i class="fa-solid fa-crown fa-4x mb-3" style="color: #FFD700; text-shadow: 0 4px 10px rgba(255,215,0,0.5);"></i>
@@ -493,27 +486,41 @@ html_code = f"""
     </div>
 
     <script>
-        const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf"];
-        const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}"];
+        // 23 AVATARES NORMALES
+        const SPRITES = [
+            "fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf",
+            "fa-crow", "fa-spider", "fa-fish", "fa-bug", "fa-hippo", "fa-otter", "fa-frog", "fa-horse",
+            "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"
+        ];
+        
+        // 7 AVATARES OCULTOS (Legendarios - Códigos Aleatorios)
+        const HIDDEN_SPRITES = [
+            {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
+            {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
+            {{ icon: "fa-mask", code: "SPARK-44" }}, {{ icon: "fa-hat-wizard", code: "AURA-77" }}, 
+            {{ icon: "fa-gem", code: "ECHO-LUM" }}
+        ];
 
-        // CÓDIGOS SECRETOS INDEPENDIENTES
+        const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
+
+        // CÓDIGOS SECRETOS INDEPENDIENTES (Seguros)
         const SECRET_CODES = {{
-            "PARIS2024": {{ xp: 100, msg: "+100 XP" }},
-            "BIO-ECO24": {{ xp: 50, msg: "+50 XP (SVT)" }},
-            "GEO-OLYMP": {{ xp: 50, msg: "+50 XP (GÉO)" }},
-            "MATH-VIT": {{ xp: 50, msg: "+50 XP (MATHS)" }}
+            "RELAIS-100": {{ xp: 100, msg: "+100 XP (Bonus)" }},
+            "BIOS-50": {{ xp: 50, msg: "+50 XP (SVT)" }},
+            "ATLAS-50": {{ xp: 50, msg: "+50 XP (GÉO)" }},
+            "MATH-50": {{ xp: 50, msg: "+50 XP (MATHS)" }}
         }};
 
         let DATA = {{
-            user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }},
+            user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [] }},
             teamName: "",
             missions: [
-                {{ id: 1, type: "code", code: "MONNAIE", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
-                {{ id: 2, type: "code", code: "EQUIPE", title: "{t['m2_title']}", odd: "ODD 5 & 10", icon: "fa-users", desc: "{t['m2_desc']}", completed: false }},
-                {{ id: 3, type: "code", code: "ECO", title: "{t['m3_title']}", odd: "ODD 13", icon: "fa-recycle", desc: "{t['m3_desc']}", completed: false }},
-                {{ id: 4, type: "code", code: "REGLES", title: "{t['m4_title']}", odd: "ODD 16", icon: "fa-scale-balanced", desc: "{t['m4_desc']}", completed: false }},
-                {{ id: 5, type: "code", code: "FOOD", title: "{t['m5_title']}", odd: "ODD 3", icon: "fa-apple-whole", desc: "{t['m5_desc']}", completed: false }},
-                {{ id: 6, type: "code", code: "MAP", title: "{t['m6_title']}", odd: "ODD 11", icon: "fa-map", desc: "{t['m6_desc']}", completed: false }}
+                {{ id: 1, type: "code", code: "ODD-74A", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
+                {{ id: 2, type: "code", code: "EQ-92B", title: "{t['m2_title']}", odd: "ODD 5 & 10", icon: "fa-users", desc: "{t['m2_desc']}", completed: false }},
+                {{ id: 3, type: "code", code: "ECO-18C", title: "{t['m3_title']}", odd: "ODD 13", icon: "fa-recycle", desc: "{t['m3_desc']}", completed: false }},
+                {{ id: 4, type: "code", code: "REG-44D", title: "{t['m4_title']}", odd: "ODD 16", icon: "fa-scale-balanced", desc: "{t['m4_desc']}", completed: false }},
+                {{ id: 5, type: "code", code: "MIAM-66E", title: "{t['m5_title']}", odd: "ODD 3", icon: "fa-apple-whole", desc: "{t['m5_desc']}", completed: false }},
+                {{ id: 6, type: "code", code: "MAP-31F", title: "{t['m6_title']}", odd: "ODD 11", icon: "fa-map", desc: "{t['m6_desc']}", completed: false }}
             ],
             journal: [],
             currentId: null
@@ -552,9 +559,9 @@ html_code = f"""
                 const savedData = localStorage.getItem("jo_avenir_data");
                 if(savedData) DATA = JSON.parse(savedData);
                 if(!DATA.user.usedCodes) DATA.user.usedCodes = [];
+                if(!DATA.user.unlockedAvatars) DATA.user.unlockedAvatars = [];
                 if(!DATA.journal) DATA.journal = [];
                 
-                // Actualiza títulos de las 6 misiones según idioma
                 if (DATA.missions.length >= 6) {{
                     DATA.missions[0].title = "{t['m1_title']}"; DATA.missions[0].desc = "{t['m1_desc']}";
                     DATA.missions[1].title = "{t['m2_title']}"; DATA.missions[1].desc = "{t['m2_desc']}";
@@ -564,21 +571,10 @@ html_code = f"""
                     DATA.missions[5].title = "{t['m6_title']}"; DATA.missions[5].desc = "{t['m6_desc']}";
                 }}
 
-                const grid = document.getElementById('sprite-container');
-                SPRITES.forEach(icon => {{
-                    const div = document.createElement('div');
-                    div.className = "avatar-item";
-                    if(DATA.user.sprite === icon) div.classList.add('selected');
-                    div.innerHTML = `<i class="fa-solid ${{icon}}"></i>`;
-                    div.onclick = function() {{
-                        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
-                        this.classList.add('selected');
-                        DATA.user.sprite = icon;
-                    }};
-                    grid.appendChild(div);
-                }});
+                app.renderAvatars();
 
                 const tCont = document.getElementById('trait-container');
+                tCont.innerHTML = "";
                 TRAITS.forEach(t => {{
                     const span = document.createElement('span');
                     span.className = "trait-tag";
@@ -598,6 +594,53 @@ html_code = f"""
                     app.showView('view-home');
                     document.getElementById('app-dock').style.display = 'flex';
                 }}
+            }},
+            
+            renderAvatars: () => {{
+                const grid = document.getElementById('sprite-container');
+                grid.innerHTML = "";
+                
+                SPRITES.forEach(icon => {{
+                    const div = document.createElement('div');
+                    div.className = "avatar-item";
+                    if(DATA.user.sprite === icon) div.classList.add('selected');
+                    div.innerHTML = `<i class="fa-solid ${{icon}}"></i>`;
+                    div.onclick = function() {{
+                        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        DATA.user.sprite = icon;
+                    }};
+                    grid.appendChild(div);
+                }});
+                
+                HIDDEN_SPRITES.forEach(h_sprite => {{
+                    const div = document.createElement('div');
+                    if (DATA.user.unlockedAvatars.includes(h_sprite.icon)) {{
+                        div.className = "avatar-item unlocked";
+                        if(DATA.user.sprite === h_sprite.icon) div.classList.add('selected');
+                        div.innerHTML = `<i class="fa-solid ${{h_sprite.icon}}"></i>`;
+                        div.onclick = function() {{
+                            document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
+                            this.classList.add('selected');
+                            DATA.user.sprite = h_sprite.icon;
+                        }};
+                    }} else {{
+                        div.className = "avatar-item locked";
+                        div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
+                        div.onclick = function() {{
+                            const guess = prompt("Code secret pour cet avatar :");
+                            if (guess && guess.trim().toUpperCase() === h_sprite.code) {{
+                                DATA.user.unlockedAvatars.push(h_sprite.icon);
+                                app.saveData();
+                                app.renderAvatars();
+                                confetti();
+                            }} else if (guess) {{
+                                alert("{t['code_invalid']}");
+                            }}
+                        }};
+                    }}
+                    grid.appendChild(div);
+                }});
             }},
 
             saveData: () => {{
@@ -694,14 +737,13 @@ html_code = f"""
                 const currentChapter = {st.session_state.chapter};
                 
                 DATA.missions.forEach((m, idx) => {{
-                    const reqChapter = idx + 1; // Misión 1 = Cap 1, Misión 2 = Cap 2...
+                    const reqChapter = idx + 1; 
                     
                     if (currentChapter >= reqChapter) {{
                         const status = m.completed ? 'completed' : '';
                         const iconCheck = m.completed ? 'fa-check text-success' : 'fa-play text-primary';
                         list.innerHTML += `<div class="solid-panel phase-card d-flex align-items-center ${{status}}" onclick="app.openModal(${{m.id}})"><div class="me-3 text-center" style="width: 40px;"><i class="fa-solid ${{m.icon}} fa-xl text-secondary"></i></div><div class="flex-grow-1"><span class="odd-badge">${{m.odd}}</span><h6 class="mb-0 fw-bold text-dark">${{m.title}}</h6></div><i class="fa-solid ${{iconCheck}}"></i></div>`;
                     }} else {{
-                        // Bloqueo visual por capítulos
                         list.innerHTML += `<div class="solid-panel phase-card d-flex align-items-center locked" style="opacity: 0.6; cursor:not-allowed; background:#f0f0f0;"><div class="me-3 text-center" style="width: 40px;"><i class="fa-solid fa-lock fa-xl text-secondary"></i></div><div class="flex-grow-1"><span class="odd-badge bg-secondary text-light">???</span><h6 class="mb-0 fw-bold text-secondary">{t['locked_chap']} ${{reqChapter}}</h6></div></div>`;
                     }}
                 }});
