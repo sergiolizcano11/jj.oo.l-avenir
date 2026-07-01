@@ -11,13 +11,13 @@ import os
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(
-    page_title="J.O. De l'Avenir",
+    page_title="J.O. De l'Avenir - Portfolio",
     layout="wide",
     initial_sidebar_state="collapsed",
     page_icon="🏅"
 )
 
-# --- SISTEMA MULTI-IDIOMA INTEGRAL ---
+# --- SISTEMA MULTI-IDIOMA ---
 if 'lang' not in st.session_state:
     st.session_state.lang = 'Français'
 if 'chapter' not in st.session_state:
@@ -25,7 +25,6 @@ if 'chapter' not in st.session_state:
 
 translations = {
     'Français': {
-        # Sidebar
         'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'tts_help': "Écrivez pour écouter.", 
         'listen': "Écouter 🔊", 'mic': "🎙️ Micro (Oral)", 'mic_help': "Enregistrez-vous.",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Ton Atout:", 
@@ -33,33 +32,22 @@ translations = {
         'admin': "🔐 Zone Professeur", 'pass': "Mot de passe Prof:",
         'chap_control': "Contrôle de l'Histoire", 'chap': "Chapitre:", 
         'data_link': "Lien Base de Données:", 'reset': "🗑️ Effacer (Test)",
-        'chap_titles': {1: "Chapitre 1: L'Appel", 2: "Chapitre 2: L'Équipe", 3: "Chapitre 3: L'Action", 4: "Chapitre 4: Les Règles", 5: "Chapitre 5: L'Énergie", 6: "Chapitre 6: La Gloire"},
-        # App UI
+        'chap_titles': {1: "Chap. 1: L'Appel", 2: "Chap. 2: L'Équipe", 3: "Chap. 3: L'Action", 4: "Chap. 4: Les Règles", 5: "Chap. 5: L'Énergie", 6: "Chap. 6: La Gloire"},
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
         'name_label': "NOM", 'power_label': "SUPER-POUVOIR", 'enter_stadium': "ENTRER DANS LE STADE",
         'global_impact': "IMPACT GLOBAL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
-        'no_team': "Pas d'équipe", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE / TESTS",
+        'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'bilan_btn': "BILAN",
         'progression': "PROGRESSION", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? Remplissez pour obtenir de l'XP !",
-        'back': "Retour", 'campus_map': "PLAN DU CAMPUS", 'drag_icons': "Glissez les icônes sur le collège !",
-        'legend': "LÉGENDE", 'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'quit': "Quitter",
+        'back': "Retour", 'campus_map': "PLAN DU CAMPUS", 'legend': "LÉGENDE", 'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'quit': "Quitter",
         'locked_chap': "Chapitre Requis", 'validate': "VALIDER", 'close': "Fermer",
         'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅",
-        'win_msg': "La classe a atteint 100% d'Impact Global ! Vous êtes officiellement les maîtres des Jeux de l'Avenir. Le comité vous accorde l'Insigne Ultime.",
+        'win_msg': "La classe a atteint 100% d'Impact Global ! Vous êtes officiellement les maîtres des Jeux.",
         'amazing': "INCROYABLE !", 'journal_title': "JOURNAL DE BORD", 'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO", 'post': "POSTER L'ENTRÉE",
-        # Pins & Alerts
-        'p_start': "Départ", 'p_end': "Arrivée", 'p_food': "Ravito", 'p_recyc': "Recyclage", 'p_water': "Eau", 'p_med': "Secours",
-        'alert_profile': "Complétez votre profil !", 'code_used': "Code déjà utilisé !", 'code_invalid': "Code invalide.",
-        'validated_xp': "Validé ! +100 XP", 'incorrect': "Incorrect", 'end_score': "Fin! Score: ",
-        # Missions (6)
-        'm1_title': "Conférence ODD", 'm1_desc': "Création monnaie solidaire.",
-        'm2_title': "Équipes Inclusives", 'm2_desc': "Création des équipes.",
-        'm3_title': "Obstacles Avenir", 'm3_desc': "Design d'épreuves.",
-        'm4_title': "Règlement", 'm4_desc': "Pacte de Fair-play.",
-        'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains et locaux.",
-        'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
+        'bilan_title': "AUTO-ÉVALUATION (LOMLOE)", 'comp_ccl': "Communication (CCL)", 'comp_cd': "Numérique (CD)", 'comp_cpsaa': "Apprendre à Apprendre (CPSAA)", 'comp_cc': "Citoyenne (CC)",
+        'm1_title': "Conférence ODD", 'm1_desc': "Création monnaie solidaire.", 'm2_title': "Équipes Inclusives", 'm2_desc': "Création des équipes.", 'm3_title': "Obstacles Avenir", 'm3_desc': "Design d'épreuves.",
+        'm4_title': "Règlement", 'm4_desc': "Pacte de Fair-play.", 'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains et locaux.", 'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
     },
     'Español': {
-        # Sidebar
         'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'tts_help': "Escribe para escuchar.", 
         'listen': "Escuchar 🔊", 'mic': "🎙️ Micrófono", 'mic_help': "Grábate.",
         'card': "🎒 Carnet Alumno", 'name': "Tu Nombre:", 'trait': "Tu Habilidad:", 
@@ -68,71 +56,28 @@ translations = {
         'chap_control': "Control Historia", 'chap': "Capítulo:", 
         'data_link': "Enlace Base de Datos:", 'reset': "🗑️ Borrar (Test)",
         'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: Las Reglas", 5: "Cap. 5: La Energía", 6: "Cap. 6: La Gloria"},
-        # App UI
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
         'name_label': "NOMBRE", 'power_label': "SUPERPODER", 'enter_stadium': "ENTRAR AL ESTADIO",
         'global_impact': "IMPACTO GLOBAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
-        'no_team': "Sin equipo", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE / TESTS",
-        'progression': "PROGRESIÓN", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? ¡Introdúcelo para ganar XP!",
-        'back': "Volver", 'campus_map': "MAPA DEL CAMPUS", 'drag_icons': "¡Arrastra los iconos por el colegio!",
-        'legend': "LEYENDA", 'arcade_title': "ARCADE INTERDISCIPLINAR", 'quit': "Salir",
+        'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE", 'bilan_btn': "EVALUACIÓN",
+        'progression': "PROGRESIÓN", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? ¡Gana XP!",
+        'back': "Volver", 'campus_map': "MAPA DEL CAMPUS", 'legend': "LEYENDA", 'arcade_title': "ARCADE INTERDISCIPLINAR", 'quit': "Salir",
         'locked_chap': "Capítulo Requerido", 'validate': "VALIDAR", 'close': "Cerrar",
         'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅",
-        'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global! Sois oficialmente los maestros de los Juegos. El comité os otorga la Insignia Definitiva.",
+        'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global! Sois los maestros de los Juegos.",
         'amazing': "¡INCREÍBLE!", 'journal_title': "DIARIO DE A BORDO", 'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO", 'post': "PUBLICAR ENTRADA",
-        # Pins & Alerts
-        'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín",
-        'alert_profile': "¡Completa tu perfil!", 'code_used': "¡Código ya usado!", 'code_invalid': "Código inválido.",
-        'validated_xp': "¡Validado! +100 XP", 'incorrect': "Incorrecto", 'end_score': "¡Fin! Puntuación: ",
-        # Missions (6)
-        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda solidaria.",
-        'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.",
-        'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.",
-        'm4_title': "Reglamento", 'm4_desc': "Pacto de Fair-play.",
-        'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.",
-        'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en el campus."
-    },
-    'English': {
-        # Sidebar
-        'tools': "Toolkit", 'tts': "🗣️ Text Reader", 'tts_help': "Type to listen.", 
-        'listen': "Listen 🔊", 'mic': "🎙️ Microphone", 'mic_help': "Record.",
-        'card': "🎒 Student ID", 'name': "Name:", 'trait': "Skill:", 
-        'traits': ["Speed", "Strength", "Strategy", "Creativity", "Eloquence"], 'download_pdf': "📄 Download ID (+ QR)",
-        'admin': "🔐 Teacher Zone", 'pass': "Password:",
-        'chap_control': "Story Control", 'chap': "Chapter:", 
-        'data_link': "Database Link:", 'reset': "🗑️ Delete (Test)",
-        'chap_titles': {1: "Chapter 1: The Call", 2: "Chapter 2: The Team", 3: "Chapter 3: The Action", 4: "Chapter 4: The Rules", 5: "Chapter 5: Energy", 6: "Chapter 6: Glory"},
-        # App UI
-        'create_athlete': "CREATE YOUR ATHLETE", 'choose_champ': "CHOOSE YOUR CHAMPION",
-        'name_label': "NAME", 'power_label': "SUPERPOWER", 'enter_stadium': "ENTER THE STADIUM",
-        'global_impact': "GLOBAL IMPACT", 'class': "CLASS", 'obj_comm': "Common goal (SDG 17)",
-        'no_team': "No team", 'missions_btn': "MISSIONS", 'map_btn': "MAP", 'journal_btn': "DIARY", 'arcade_btn': "ARCADE / TESTS",
-        'progression': "PROGRESSION", 'secret_codes_title': "SECRET CODES", 'secret_codes_desc': "Got a hidden code? Enter it to get XP!",
-        'back': "Back", 'campus_map': "CAMPUS MAP", 'drag_icons': "Drag the icons over the school!",
-        'legend': "LEGEND", 'arcade_title': "INTERDISCIPLINARY ARCADE", 'quit': "Quit",
-        'locked_chap': "Chapter Required", 'validate': "VALIDATE", 'close': "Close",
-        'legend_unlocked': "LEGEND UNLOCKED", 'org_top': "🏅 TOP ORGANIZERS 🏅",
-        'win_msg': "The class reached 100% Global Impact! You are officially the masters of the Games. The committee grants you the Ultimate Badge.",
-        'amazing': "AMAZING!", 'journal_title': "LOGBOOK", 'mood': "MOOD", 'reflection': "Reflection...", 'photo': "PHOTO", 'post': "POST ENTRY",
-        # Pins & Alerts
-        'p_start': "Start", 'p_end': "Finish", 'p_food': "Snacks", 'p_recyc': "Recycling", 'p_water': "Water", 'p_med': "First Aid",
-        'alert_profile': "Complete your profile!", 'code_used': "Code already used!", 'code_invalid': "Invalid code.",
-        'validated_xp': "Validated! +100 XP", 'incorrect': "Incorrect", 'end_score': "Finished! Score: ",
-        # Missions (6)
-        'm1_title': "SDG Conference", 'm1_desc': "Solidarity coin creation.",
-        'm2_title': "Inclusive Teams", 'm2_desc': "Team building.",
-        'm3_title': "Future Obstacles", 'm3_desc': "Challenge design.",
-        'm4_title': "Regulations", 'm4_desc': "Fair-play pact.",
-        'm5_title': "Refreshments", 'm5_desc': "Healthy snacks.",
-        'm6_title': "Route Plan", 'm6_desc': "Campus layout."
+        'bilan_title': "AUTOEVALUACIÓN (LOMLOE)", 'comp_ccl': "Comunicación Lingüística (CCL)", 'comp_cd': "Competencia Digital (CD)", 'comp_cpsaa': "Aprender a Aprender (CPSAA)", 'comp_cc': "Ciudadana (CC)",
+        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda solidaria.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.",
+        'm4_title': "Reglamento", 'm4_desc': "Pacto de Fair-play.", 'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.", 'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en el campus."
     }
 }
-t = translations[st.session_state.lang]
+
+# Fallback to French if language is missing
+t = translations.get(st.session_state.lang, translations['Français'])
 
 def get_tts_lang(lang_choice):
-    if lang_choice == 'Français': return 'fr'
-    elif lang_choice == 'Español': return 'es'
-    else: return 'en'
+    if lang_choice == 'Español': return 'es'
+    else: return 'fr'
 
 # --- FUNCIONES BACKEND ---
 def get_mock_data():
@@ -159,7 +104,7 @@ def create_player_card(name, trait):
     pdf.set_font("Arial", 'B', 28)
     pdf.set_text_color(0, 51, 153)
     pdf.set_xy(0, 40)
-    pdf.cell(210, 15, "ACCRÉDITATION OFFICIELLE", 0, 1, 'C')
+    pdf.cell(210, 15, "PORTFOLIO OFFICIEL", 0, 1, 'C')
     pdf.set_font("Arial", 'B', 45)
     pdf.set_text_color(220, 20, 60)
     pdf.cell(210, 30, name.upper(), 0, 1, 'C')
@@ -167,7 +112,7 @@ def create_player_card(name, trait):
     pdf.set_text_color(0, 153, 51)
     pdf.cell(210, 15, f"Spécialité : {trait}", 0, 1, 'C')
     
-    qr = qrcode.make(f"Athlete: {name} | Specialite: {trait} | ODD: 2030")
+    qr = qrcode.make(f"Athlete: {name} | LOMLOE Evaluated | ODD: 2030")
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmpfile:
         qr.save(tmpfile.name)
         pdf.image(tmpfile.name, x=75, y=120, w=60)
@@ -176,8 +121,8 @@ def create_player_card(name, trait):
 
 # --- BARRA LATERAL ---
 with st.sidebar:
-    st.selectbox("🌐 Langue / Idioma", ["Français", "Español", "English"], key='lang')
-    t = translations[st.session_state.lang] 
+    st.selectbox("🌐 Langue / Idioma", ["Français", "Español"], key='lang')
+    t = translations.get(st.session_state.lang, translations['Français'])
     
     st.title(t['tools'])
     
@@ -203,7 +148,7 @@ with st.sidebar:
     player_trait = st.selectbox(t['trait'], t['traits'])
     if st.button(t['download_pdf']):
         pdf_data = create_player_card(player_name, player_trait)
-        st.download_button("📥 PDF", pdf_data, file_name="carte.pdf", mime="application/pdf")
+        st.download_button("📥 PDF", pdf_data, file_name="portfolio_lomloe.pdf", mime="application/pdf")
 
     st.divider()
     
@@ -280,7 +225,7 @@ html_code = f"""
         .trait-tag {{ background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }}
         .trait-tag.selected {{ background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }}
 
-        .home-btn {{ background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }}
+        .home-btn {{ background-color: white; border: none; border-radius: 18px; padding: 15px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }}
         .dock-nav {{ position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }}
         .dock-item {{ font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }}
         .dock-item.active {{ color: var(--primary); transform: translateY(-5px); }}
@@ -346,14 +291,38 @@ html_code = f"""
             <small class="text-secondary" style="font-size: 0.7rem;">{t['obj_comm']}</small>
         </div>
 
-        <div class="row g-3">
-            <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark mb-2"></i><h3 class="mb-0">{t['missions_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-map')"><i class="fa-solid fa-map-location-dot text-success mb-2"></i><h3 class="mb-0">{t['map_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info mb-2"></i><h3 class="mb-0">{t['journal_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-2"></i><h3 class="mb-0">{t['arcade_btn']}</h3></div></div>
+        <div class="row g-2">
+            <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark mb-1"></i><h5 class="mb-0 fw-bold">{t['missions_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-map')"><i class="fa-solid fa-map-location-dot text-success mb-1"></i><h5 class="mb-0 fw-bold">{t['map_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info mb-1"></i><h5 class="mb-0 fw-bold">{t['journal_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-1"></i><h5 class="mb-0 fw-bold">{t['arcade_btn']}</h5></div></div>
+            <div class="col-12"><div class="home-btn flex-row gap-3 py-3" style="min-height: auto; background: linear-gradient(135deg, #f0f0f0, #e0e0e0);" onclick="app.nav('bilan', 'nav-bilan')"><i class="fa-solid fa-chart-pie text-secondary mb-0"></i><h5 class="mb-0 fw-bold">{t['bilan_btn']} (LOMLOE)</h5></div></div>
         </div>
     </section>
 
+    <!-- NOUVEAU: BILAN / PORTFOLIO LOMLOE -->
+    <section id="view-bilan" class="view">
+        <h4 class="fw-bold mb-3 text-dark">{t['bilan_title']}</h4>
+        <div class="solid-panel">
+            <canvas id="lomloeChart" width="400" height="400"></canvas>
+            <div class="mt-4">
+                <label class="small fw-bold">{t['comp_ccl']}</label>
+                <input type="range" class="form-range" min="1" max="10" value="5" id="slider-ccl" oninput="app.updateChart()">
+                
+                <label class="small fw-bold mt-2">{t['comp_cd']}</label>
+                <input type="range" class="form-range" min="1" max="10" value="5" id="slider-cd" oninput="app.updateChart()">
+                
+                <label class="small fw-bold mt-2">{t['comp_cpsaa']}</label>
+                <input type="range" class="form-range" min="1" max="10" value="5" id="slider-cpsaa" oninput="app.updateChart()">
+                
+                <label class="small fw-bold mt-2">{t['comp_cc']}</label>
+                <input type="range" class="form-range" min="1" max="10" value="5" id="slider-cc" oninput="app.updateChart()">
+            </div>
+        </div>
+        <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">{t['back']}</button>
+    </section>
+
+    <!-- ACCRÉDITATION (PERFIL) -->
     <section id="view-avatar" class="view">
         <div class="text-center mt-4 mb-4"><h2 style="font-family: var(--font-head); font-weight: 900; color: #222;">{t['create_athlete']}</h2><p class="text-secondary small">{t['choose_champ']}</p></div>
         <div class="avatar-grid" id="sprite-container"></div>
@@ -367,6 +336,7 @@ html_code = f"""
         <button onclick="app.saveProfile()" class="btn-solid mt-2">{t['enter_stadium']} <i class="fa-solid fa-person-running"></i></button>
     </section>
 
+    <!-- PROGRESSION & CODES -->
     <section id="view-dashboard" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['progression']}</h4>
         <div id="missions-list"></div>
@@ -383,6 +353,7 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">{t['back']}</button>
     </section>
 
+    <!-- MAPA -->
     <section id="view-map" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['campus_map']}</h4>
         <div class="map-container" id="map-area">
@@ -407,6 +378,7 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">{t['back']}</button>
     </section>
 
+    <!-- DIARIO DE A BORDO -->
     <section id="view-journal" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['journal_title']}</h4>
         <div class="solid-panel">
@@ -427,6 +399,7 @@ html_code = f"""
         <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">{t['back']}</button>
     </section>
 
+    <!-- ARCADE COMPLETO (10 JUEGOS) -->
     <section id="view-games" class="view">
         <h4 class="fw-bold mb-3 text-dark">{t['arcade_title']}</h4>
         <div id="game-menu">
@@ -455,14 +428,16 @@ html_code = f"""
         </div>
     </section>
 
+    <!-- DOCK MENU -->
     <div id="app-dock" class="dock-nav" style="display:none;">
         <div id="nav-home" class="dock-item active" onclick="app.nav('home', this)"><i class="fa-solid fa-house"></i></div>
         <div id="nav-dash" class="dock-item" onclick="app.nav('dashboard', this)"><i class="fa-solid fa-list-check"></i></div>
         <div id="nav-map" class="dock-item" onclick="app.nav('map', this)"><i class="fa-solid fa-map"></i></div>
         <div id="nav-journal" class="dock-item" onclick="app.nav('journal', this)"><i class="fa-solid fa-book-open"></i></div>
-        <div id="nav-games" class="dock-item" onclick="app.nav('games', this)"><i class="fa-solid fa-gamepad"></i></div>
+        <div id="nav-bilan" class="dock-item" onclick="app.nav('bilan', this)"><i class="fa-solid fa-chart-pie"></i></div>
     </div>
 
+    <!-- MODALS -->
     <div id="customModal" class="custom-modal">
         <div class="modal-content-solid">
             <h4 id="modal-title" class="fw-bold mb-2">...</h4>
@@ -486,14 +461,12 @@ html_code = f"""
     </div>
 
     <script>
-        // 23 AVATARES NORMALES
         const SPRITES = [
             "fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf",
             "fa-crow", "fa-spider", "fa-fish", "fa-bug", "fa-hippo", "fa-otter", "fa-frog", "fa-horse",
             "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"
         ];
         
-        // 7 AVATARES OCULTOS (Legendarios - Códigos Aleatorios)
         const HIDDEN_SPRITES = [
             {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
             {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
@@ -503,7 +476,6 @@ html_code = f"""
 
         const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
 
-        // CÓDIGOS SECRETOS INDEPENDIENTES (Seguros)
         const SECRET_CODES = {{
             "RELAIS-100": {{ xp: 100, msg: "+100 XP (Bonus)" }},
             "BIOS-50": {{ xp: 50, msg: "+50 XP (SVT)" }},
@@ -526,7 +498,6 @@ html_code = f"""
             currentId: null
         }};
 
-        // ARCADE COMPLETO (10 JUEGOS)
         const QUIZ = {{
             num: [{{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0 }}, {{ q: "90 + 9 = ?", a: ["99", "89", "19"], c: 0 }}],
             fut: [{{ q: "Demain je ___ (manger)", a: ["mangerai", "mangerais", "mange"], c: 0 }}, {{ q: "Nous ___ (finir)", a: ["finirons", "finissons", "finiront"], c: 0 }}],
@@ -534,25 +505,14 @@ html_code = f"""
             sport: [{{ q: "Le sport dans l'eau ?", a: ["Natation", "Judo", "Tennis"], c: 0 }}, {{ q: "Pour courir il faut des...", a: ["Baskets", "Gants", "Lunettes"], c: 0 }}],
             imp: [{{ q: "(Courir) ___ vite !", a: ["Cours", "Coures", "Courir"], c: 0 }}, {{ q: "(Arrêter) ___ de parler !", a: ["Arrêtez", "Arrêter", "Arrêtes"], c: 0 }}],
             odd: [{{ q: "ODD 13 c'est pour...", a: ["Le Climat", "La Faim", "L'Eau"], c: 0 }}, {{ q: "ODD 5 c'est...", a: ["Égalité", "Santé", "Villes"], c: 0 }}],
-            bio: [
-                {{ q: "Où jeter une bouteille en plastique ? (ODD 12)", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0 }}, 
-                {{ q: "Quel gaz cause l'effet de serre ? (ODD 13)", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0 }}
-            ],
-            geo: [
-                {{ q: "Où sont nés les Jeux Olympiques ?", a: ["En Grèce", "En France", "En Italie"], c: 0 }},
-                {{ q: "Combien d'anneaux sur le drapeau olympique ?", a: ["5", "6", "4"], c: 0 }}
-            ],
-            math: [
-                {{ q: "Un athlète court 100m en 10s. Vitesse ?", a: ["10 m/s", "100 m/s", "1 m/s"], c: 0 }},
-                {{ q: "Si un terrain fait 50m x 20m, quelle est l'aire ?", a: ["1000 m²", "100 m²", "500 m²"], c: 0 }}
-            ],
-            fra: [
-                {{ q: "Il faut que nous _____ (participer).", a: ["participions", "participons", "participerons"], c: 0 }},
-                {{ q: "Trouve le synonyme de 'Gagner'", a: ["Remporter", "Perdre", "Échouer"], c: 0 }}
-            ]
+            bio: [{{ q: "Où jeter une bouteille en plastique ? (ODD 12)", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0 }}],
+            geo: [{{ q: "Où sont nés les Jeux Olympiques ?", a: ["En Grèce", "En France", "En Italie"], c: 0 }}],
+            math: [{{ q: "Un athlète court 100m en 10s. Vitesse ?", a: ["10 m/s", "100 m/s", "1 m/s"], c: 0 }}],
+            fra: [{{ q: "Il faut que nous _____ (participer).", a: ["participions", "participons", "participerons"], c: 0 }}]
         }};
         
         let currentQuiz = [], qIndex = 0, score = 0;
+        let radarBilan = null;
 
         const app = {{
             init: () => {{
@@ -628,7 +588,7 @@ html_code = f"""
                         div.className = "avatar-item locked";
                         div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
                         div.onclick = function() {{
-                            const guess = prompt("Code secret pour cet avatar :");
+                            const guess = prompt("Code secret:");
                             if (guess && guess.trim().toUpperCase() === h_sprite.code) {{
                                 DATA.user.unlockedAvatars.push(h_sprite.icon);
                                 app.saveData();
@@ -676,7 +636,6 @@ html_code = f"""
             checkSecretCode: () => {{
                 const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
                 const msgBox = document.getElementById('secret-msg');
-                
                 if(DATA.user.usedCodes.includes(input)) {{
                     msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545"; return;
                 }}
@@ -712,11 +671,41 @@ html_code = f"""
                 app.showView('view-' + viewName);
                 if(viewName === 'dashboard') {{ app.renderList(); }}
                 if(viewName === 'journal') {{ app.renderJournal(); }}
+                if(viewName === 'bilan') {{ setTimeout(app.initBilanChart, 200); }}
             }},
 
             showView: (id) => {{
                 document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
                 document.getElementById(id).classList.add('active-view');
+            }},
+            
+            initBilanChart: () => {{
+                if(radarBilan) radarBilan.destroy();
+                const ctx = document.getElementById('lomloeChart').getContext('2d');
+                radarBilan = new Chart(ctx, {{
+                    type: 'radar',
+                    data: {{
+                        labels: ['CCL', 'CD', 'CPSAA', 'CC'],
+                        datasets: [{{
+                            label: 'Compétences',
+                            data: [5, 5, 5, 5],
+                            backgroundColor: 'rgba(0, 102, 204, 0.4)',
+                            borderColor: '#0066cc',
+                            pointBackgroundColor: '#fff'
+                        }}]
+                    }},
+                    options: {{ scales: {{ r: {{ suggesteMin: 0, suggestedMax: 10 }} }} }}
+                }});
+            }},
+
+            updateChart: () => {{
+                if(!radarBilan) return;
+                const v1 = document.getElementById('slider-ccl').value;
+                const v2 = document.getElementById('slider-cd').value;
+                const v3 = document.getElementById('slider-cpsaa').value;
+                const v4 = document.getElementById('slider-cc').value;
+                radarBilan.data.datasets[0].data = [v1, v2, v3, v4];
+                radarBilan.update();
             }},
 
             allowDrop: (ev) => {{ ev.preventDefault(); }},
