@@ -39,6 +39,7 @@ translations = {
         'name_label': "NOM", 'power_label': "SUPER-POUVOIR", 'enter_stadium': "ENTRER DANS LE STADE",
         'global_impact': "IMPACT GLOBAL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
         'no_team': "Pas d'équipe", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE / TESTS",
+        'oscars_btn': "VOTE & ÉVALUATION", 'oscars_title': "CO-ÉVALUATION GYMKHANA", 'vote_btn': "VOTER", 'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !", 'oscars_desc': "Évaluez l'implication et le Fair-Play des autres équipes (ODD 17).",
         'progression': "PROGRESSION", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? Remplissez pour obtenir de l'XP !",
         'back': "Retour", 'campus_map': "PLAN DU CAMPUS", 'drag_icons': "Glissez les icônes sur le collège !",
         'legend': "LÉGENDE", 'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'quit': "Quitter",
@@ -73,6 +74,7 @@ translations = {
         'name_label': "NOMBRE", 'power_label': "SUPERPODER", 'enter_stadium': "ENTRAR AL ESTADIO",
         'global_impact': "IMPACTO GLOBAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
         'no_team': "Sin equipo", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE / TESTS",
+        'oscars_btn': "VOTO Y EVALUACIÓN", 'oscars_title': "COEVALUACIÓN GYMKHANA", 'vote_btn': "VOTAR", 'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!", 'oscars_desc': "Evalúa la implicación y el Fair-Play de los demás equipos (ODS 17).",
         'progression': "PROGRESIÓN", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? ¡Introdúcelo para ganar XP!",
         'back': "Volver", 'campus_map': "MAPA DEL CAMPUS", 'drag_icons': "¡Arrastra los iconos por el colegio!",
         'legend': "LEYENDA", 'arcade_title': "ARCADE INTERDISCIPLINAR", 'quit': "Salir",
@@ -107,6 +109,7 @@ translations = {
         'name_label': "NAME", 'power_label': "SUPERPOWER", 'enter_stadium': "ENTER THE STADIUM",
         'global_impact': "GLOBAL IMPACT", 'class': "CLASS", 'obj_comm': "Common goal (SDG 17)",
         'no_team': "No team", 'missions_btn': "MISSIONS", 'map_btn': "MAP", 'journal_btn': "DIARY", 'arcade_btn': "ARCADE / TESTS",
+        'oscars_btn': "VOTES & EVALUATION", 'oscars_title': "GYMKHANA CO-EVALUATION", 'vote_btn': "VOTE", 'vote_thanks': "Vote registered! +20 XP", 'already_voted': "You have already voted!", 'oscars_desc': "Evaluate the involvement and Fair-Play of other teams (SDG 17).",
         'progression': "PROGRESSION", 'secret_codes_title': "SECRET CODES", 'secret_codes_desc': "Got a hidden code? Enter it to get XP!",
         'back': "Back", 'campus_map': "CAMPUS MAP", 'drag_icons': "Drag the icons over the school!",
         'legend': "LEGEND", 'arcade_title': "INTERDISCIPLINARY ARCADE", 'quit': "Quit",
@@ -280,7 +283,7 @@ html_code = f"""
         .trait-tag {{ background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }}
         .trait-tag.selected {{ background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }}
 
-        .home-btn {{ background-color: white; border: none; border-radius: 18px; padding: 20px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 110px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }}
+        .home-btn {{ background-color: white; border: none; border-radius: 18px; padding: 15px 10px; text-align: center; cursor: pointer; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }}
         .dock-nav {{ position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; border-top: 1px solid #eee; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); }}
         .dock-item {{ font-size: 1.6rem; color: #aaa; cursor: pointer; transition: 0.2s; }}
         .dock-item.active {{ color: var(--primary); transform: translateY(-5px); }}
@@ -346,11 +349,12 @@ html_code = f"""
             <small class="text-secondary" style="font-size: 0.7rem;">{t['obj_comm']}</small>
         </div>
 
-        <div class="row g-3">
-            <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark mb-2"></i><h3 class="mb-0">{t['missions_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-map')"><i class="fa-solid fa-map-location-dot text-success mb-2"></i><h3 class="mb-0">{t['map_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info mb-2"></i><h3 class="mb-0">{t['journal_btn']}</h3></div></div>
-            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-2"></i><h3 class="mb-0">{t['arcade_btn']}</h3></div></div>
+        <div class="row g-2">
+            <div class="col-6"><div class="home-btn" onclick="app.nav('dashboard', 'nav-dash')"><i class="fa-solid fa-list-check text-dark mb-1"></i><h5 class="mb-0 fw-bold">{t['missions_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('map', 'nav-map')"><i class="fa-solid fa-map-location-dot text-success mb-1"></i><h5 class="mb-0 fw-bold">{t['map_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('journal', 'nav-journal')"><i class="fa-solid fa-book-open text-info mb-1"></i><h5 class="mb-0 fw-bold">{t['journal_btn']}</h5></div></div>
+            <div class="col-6"><div class="home-btn" onclick="app.nav('games', 'nav-games')"><i class="fa-solid fa-gamepad text-primary mb-1"></i><h5 class="mb-0 fw-bold">{t['arcade_btn']}</h5></div></div>
+            <div class="col-12"><div class="home-btn flex-row gap-3 py-3" style="min-height: auto; background: linear-gradient(135deg, #fff3e0, #ffe0b2);" onclick="app.nav('oscars', 'nav-oscars')"><i class="fa-solid fa-award text-warning mb-0"></i><h5 class="mb-0 fw-bold">{t['oscars_btn']}</h5></div></div>
         </div>
     </section>
 
@@ -381,6 +385,13 @@ html_code = f"""
             <div id="secret-msg" class="small mt-2 fw-bold"></div>
         </div>
         <button onclick="app.nav('home')" class="btn btn-outline text-secondary w-100 mt-3">{t['back']}</button>
+    </section>
+
+    <section id="view-oscars" class="view">
+        <h4 class="fw-bold mb-3 text-dark">{t['oscars_title']}</h4>
+        <p class="small text-secondary mb-3">{t['oscars_desc']}</p>
+        <div id="nominees-list"></div>
+        <button onclick="app.nav('home')" class="btn btn-outline w-100 mt-3">{t['back']}</button>
     </section>
 
     <section id="view-map" class="view">
@@ -493,7 +504,7 @@ html_code = f"""
             "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"
         ];
         
-        // 7 AVATARES OCULTOS (Legendarios - Códigos Aleatorios)
+        // 7 AVATARES OCULTOS
         const HIDDEN_SPRITES = [
             {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
             {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
@@ -503,7 +514,6 @@ html_code = f"""
 
         const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
 
-        // CÓDIGOS SECRETOS INDEPENDIENTES (Seguros)
         const SECRET_CODES = {{
             "RELAIS-100": {{ xp: 100, msg: "+100 XP (Bonus)" }},
             "BIOS-50": {{ xp: 50, msg: "+50 XP (SVT)" }},
@@ -512,7 +522,7 @@ html_code = f"""
         }};
 
         let DATA = {{
-            user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [] }},
+            user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [], myVote: "" }},
             teamName: "",
             missions: [
                 {{ id: 1, type: "code", code: "ODD-74A", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
@@ -526,7 +536,6 @@ html_code = f"""
             currentId: null
         }};
 
-        // ARCADE COMPLETO (10 JUEGOS)
         const QUIZ = {{
             num: [{{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0 }}, {{ q: "90 + 9 = ?", a: ["99", "89", "19"], c: 0 }}],
             fut: [{{ q: "Demain je ___ (manger)", a: ["mangerai", "mangerais", "mange"], c: 0 }}, {{ q: "Nous ___ (finir)", a: ["finirons", "finissons", "finiront"], c: 0 }}],
@@ -534,32 +543,23 @@ html_code = f"""
             sport: [{{ q: "Le sport dans l'eau ?", a: ["Natation", "Judo", "Tennis"], c: 0 }}, {{ q: "Pour courir il faut des...", a: ["Baskets", "Gants", "Lunettes"], c: 0 }}],
             imp: [{{ q: "(Courir) ___ vite !", a: ["Cours", "Coures", "Courir"], c: 0 }}, {{ q: "(Arrêter) ___ de parler !", a: ["Arrêtez", "Arrêter", "Arrêtes"], c: 0 }}],
             odd: [{{ q: "ODD 13 c'est pour...", a: ["Le Climat", "La Faim", "L'Eau"], c: 0 }}, {{ q: "ODD 5 c'est...", a: ["Égalité", "Santé", "Villes"], c: 0 }}],
-            bio: [
-                {{ q: "Où jeter une bouteille en plastique ? (ODD 12)", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0 }}, 
-                {{ q: "Quel gaz cause l'effet de serre ? (ODD 13)", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0 }}
-            ],
-            geo: [
-                {{ q: "Où sont nés les Jeux Olympiques ?", a: ["En Grèce", "En France", "En Italie"], c: 0 }},
-                {{ q: "Combien d'anneaux sur le drapeau olympique ?", a: ["5", "6", "4"], c: 0 }}
-            ],
-            math: [
-                {{ q: "Un athlète court 100m en 10s. Vitesse ?", a: ["10 m/s", "100 m/s", "1 m/s"], c: 0 }},
-                {{ q: "Si un terrain fait 50m x 20m, quelle est l'aire ?", a: ["1000 m²", "100 m²", "500 m²"], c: 0 }}
-            ],
-            fra: [
-                {{ q: "Il faut que nous _____ (participer).", a: ["participions", "participons", "participerons"], c: 0 }},
-                {{ q: "Trouve le synonyme de 'Gagner'", a: ["Remporter", "Perdre", "Échouer"], c: 0 }}
-            ]
+            bio: [{{ q: "Où jeter une bouteille en plastique ? (ODD 12)", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0 }}, {{ q: "Quel gaz cause l'effet de serre ? (ODD 13)", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0 }}],
+            geo: [{{ q: "Où sont nés les Jeux Olympiques ?", a: ["En Grèce", "En France", "En Italie"], c: 0 }}, {{ q: "Combien d'anneaux sur le drapeau olympique ?", a: ["5", "6", "4"], c: 0 }}],
+            math: [{{ q: "Un athlète court 100m en 10s. Vitesse ?", a: ["10 m/s", "100 m/s", "1 m/s"], c: 0 }}, {{ q: "Si un terrain fait 50m x 20m, quelle est l'aire ?", a: ["1000 m²", "100 m²", "500 m²"], c: 0 }}],
+            fra: [{{ q: "Il faut que nous _____ (participer).", a: ["participions", "participons", "participerons"], c: 0 }}, {{ q: "Trouve le synonyme de 'Gagner'", a: ["Remporter", "Perdre", "Échouer"], c: 0 }}]
         }};
         
         let currentQuiz = [], qIndex = 0, score = 0;
 
         const app = {{
+            nominees: ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"], // Nombres ficticios para la demo
+            
             init: () => {{
                 const savedData = localStorage.getItem("jo_avenir_data");
                 if(savedData) DATA = JSON.parse(savedData);
                 if(!DATA.user.usedCodes) DATA.user.usedCodes = [];
                 if(!DATA.user.unlockedAvatars) DATA.user.unlockedAvatars = [];
+                if(!DATA.user.myVote) DATA.user.myVote = "";
                 if(!DATA.journal) DATA.journal = [];
                 
                 if (DATA.missions.length >= 6) {{
@@ -628,7 +628,7 @@ html_code = f"""
                         div.className = "avatar-item locked";
                         div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
                         div.onclick = function() {{
-                            const guess = prompt("Code secret pour cet avatar :");
+                            const guess = prompt("Code secret:");
                             if (guess && guess.trim().toUpperCase() === h_sprite.code) {{
                                 DATA.user.unlockedAvatars.push(h_sprite.icon);
                                 app.saveData();
@@ -676,7 +676,6 @@ html_code = f"""
             checkSecretCode: () => {{
                 const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
                 const msgBox = document.getElementById('secret-msg');
-                
                 if(DATA.user.usedCodes.includes(input)) {{
                     msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545"; return;
                 }}
@@ -712,6 +711,7 @@ html_code = f"""
                 app.showView('view-' + viewName);
                 if(viewName === 'dashboard') {{ app.renderList(); }}
                 if(viewName === 'journal') {{ app.renderJournal(); }}
+                if(viewName === 'oscars') {{ app.renderNominees(); }}
             }},
 
             showView: (id) => {{
@@ -738,7 +738,6 @@ html_code = f"""
                 
                 DATA.missions.forEach((m, idx) => {{
                     const reqChapter = idx + 1; 
-                    
                     if (currentChapter >= reqChapter) {{
                         const status = m.completed ? 'completed' : '';
                         const iconCheck = m.completed ? 'fa-check text-success' : 'fa-play text-primary';
@@ -763,6 +762,34 @@ html_code = f"""
                     app.addXP(100);
                     setTimeout(() => {{ app.closeModal(); app.renderList(); }}, 1200);
                 }} else {{ document.getElementById('feedback-msg').innerText = "{t['incorrect']}"; document.getElementById('feedback-msg').style.color = "#dc3545"; }}
+            }},
+            
+            // --- LÓGICA DE VOTACIONES (COEVALUACIÓN) ---
+            renderNominees: () => {{
+                const list = document.getElementById('nominees-list');
+                list.innerHTML = "";
+                app.nominees.forEach(n => {{
+                    // No permitir votarse a sí mismos
+                    if(n !== DATA.teamName) {{
+                        list.innerHTML += `<div class='solid-panel d-flex justify-content-between align-items-center mb-2'>
+                            <span class="fw-bold text-dark">${{n}}</span>
+                            <button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='app.submitVote("${{n}}")'>{t['vote_btn']}</button>
+                        </div>`;
+                    }}
+                }});
+            }},
+            submitVote: (name) => {{
+                if(DATA.user.myVote && DATA.user.myVote !== "") {{
+                    alert("{t['already_voted']}");
+                    return;
+                }}
+                if(confirm("Voter pour " + name + " ?")) {{
+                    DATA.user.myVote = name;
+                    app.addXP(20);
+                    app.saveData();
+                    app.renderNominees();
+                    alert("{t['vote_thanks']}");
+                }}
             }},
 
             selectMood: (e,m) => {{ document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('selected')); e.classList.add('selected'); document.getElementById('selected-mood').value=m; }},
