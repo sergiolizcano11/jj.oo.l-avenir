@@ -61,8 +61,6 @@ def get_tts_lang(lang_choice):
 # ==========================================================
 # 2. BACKEND MOCKS Y SIDEBAR (PYTHON)
 # ==========================================================
-FIREBASE_CONFIG = "/* Omitido en demo local */"
-
 def get_mock_data():
     return pd.DataFrame({'Équipe': ['Les Titans', 'Eco-Warriors'], 'Missions Validées': [5, 4], 'XP Moyen': [850, 620]})
 
@@ -105,7 +103,7 @@ with st.sidebar:
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;} .block-container {padding:0;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 3. CSS Y HTML FRONTAL (APP NATIVA)
+# 3. CSS (APP NATIVA) - NO MODIFICAR LLAVES
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -146,7 +144,7 @@ CSS_CODE = """
     .game-opt:hover { background: #e2e2e2; }
     .game-opt.disabled { pointer-events: none; opacity: 0.6; }
 
-    /* RUTAS Y AVATARES (Mantenido) */
+    /* RUTAS Y AVATARES */
     .path-container { display: flex; flex-direction: column; align-items: center; position: relative; padding: 20px 0; }
     .path-container::before { content: ''; position: absolute; width: 6px; background: rgba(255,255,255,0.8); top: 0; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 0; }
     .mission-node { position: relative; z-index: 1; width: 85%; background: white; border-radius: 20px; padding: 15px; display: flex; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 30px; border: 4px solid transparent; cursor: pointer; }
@@ -166,7 +164,7 @@ CSS_CODE = """
 """
 
 # ==========================================================
-# 4. JAVASCRIPT LOGIC (FEEDBACK ARCADE + NAVEGACIÓN)
+# 4. JAVASCRIPT LOGIC (F-STRING SEGURO)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -190,7 +188,10 @@ JS_CODE = f"""
             try {{
                 const localData = localStorage.getItem("jo_avenir_2026");
                 if (localData) window.app.data = JSON.parse(localData);
-            }} catch (error) {{ localStorage.removeItem("jo_avenir_2026"); }}
+            }} catch (error) {{
+                console.warn(error);
+                localStorage.removeItem("jo_avenir_2026");
+            }}
 
             window.app.renderAvatars();
             window.app.updateUI();
@@ -204,29 +205,32 @@ JS_CODE = f"""
         }},
 
         saveData: () => {{
-            try {{ localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data)); }} catch(e) {{}}
+            try {{
+                localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data));
+            }} catch(e) {{
+                console.warn(e);
+            }}
             window.app.updateUI();
         }},
 
         addXP: (amount) => {{
-            sfx_coin.play().catch(e=>{});
+            // CORRECCIÓN APLICADA: Error del catch(e=>{{}}) solucionado con doble llave
+            sfx_coin.play().catch(e => console.warn(e));
             window.app.data.user.xp += amount;
             window.app.saveData();
         }},
 
         nav: (view) => {{
-            // Gestión de Vistas
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
             document.getElementById('view-' + view).classList.add('active-view');
             
-            // Gestión de la Barra Superior (Top Bar)
             const header = document.getElementById('app-header');
             const title = document.getElementById('header-title');
             
             if(view === 'login' || view === 'home') {{
-                header.classList.remove('visible'); // Ocultar top bar en menús principales
+                header.classList.remove('visible');
             }} else {{
-                header.classList.add('visible'); // Mostrar al entrar a una sección
+                header.classList.add('visible');
                 const titles = {{
                     'profil': "{t['profil_btn']}", 'missions': "{t['progression']}",
                     'map': "{t['campus_map']}", 'journal': "{t['journal_title']}",
@@ -286,9 +290,7 @@ JS_CODE = f"""
             }});
         }},
 
-        // --- SISTEMA ARCADE CON FEEDBACK ---
         startGame: (t) => {{
-            // 3 Preguntas por categoría con FEEDBACK (Corrección/Explicación)
             const QUIZ = {{
                 num: [
                     {{ q: "10 stylos = 20€. 1 stylo = ?", a: ["2€", "5€", "1€"], c: 0, f: "20 divisé par 10 fait 2. Un stylo coûte 2€." }},
@@ -306,7 +308,6 @@ JS_CODE = f"""
                 ]
             }};
             
-            // Si la categoría no tiene preguntas extendidas, proveemos un fallback
             window.app.currentQuiz = QUIZ[t] || [
                 {{ q: "Question générique ?", a: ["Option A", "Option B"], c: 0, f: "Explication de la réponse." }}
             ];
@@ -341,7 +342,6 @@ JS_CODE = f"""
         }},
 
         checkAnswer: (selectedIdx, btnElement) => {{
-            // Deshabilitar clics en otras opciones
             document.querySelectorAll('.game-opt').forEach(el => el.classList.add('disabled'));
             
             const q = window.app.currentQuiz[window.app.qIndex];
@@ -354,16 +354,15 @@ JS_CODE = f"""
                 btnElement.style.border = "3px solid #28a745";
                 feedbackBox.className = "feedback-box correct";
                 feedbackText.innerHTML = `<strong>{t['correct']}</strong><br><small>${{q.f}}</small>`;
-                confetti({{ particleCount: 40, spread: 50, origin: {{ y: 0.6 }} }});
+                try {{ confetti({{ particleCount: 40, spread: 50, origin: {{ y: 0.6 }} }}); }} catch(e) {{}}
             }} else {{
                 btnElement.style.border = "3px solid #dc3545";
-                // Resaltar la correcta
                 document.querySelectorAll('.game-opt')[q.c].style.border = "3px solid #28a745";
                 feedbackBox.className = "feedback-box incorrect";
                 feedbackText.innerHTML = `<strong>{t['incorrect']}</strong><br><small>${{q.f}}</small>`;
             }}
 
-            btnNext.style.display = "block"; // Mostrar botón continuar
+            btnNext.style.display = "block";
         }},
 
         nextQuestion: () => {{
@@ -390,7 +389,7 @@ HTML_CODE = f"""
     {CSS_CODE}
 </head>
 <body>
-    <!-- HEADER NATIVO (Aparece y desaparece) -->
+    <!-- HEADER NATIVO -->
     <div id="app-header" class="app-header">
         <button class="back-btn" onclick="window.app.nav('home')"><i class="fa-solid fa-chevron-left"></i></button>
         <div id="header-title" class="header-title">TITRE</div>
@@ -450,7 +449,7 @@ HTML_CODE = f"""
         </div>
     </section>
 
-    <!-- SECCIÓN RUTA DE MISIONES (DUOLINGO PATH) -->
+    <!-- SECCIÓN RUTA DE MISIONES -->
     <section id="view-missions" class="view">
         <div id="path-container" class="path-container"></div>
     </section>
@@ -468,7 +467,7 @@ HTML_CODE = f"""
                 <h5 id="game-question" class="fw-bold mb-3 text-center">...</h5>
                 <div id="game-options"></div>
                 
-                <!-- CAJA DE FEEDBACK (CORRECCIÓN) -->
+                <!-- CAJA DE FEEDBACK -->
                 <div id="game-feedback" class="feedback-box">
                     <span id="feedback-text"></span>
                 </div>
@@ -478,7 +477,7 @@ HTML_CODE = f"""
         </div>
     </section>
 
-    <!-- VISTAS VACÍAS PARA QUE NO FALLE LA NAVEGACIÓN -->
+    <!-- VISTAS VACÍAS PARA NAVEGACIÓN -->
     <section id="view-map" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
     <section id="view-journal" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
     <section id="view-oscars" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
