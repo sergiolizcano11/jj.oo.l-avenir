@@ -20,7 +20,7 @@ if 'chapter' not in st.session_state: st.session_state.chapter = 1
 
 translations = {
     'Français': {
-        'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'mic': "🎙️ Micro", 'listen': "Écouter 🔊",
+        'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'mic': "🎙️ Micro",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Atout:", 
         'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte",
         'admin': "🔐 Zone Prof", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres",
@@ -99,10 +99,9 @@ with st.sidebar:
     
     st.title(t['tools'])
     
-    # 🔊 LECTOR DE VOZ
     with st.expander(t['tts']):
         text_to_speak = st.text_input("", "Allez!")
-        if st.button(t['listen']):
+        if st.button("🔊" if 'listen' not in t else t['listen']):
             try:
                 tts = gTTS(text=text_to_speak, lang=get_tts_lang(st.session_state.lang))
                 audio_bytes = io.BytesIO()
@@ -110,9 +109,7 @@ with st.sidebar:
                 st.audio(audio_bytes, format='audio/mp3')
             except Exception as e:
                 st.error("Erreur TTS")
-                print(e)
 
-    # 🎙️ MICRÓFONO
     with st.expander(t['mic']):
         wav_audio_data = st_audiorec()
         if wav_audio_data is not None:
@@ -120,7 +117,6 @@ with st.sidebar:
 
     st.divider()
     
-    # 🎒 CARNET PDF
     st.markdown(f"### {t['card']}")
     player_name = st.text_input(t['name'], "Athlète")
     player_trait = st.selectbox(t['trait'], t['traits'])
@@ -131,11 +127,9 @@ with st.sidebar:
             st.success("PDF Généré !")
         except Exception as e:
             st.error("Erreur PDF")
-            print(e)
 
     st.divider()
     
-    # 🔐 ZONA PROFESOR
     st.markdown(f"### {t['admin']}")
     password = st.text_input(t['pass'], type="password")
     if password == "prof123": 
@@ -227,7 +221,7 @@ JS_CODE = f"""
 
     window.app = {{
         currentChapter: {st.session_state.chapter},
-        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [], journal: [] }},
+        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [] }},
         
         init: () => {{
             window.app.data.missions = [
@@ -268,7 +262,7 @@ JS_CODE = f"""
         }},
 
         addXP: (amount) => {{
-            sfx_coin.play().catch(e => console.warn(e));
+            try {{ sfx_coin.play(); }} catch(e) {{ console.warn(e); }}
             window.app.data.user.xp += amount;
             window.app.saveData();
         }},
@@ -293,8 +287,6 @@ JS_CODE = f"""
             }}
 
             if(view === 'missions') window.app.renderPath();
-            if(view === 'journal') window.app.renderJournal();
-            if(view === 'oscars') window.app.renderNominees();
         }},
 
         renderAvatars: () => {{
@@ -345,7 +337,7 @@ JS_CODE = f"""
             }});
         }},
 
-        // === ARCADE (FEEDBACK FORMATIVO) ===
+        // === ARCADE FULL 10 CATEGORIES ===
         startGame: (t) => {{
             const QUIZ = {{
                 num: [
@@ -358,9 +350,45 @@ JS_CODE = f"""
                     {{ q: "Nous ___ (finir)", a: ["finirons", "finissons", "finiront"], c: 0, f: "Au futur, la terminaison pour 'Nous' est -ons." }},
                     {{ q: "Ils ___ (aller)", a: ["iront", "allent", "allons"], c: 0, f: "Le verbe 'aller' est irrégulier. Son radical au futur est 'ir-'." }}
                 ],
+                part: [
+                    {{ q: "Je veux ___ eau", a: ["de l'", "du", "de la"], c: 0, f: "Devant une voyelle ou un 'h' muet, on utilise 'de l''." }},
+                    {{ q: "Il mange ___ pain", a: ["du", "de la", "des"], c: 0, f: "Pain est masculin singulier, on utilise donc 'du'." }},
+                    {{ q: "Elle boit ___ limonade", a: ["de la", "du", "des"], c: 0, f: "Limonade est féminin, on utilise 'de la'." }}
+                ],
+                sport: [
+                    {{ q: "Le sport dans l'eau ?", a: ["Natation", "Judo", "Tennis"], c: 0, f: "La natation se pratique dans une piscine ou en eau libre." }},
+                    {{ q: "Pour courir il faut des...", a: ["Baskets", "Gants", "Lunettes"], c: 0, f: "Les baskets (chaussures de sport) sont essentielles pour courir." }},
+                    {{ q: "Le Tour de France est une course de...", a: ["Cyclisme", "Natation", "Athlétisme"], c: 0, f: "C'est la course cycliste la plus célèbre au monde." }}
+                ],
+                imp: [
+                    {{ q: "(Courir) ___ vite !", a: ["Cours", "Coures", "Courir"], c: 0, f: "À l'impératif, les verbes en -ir (comme courir) prennent un 's' à la 2e personne." }},
+                    {{ q: "(Arrêter) ___ de parler ! (vous)", a: ["Arrêtez", "Arrêter", "Arrêtes"], c: 0, f: "Avec 'vous', la terminaison est -ez." }},
+                    {{ q: "(Être) ___ gentil !", a: ["Sois", "Es", "Est"], c: 0, f: "Le verbe être est irrégulier : Sois, soyons, soyez." }}
+                ],
+                odd: [
+                    {{ q: "ODD 13 c'est pour...", a: ["Le Climat", "La Faim", "L'Eau"], c: 0, f: "L'ODD 13 concerne les mesures relatives à la lutte contre les changements climatiques." }},
+                    {{ q: "ODD 5 c'est...", a: ["Égalité", "Santé", "Villes"], c: 0, f: "L'ODD 5 vise à parvenir à l'égalité des sexes." }},
+                    {{ q: "ODD 14 protège...", a: ["Les Océans", "Les Forêts", "Les Villes"], c: 0, f: "La vie aquatique et la protection des océans." }}
+                ],
                 bio: [
-                    {{ q: "Où jeter une bouteille en plastique ?", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0, f: "Le plastique et le carton vont dans le bac de recyclage jaune." }},
-                    {{ q: "Quel gaz cause l'effet de serre ?", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0, f: "Le dioxyde de carbone (CO2) retient la chaleur dans l'atmosphère." }}
+                    {{ q: "Où jeter une bouteille en plastique ?", a: ["Poubelle Jaune", "Poubelle Verte", "Poubelle Bleue"], c: 0, f: "Le bac jaune est destiné aux emballages plastiques et cartons." }},
+                    {{ q: "Quel gaz cause l'effet de serre ?", a: ["Le CO2", "L'Oxygène", "L'Azote"], c: 0, f: "Le dioxyde de carbone (CO2) retient la chaleur dans l'atmosphère." }},
+                    {{ q: "L'énergie solaire est...", a: ["Renouvelable", "Fossile", "Polluante"], c: 0, f: "Le soleil fournit une énergie propre et inépuisable." }}
+                ],
+                geo: [
+                    {{ q: "Où sont nés les Jeux Olympiques ?", a: ["En Grèce", "En France", "En Italie"], c: 0, f: "Ils ont été créés à Olympie, en Grèce antique." }},
+                    {{ q: "Combien d'anneaux sur le drapeau olympique ?", a: ["5", "6", "4"], c: 0, f: "Les 5 anneaux représentent les 5 continents unis par le sport." }},
+                    {{ q: "Quelle est la capitale de la France ?", a: ["Paris", "Lyon", "Marseille"], c: 0, f: "Paris accueillera les J.O. en 2024 !" }}
+                ],
+                math: [
+                    {{ q: "Un athlète court 100m en 10s. Vitesse ?", a: ["10 m/s", "100 m/s", "1 m/s"], c: 0, f: "Vitesse = Distance / Temps. 100 / 10 = 10 m/s." }},
+                    {{ q: "Aire d'un terrain de 50m x 20m ?", a: ["1000 m²", "100 m²", "500 m²"], c: 0, f: "L'aire d'un rectangle = Longueur x Largeur. 50 x 20 = 1000." }},
+                    {{ q: "5 x 5 x 5 = ?", a: ["125", "25", "15"], c: 0, f: "5 au cube (5³) fait 125." }}
+                ],
+                fra: [
+                    {{ q: "Il faut que nous _____ (participer).", a: ["participions", "participons", "participerons"], c: 0, f: "Après 'Il faut que', on utilise le subjonctif présent." }},
+                    {{ q: "Synonyme de 'Gagner' ?", a: ["Remporter", "Perdre", "Échouer"], c: 0, f: "Remporter la victoire, c'est gagner." }},
+                    {{ q: "Le contraire de 'Rapide' ?", a: ["Lent", "Fort", "Vite"], c: 0, f: "Lent est l'antonyme de rapide." }}
                 ]
             }};
             
@@ -424,128 +452,6 @@ JS_CODE = f"""
         nextQuestion: () => {{
             window.app.qIndex++; 
             window.app.renderQuestion();
-        }},
-
-        // === DIARIO ===
-        selectMood: (e,m) => {{
-            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-            e.classList.add('selected'); 
-            document.getElementById('selected-mood').value = m;
-        }},
-
-        saveJournal: () => {{ 
-            const m = document.getElementById('selected-mood').value;
-            const t = document.getElementById('journal-text').value;
-            if(!m || !t) return; 
-            
-            if(!window.app.data.journal) window.app.data.journal = [];
-            window.app.data.journal.unshift({{d: new Date().toLocaleDateString(), m: m, t: t}});
-            
-            window.app.addXP(20); 
-            window.app.saveData(); 
-            window.app.renderJournal();
-            
-            document.getElementById('journal-text').value = ""; 
-            document.getElementById('selected-mood').value = "";
-            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-        }},
-
-        renderJournal: () => {{
-            const c = document.getElementById('journal-feed'); 
-            c.innerHTML = ""; 
-            if(!window.app.data.journal) window.app.data.journal = []; 
-            window.app.data.journal.forEach(e => {{ 
-                c.innerHTML += `
-                <div class='glass-panel'>
-                    <div class='d-flex justify-content-between mb-2'>
-                        <span class="text-secondary small fw-bold">${{e.d}}</span>
-                        <span style="font-size:1.5rem;">${{e.m}}</span>
-                    </div>
-                    <p class='text-dark mb-0'>${{e.t}}</p>
-                </div>`;
-            }}); 
-        }},
-
-        // === MAPA (DRAG & DROP) ===
-        allowDrop: (ev) => {{ ev.preventDefault(); }},
-        drag: (ev) => {{ ev.dataTransfer.setData("text", ev.target.id); }},
-        drop: (ev) => {{ 
-            ev.preventDefault(); 
-            const data = ev.dataTransfer.getData("text"); 
-            const el = document.getElementById(data); 
-            const rect = ev.currentTarget.getBoundingClientRect(); 
-            const x = ev.clientX - rect.left; 
-            const y = ev.clientY - rect.top; 
-            el.style.left = ((x / rect.width) * 100) + "%"; 
-            el.style.top = ((y / rect.height) * 100) + "%"; 
-        }},
-
-        // === OSCARS (CO-EVALUACIÓN) ===
-        renderNominees: () => {{
-            const list = document.getElementById('nominees-list'); 
-            list.innerHTML = "";
-            const nominees = ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"];
-            nominees.forEach(n => {{
-                list.innerHTML += `
-                <div class='glass-panel d-flex justify-content-between align-items-center mb-2'>
-                    <span class="fw-bold text-dark">${{n}}</span>
-                    <button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button>
-                </div>`;
-            }});
-        }},
-
-        submitVote: (name) => {{
-            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{
-                alert("{t['already_voted']}"); 
-                return;
-            }}
-            if(confirm("Voter pour " + name + " ?")) {{
-                window.app.data.user.myVote = name; 
-                window.app.addXP(20); 
-                window.app.saveData(); 
-                window.app.renderNominees();
-            }}
-        }},
-
-        // === CÓDIGOS SECRETOS ===
-        checkSecretCode: () => {{
-            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
-            const hashedInput = btoa(input);
-            const SECRET_CODES = {{
-                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
-                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
-                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
-                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
-            }};
-            const msgBox = document.getElementById('secret-msg');
-            
-            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
-                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
-                return;
-            }}
-            
-            if(SECRET_CODES[hashedInput]) {{
-                window.app.data.user.usedCodes.push(hashedInput);
-                window.app.addXP(SECRET_CODES[hashedInput].xp);
-                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
-                msgBox.style.color = "#28a745"; 
-                document.getElementById('secret-code-input').value = "";
-            }} else {{
-                msgBox.innerText = "{t['code_invalid']}"; 
-                msgBox.style.color = "#dc3545";
-            }}
-        }},
-
-        // === TTS ===
-        speakText: (text) => {{
-            window.speechSynthesis.cancel(); 
-            const msg = new SpeechSynthesisUtterance(); 
-            msg.text = text; 
-            msg.lang = 'fr-FR'; 
-            window.speechSynthesis.speak(msg);
-        }},
-        speakQuestion: () => {{
-            window.app.speakText(document.getElementById('game-question').innerText);
         }}
     }};
 
@@ -624,12 +530,19 @@ HTML_CODE = f"""
         <div id="path-container" class="path-container"></div>
     </section>
 
-    <!-- SECCIÓN ARCADE (CON FEEDBACK) -->
+    <!-- SECCIÓN ARCADE FULL 10 CATEGORÍAS (CON FEEDBACK) -->
     <section id="view-games" class="view">
         <div id="game-menu" class="row g-2">
             <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('num')" style="cursor:pointer;"><i class="fa-solid fa-calculator fa-2x text-primary mb-2"></i><br><h6 class="mb-0 fw-bold small">NOMBRES</h6></div></div>
             <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('fut')" style="cursor:pointer;"><i class="fa-solid fa-rocket fa-2x text-warning mb-2"></i><br><h6 class="mb-0 fw-bold small">FUTUR</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('part')" style="cursor:pointer;"><i class="fa-solid fa-pizza-slice fa-2x text-danger mb-2"></i><br><h6 class="mb-0 fw-bold small">PARTITIFS</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('sport')" style="cursor:pointer;"><i class="fa-solid fa-person-running fa-2x text-success mb-2"></i><br><h6 class="mb-0 fw-bold small">SPORT</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('imp')" style="cursor:pointer;"><i class="fa-solid fa-bullhorn fa-2x text-info mb-2"></i><br><h6 class="mb-0 fw-bold small">IMPÉRATIF</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('odd')" style="cursor:pointer;"><i class="fa-solid fa-earth-europe fa-2x text-primary mb-2"></i><br><h6 class="mb-0 fw-bold small">QUIZ ODD</h6></div></div>
             <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('bio')" style="cursor:pointer;"><i class="fa-solid fa-leaf fa-2x text-success mb-2"></i><br><h6 class="mb-0 fw-bold small">SVT</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('geo')" style="cursor:pointer;"><i class="fa-solid fa-globe fa-2x text-info mb-2"></i><br><h6 class="mb-0 fw-bold small">GÉO</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('math')" style="cursor:pointer;"><i class="fa-solid fa-square-root-variable fa-2x text-secondary mb-2"></i><br><h6 class="mb-0 fw-bold small">MATHS</h6></div></div>
+            <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('fra')" style="cursor:pointer;"><i class="fa-solid fa-comment-dots fa-2x text-danger mb-2"></i><br><h6 class="mb-0 fw-bold small">FRANÇAIS</h6></div></div>
         </div>
         
         <div id="game-interface" style="display:none;">
@@ -647,49 +560,10 @@ HTML_CODE = f"""
         </div>
     </section>
 
-    <!-- SECCIÓN MAPA -->
-    <section id="view-map" class="view">
-        <div class="glass-panel">
-            <h4 class="fw-bold text-center">{t['campus_map']}</h4>
-            <div class="map-container mt-3">
-                 <iframe class="map-frame" src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" frameborder="0"></iframe>
-                 <div class="map-overlay" ondrop="window.app.drop(event)" ondragover="window.app.allowDrop(event)">
-                    <div id="pin1" class="map-pin pin-pulse" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
-                    <div id="pin2" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 30%; background:#FF6B6B;">🏁</div>
-                    <div id="pin3" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 50%; background:#4D79FF;">🍎</div>
-                    <div id="pin4" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 70%; background:#28a745;">♻️</div>
-                    <div id="pin5" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 30%; left: 10%; background:#17a2b8;">💧</div>
-                    <div id="pin6" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 30%; left: 30%; background:#e83e8c;">🏥</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECCIÓN DIARIO DE A BORDO -->
-    <section id="view-journal" class="view">
-        <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['journal_title']}</h4>
-        <div class="glass-panel">
-            <label class="small text-secondary mb-2">{t['mood']}</label>
-            <div class="d-flex justify-content-between mb-3">
-                <div class="mood-btn" onclick="window.app.selectMood(this, '🤩')">🤩</div>
-                <div class="mood-btn" onclick="window.app.selectMood(this, '🙂')">🙂</div>
-                <div class="mood-btn" onclick="window.app.selectMood(this, '😐')">😐</div>
-                <div class="mood-btn" onclick="window.app.selectMood(this, '🥱')">🥱</div>
-            </div>
-            <input type="hidden" id="selected-mood">
-            <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="{t['reflection']}"></textarea>
-            <label class="small text-secondary mb-2 mt-2">{t['photo']}</label>
-            <input type="file" id="journal-photo" class="custom-file-input" accept="image/*">
-            <button onclick="window.app.saveJournal()" class="btn-glass mt-2">{t['post']}</button>
-        </div>
-        <div id="journal-feed" class="mt-4"></div>
-    </section>
-
-    <!-- SECCIÓN OSCARS (VOTACIONES) -->
-    <section id="view-oscars" class="view">
-        <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['oscars_title']}</h4>
-        <div id="nominees-list"></div>
-    </section>
+    <!-- VISTAS VACÍAS PARA NAVEGACIÓN -->
+    <section id="view-map" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
+    <section id="view-journal" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
+    <section id="view-oscars" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
 
     {JS_CODE}
 </body>
