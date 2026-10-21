@@ -13,8 +13,7 @@ import json
 # ==========================================================
 # 1. CONFIGURACIÓN Y DICCIONARIOS
 # ==========================================================
-# LA BARRA AHORA ESTÁ OCULTA POR DEFECTO PARA LOS ALUMNOS ("collapsed")
-st.set_page_config(page_title="J.O. De l'Avenir", layout="wide", initial_sidebar_state="collapsed", page_icon="🏅")
+st.set_page_config(page_title="J.O. De l'Avenir", layout="wide", initial_sidebar_state="expanded", page_icon="🏅")
 
 if 'lang' not in st.session_state: st.session_state.lang = 'Français'
 if 'chapter' not in st.session_state: st.session_state.chapter = 1
@@ -76,8 +75,6 @@ def get_tts_lang(lang_choice):
 # ==========================================================
 # 2. BACKEND Y GENERADORES DE PDF (PYTHON)
 # ==========================================================
-FIREBASE_CONFIG = "/* Omitido en demo local */"
-
 def get_mock_data():
     return pd.DataFrame({'Équipe': ['Les Titans', 'Eco-Warriors'], 'Missions Validées': [5, 4], 'XP Moyen': [850, 620]})
 
@@ -99,11 +96,10 @@ def create_player_card(name, trait):
     return pdf.output(dest='S').encode('latin-1')
 
 def generate_diploma(name):
-    # Generador de Diploma Apaisado (Landscape)
     pdf = FPDF(orientation='L', unit='mm', format='A4')
     pdf.add_page()
     pdf.set_line_width(5)
-    pdf.set_draw_color(255, 215, 0) # Borde Dorado
+    pdf.set_draw_color(255, 215, 0)
     pdf.rect(10, 10, 277, 190)
     pdf.set_font("Arial", 'B', 45)
     pdf.set_text_color(0, 102, 204)
@@ -122,7 +118,6 @@ def generate_diploma(name):
     return pdf.output(dest='S').encode('latin-1')
 
 def generate_analytics_report():
-    # PDF Analítico para demostrar Evaluación Formativa en la Oposición
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", 'B', 20)
@@ -203,7 +198,7 @@ with st.sidebar:
         if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
         st.download_button("📥 Rapport Excel", data=generate_excel(get_mock_data()), file_name="rapport.xlsx", use_container_width=True)
         
-        # 2. LEARNING ANALYTICS (GRÁFICO Y PDF)
+        # 2. LEARNING ANALYTICS
         st.markdown("---")
         st.markdown(f"**{t['analytics_title']}**")
         analytics_data = pd.DataFrame({
@@ -217,10 +212,10 @@ with st.sidebar:
             st.download_button("📊 Télécharger Rapport PDF", analytics_pdf, file_name="learning_analytics.pdf", mime="application/pdf", use_container_width=True)
         except: pass
 
-        # 3. RESETEO DE DATOS SEGURO (Try-Catch en JS)
+        # 3. RESETEO DE DATOS SEGURO
         st.markdown("---")
         if st.button("🗑️ Réinitialiser / Borrar Todo", type="primary", use_container_width=True):
-            st.warning("⚠️ Action irréversible. Les profils actuels seront supprimés.")
+            st.warning("⚠️ Action irréversible.")
             components.html("""
                 <script>
                     try {
@@ -241,32 +236,26 @@ CSS_CODE = """
     :root { --primary: #0066CC; --accent: #FFB100; --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; }
     body { background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop'); background-size: cover; background-attachment: fixed; color: #111; font-family: var(--font-body); margin: 0; padding-bottom: 90px; padding-top: 60px; overflow-x: hidden;}
     
-    /* MODO ZEN */
     body.mode-zen { background-image: none !important; background-color: #FDF6E3 !important; font-family: 'Comic Sans MS', sans-serif !important; }
     body.mode-zen .glass-panel { box-shadow: none !important; border: 2px solid #ccc !important; background-color: #fff !important; backdrop-filter: none; }
     
-    /* APP HEADER NATIVO */
     .app-header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 15px; z-index: 2000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); transition: transform 0.3s; transform: translateY(-100%); }
     .app-header.visible { transform: translateY(0); }
     .back-btn { font-size: 1.5rem; color: var(--primary); cursor: pointer; border: none; background: transparent; padding: 10px; }
     .header-title { flex-grow: 1; text-align: center; font-weight: 800; font-family: var(--font-head); margin-right: 40px; text-transform: uppercase; color: #222;}
 
-    /* GLASSMORPHISM */
     .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); margin-bottom: 20px; }
     
-    /* VISTAS Y TRANSICIONES */
     .view { display: none; padding: 20px; min-height: 100vh; animation: slideIn 0.4s ease-out; }
     .active-view { display: block; }
     @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* BOTONES Y INPUTS */
     .btn-glass { background: rgba(0, 102, 204, 0.9); color: white; border: none; border-radius: 12px; padding: 12px 20px; font-weight: bold; width: 100%; transition: 0.2s; box-shadow: 0 4px 0 #004c99; margin-top: 10px;}
     .btn-glass:active { transform: translateY(4px); box-shadow: none; }
     .solid-input, .solid-textarea { background-color: #f8f9fa; border: 2px solid #ddd; padding: 12px; border-radius: 10px; width: 100%; font-family: var(--font-body); text-align: center; margin-bottom:10px;}
     .home-btn { background-color: white; border: none; border-radius: 18px; padding: 15px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.2s; }
     .home-btn:hover { transform: scale(1.05); }
 
-    /* FEEDBACK ARCADE */
     .feedback-box { border-radius: 10px; padding: 15px; margin-top: 15px; display: none; animation: fadeIn 0.3s; text-align: center;}
     .feedback-box.correct { background: #d4edda; border: 2px solid #28a745; color: #155724; display: block; }
     .feedback-box.incorrect { background: #f8d7da; border: 2px solid #dc3545; color: #721c24; display: block; }
@@ -274,7 +263,6 @@ CSS_CODE = """
     .game-opt:hover { background: #e2e2e2; }
     .game-opt.disabled { pointer-events: none; opacity: 0.6; }
 
-    /* RUTAS DE MISIONES (DUOLINGO) */
     .path-container { display: flex; flex-direction: column; align-items: center; position: relative; padding: 20px 0; }
     .path-container::before { content: ''; position: absolute; width: 6px; background: rgba(255,255,255,0.8); top: 0; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 0; }
     .mission-node { position: relative; z-index: 1; width: 85%; background: white; border-radius: 20px; padding: 15px; display: flex; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 30px; border: 4px solid transparent; cursor: pointer; }
@@ -288,20 +276,17 @@ CSS_CODE = """
     .active .node-icon { background: var(--primary); color: white; }
     @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 102, 204, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); } }
     
-    /* AVATARES */
     .avatar-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
     .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; font-size: 1.5rem; }
     .avatar-item.selected { border-color: var(--primary); border-width: 4px; transform: scale(1.1); }
     .avatar-item.locked { background: #444; border-color: #222; color: #777; }
     .avatar-item.unlocked { background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
-    /* BARRAS DE PROGRESO Y OTROS */
     .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #ccc;}
     .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
     .fill-personal { background: linear-gradient(90deg, #00d2ff, #3a7bd5); height: 100%; width: 0%; transition: width 1s ease-out; }
     .xp-badge { background: var(--accent); color: #000; font-weight: 900; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; border: 2px solid #fff; display: inline-block;}
     
-    /* ESTILOS DEL DIARIO Y MAPA FÍSICO */
     .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
     .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
     .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
@@ -310,7 +295,6 @@ CSS_CODE = """
     .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 6px 12px rgba(0,0,0,0.5); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
     
-    /* MODALS */
     .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
     .custom-modal.show { display: flex; }
     #golden-star { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; text-shadow: 0 0 20px #FFD700; cursor: pointer; z-index: 100; display: none; }
@@ -324,151 +308,91 @@ CSS_CODE = """
 """
 
 # ==========================================================
-# 4. JAVASCRIPT LOGIC (TODO INCLUIDO Y SEGURO)
+# 5. JAVASCRIPT LOGIC (ROBUSTO Y SEGURO)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<script type="module">
-    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import {{ getFirestore, doc, setDoc, getDoc, onSnapshot }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-    let db = null;
-    try {{
-        const firebaseConfig = {{ {FIREBASE_CONFIG} }};
-        const fbApp = initializeApp(firebaseConfig);
-        db = getFirestore(fbApp);
-    }} catch (e) {{
-        console.warn("Firebase config manquante ou invalide. Mode hors-ligne activé.");
-    }}
-
-    const sfx_coin = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg');
-    const sfx_unlock = new Audio('https://actions.google.com/sounds/v1/magic/magic_chime.ogg');
-    const MAX_INDIVIDUAL_XP = 600;
+<script>
+    const MAX_INDIVIDUAL_XP = 600; 
 
     window.app = {{
         currentChapter: {st.session_state.chapter},
-        nominees: ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"],
-        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [], myVote: "" }}, missions: [], journal: [] }},
+        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [], journal: [] }},
         
-        init: async () => {{
-            if(localStorage.getItem('jo_avenir_zen') === 'true') document.body.classList.add('mode-zen');
-
+        init: () => {{
             window.app.data.missions = [
-                {{ id: 1, type: "code", code: "T0RELTc0QQ==", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
-                {{ id: 2, type: "code", code: "RVEtOTJC", title: "{t['m2_title']}", odd: "ODD 5 & 10", icon: "fa-users", desc: "{t['m2_desc']}", completed: false }},
-                {{ id: 3, type: "code", code: "RUNPLTE4Qw==", title: "{t['m3_title']}", odd: "ODD 13", icon: "fa-recycle", desc: "{t['m3_desc']}", completed: false }},
-                {{ id: 4, type: "code", code: "UkVHLTQ0RA==", title: "{t['m4_title']}", odd: "ODD 16", icon: "fa-scale-balanced", desc: "{t['m4_desc']}", completed: false }},
-                {{ id: 5, type: "code", code: "TUlBTS02NkU=", title: "{t['m5_title']}", odd: "ODD 3", icon: "fa-apple-whole", desc: "{t['m5_desc']}", completed: false }},
-                {{ id: 6, type: "code", code: "TUFQLTMxRg==", title: "{t['m6_title']}", odd: "ODD 11", icon: "fa-map", desc: "{t['m6_desc']}", completed: false }}
+                {{ id: 1, title: "{t['m1_title']}", desc: "{t['m1_desc']}", icon: "fa-coins", completed: false }},
+                {{ id: 2, title: "{t['m2_title']}", desc: "{t['m2_desc']}", icon: "fa-users", completed: false }},
+                {{ id: 3, title: "{t['m3_title']}", desc: "{t['m3_desc']}", icon: "fa-recycle", completed: false }},
+                {{ id: 4, title: "{t['m4_title']}", desc: "{t['m4_desc']}", icon: "fa-scale-balanced", completed: false }},
+                {{ id: 5, title: "{t['m5_title']}", desc: "{t['m5_desc']}", icon: "fa-apple-whole", completed: false }},
+                {{ id: 6, title: "{t['m6_title']}", desc: "{t['m6_desc']}", icon: "fa-map", completed: false }}
             ];
 
             try {{
                 const localData = localStorage.getItem("jo_avenir_2026");
-                if (localData) {{
-                    const parsedData = JSON.parse(localData);
-                    if (parsedData && parsedData.user) window.app.data = parsedData;
-                }}
+                if (localData) window.app.data = JSON.parse(localData);
             }} catch (error) {{
-                console.error("Erreur critique de LocalStorage:", error);
+                console.warn("Local storage parse error:", error);
                 localStorage.removeItem("jo_avenir_2026");
             }}
 
-            try {{
-                if (db && window.app.data.user.name !== "") {{
-                    const docRef = doc(db, "students", window.app.data.user.name);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) window.app.data = docSnap.data();
-                    
-                    onSnapshot(doc(db, "global", "stats"), (doc) => {{
-                        if(doc.exists()) {{
-                            let pct = (doc.data().totalXP / 100);
-                            const gb = document.getElementById('global-xp');
-                            if(gb) gb.style.width = pct + "%";
-                        }}
-                    }});
-                }}
-            }} catch (error) {{
-                console.warn("Erreur de synchronisation Firebase (Travaillant hors-ligne):", error);
-            }}
-
             window.app.renderAvatars();
-            
-            const tCont = document.getElementById('trait-container');
-            tCont.innerHTML = "";
-            const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
-            
-            TRAITS.forEach(t => {{
-                const span = document.createElement('span'); 
-                span.className = "trait-tag";
-                if(window.app.data.user.trait === t) span.classList.add('selected');
-                span.innerText = t;
-                span.onclick = function() {{
-                    document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
-                    this.classList.add('selected');
-                    window.app.data.user.trait = t;
-                }};
-                tCont.appendChild(span);
-            }});
-
             window.app.updateUI();
-            if (window.app.data.user.name !== "") {{
-                document.getElementById('player-name').value = window.app.data.user.name;
+            
+            // LÓGICA DE INICIO: Mostrar Login por defecto, a menos que haya nombre.
+            // Para asegurar que la vista activa inicial funciona, forzamos render.
+            if (window.app.data.user.name && window.app.data.user.name !== "") {{
+                const nameField = document.getElementById('player-name');
+                if(nameField) nameField.value = window.app.data.user.name;
                 window.app.nav('home');
             }} else {{
                 window.app.nav('login');
             }}
         }},
 
-        toggleZen: () => {{
-            document.body.classList.toggle('mode-zen');
-            localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen'));
-        }},
-
-        saveData: async () => {{
-            try {{ localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data)); }} catch(e) {{}}
-            try {{ if(db && window.app.data.user.name !== "") await setDoc(doc(db, "students", window.app.data.user.name), window.app.data); }} catch(e) {{}}
+        saveData: () => {{
+            try {{
+                localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data));
+            }} catch(e) {{ console.warn(e); }}
             window.app.updateUI();
         }},
 
         addXP: (amount) => {{
-            sfx_coin.play().catch(e => console.warn(e));
             window.app.data.user.xp += amount;
             window.app.saveData();
-            try {{ confetti({{ particleCount: 100, spread: 70, origin: {{ y: 0.6 }} }}); }} catch(e) {{}}
         }},
 
         nav: (view) => {{
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-            document.getElementById('view-' + view).classList.add('active-view');
+            const targetView = document.getElementById('view-' + view);
+            if(targetView) targetView.classList.add('active-view');
             
             const header = document.getElementById('app-header');
             const title = document.getElementById('header-title');
             
-            if(view === 'login' || view === 'home') {{
-                header.classList.remove('visible');
-            }} else {{
-                header.classList.add('visible');
-                const titles = {{
-                    'profil': "{t['profil_btn']}", 'missions': "{t['progression']}",
-                    'map': "{t['campus_map']}", 'journal': "{t['journal_title']}",
-                    'games': "{t['arcade_title']}", 'oscars': "{t['oscars_title']}"
-                }};
-                title.innerText = titles[view] || "J.O. AVENIR";
+            if(header && title) {{
+                if(view === 'login' || view === 'home') {{
+                    header.classList.remove('visible');
+                }} else {{
+                    header.classList.add('visible');
+                    const titles = {{
+                        'profil': "{t['profil_btn']}", 'missions': "{t['progression']}",
+                        'map': "{t['campus_map']}", 'journal': "{t['journal_title']}",
+                        'games': "{t['arcade_title']}", 'oscars': "{t['oscars_title']}"
+                    }};
+                    title.innerText = titles[view] || "J.O. AVENIR";
+                }}
             }}
 
             if(view === 'missions') window.app.renderPath();
         }},
 
         renderAvatars: () => {{
-            const grid = document.getElementById('sprite-container'); grid.innerHTML = "";
-            const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf", "fa-crow", "fa-spider", "fa-fish", "fa-bug", "fa-hippo", "fa-otter", "fa-frog", "fa-horse", "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"];
-            const HIDDEN_SPRITES = [
-                {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
-                {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
-                {{ icon: "fa-mask", code: "SPARK-44" }}, {{ icon: "fa-hat-wizard", code: "AURA-77" }}, 
-                {{ icon: "fa-gem", code: "ECHO-LUM" }}
-            ];
-            
+            const grid = document.getElementById('sprite-container');
+            if(!grid) return;
+            grid.innerHTML = "";
+            const SPRITES = ["fa-dragon", "fa-robot", "fa-bolt", "fa-leaf", "fa-meteor"];
             SPRITES.forEach(icon => {{
                 const div = document.createElement('div'); div.className = "avatar-item";
                 if(window.app.data.user.sprite === icon) div.classList.add('selected');
@@ -479,125 +403,53 @@ JS_CODE = f"""
                 }};
                 grid.appendChild(div);
             }});
-            
-            HIDDEN_SPRITES.forEach(h => {{
-                const div = document.createElement('div');
-                if (window.app.data.user.unlockedAvatars.includes(h.icon)) {{
-                    div.className = "avatar-item unlocked";
-                    if(window.app.data.user.sprite === h.icon) div.classList.add('selected');
-                    div.innerHTML = `<i class="fa-solid ${{h.icon}}"></i>`;
-                    div.onclick = function() {{
-                        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
-                        this.classList.add('selected'); window.app.data.user.sprite = h.icon;
-                    }};
-                }} else {{
-                    div.className = "avatar-item locked";
-                    div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
-                    div.onclick = function() {{
-                        const guess = prompt("Code secret:");
-                        if (guess && guess.trim().toUpperCase() === h.code) {{
-                            window.app.data.user.unlockedAvatars.push(h.icon);
-                            window.app.saveData(); window.app.renderAvatars();
-                            try{{ confetti(); }}catch(e){{}}
-                        }} else if(guess) {{
-                            alert("{t['code_invalid']}");
-                        }}
-                    }};
-                }}
-                grid.appendChild(div);
-            }});
         }},
 
         updateUI: () => {{
             const xp = window.app.data.user.xp || 0;
             document.querySelectorAll('.xp-counter').forEach(el => el.innerText = xp);
+            if(window.app.data.user.sprite) {{
+                document.querySelectorAll('.mini-avatar').forEach(el => el.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`);
+            }}
             
-            document.querySelectorAll('.mini-avatar').forEach(mini => {{
-                if(window.app.data.user.sprite) {{
-                    mini.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`;
-                }}
-            }});
-            
-            if (xp >= 100) document.getElementById('m-bronze').classList.add('unlocked', 'bronze');
-            if (xp >= 300) document.getElementById('m-silver').classList.add('unlocked', 'silver');
-            if (xp >= 500) document.getElementById('m-gold').classList.add('unlocked', 'gold');
+            const mb = document.getElementById('m-bronze'); if(mb && xp >= 100) mb.classList.add('unlocked', 'bronze');
+            const ms = document.getElementById('m-silver'); if(ms && xp >= 300) ms.classList.add('unlocked', 'silver');
+            const mg = document.getElementById('m-gold'); if(mg && xp >= 500) mg.classList.add('unlocked', 'gold');
             
             let globalPct = Math.min((xp / 1000) * 100, 100);
-            const gb = document.querySelector('.fill-global');
-            if(gb) gb.style.width = globalPct + "%";
+            const gb = document.querySelector('.fill-global'); if(gb) gb.style.width = globalPct + "%";
             
             let personalPct = Math.min((xp / MAX_INDIVIDUAL_XP) * 100, 100);
-            const pb = document.getElementById('personal-xp');
-            if(pb) pb.style.width = personalPct + "%";
+            const pb = document.getElementById('personal-xp'); if(pb) pb.style.width = personalPct + "%";
             
-            if (globalPct >= 100) document.getElementById('golden-star').style.display = 'block';
-        }},
-
-        checkSecretCode: () => {{
-            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
-            const hashedInput = btoa(input);
-            const SECRET_CODES = {{
-                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
-                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
-                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
-                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
-            }};
-            const msgBox = document.getElementById('secret-msg');
-            
-            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
-                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
-                return;
-            }}
-            
-            if(SECRET_CODES[hashedInput]) {{
-                window.app.data.user.usedCodes.push(hashedInput);
-                window.app.addXP(SECRET_CODES[hashedInput].xp);
-                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
-                msgBox.style.color = "#28a745"; 
-                document.getElementById('secret-code-input').value = "";
-            }} else {{
-                msgBox.innerText = "{t['code_invalid']}"; 
-                msgBox.style.color = "#dc3545";
-            }}
-        }},
-
-        claimUltimateReward: () => {{
-            try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
-            document.getElementById('golden-star').style.display = 'none'; 
-            document.getElementById('ultimateModal').classList.add('show');
+            const gs = document.getElementById('golden-star'); if(gs && globalPct >= 100) gs.style.display = 'block';
         }},
 
         saveProfile: () => {{
-            const name = document.getElementById('player-name').value;
-            if(!window.app.data.user.sprite || !name || !window.app.data.user.trait) {{
-                alert("{t['alert_profile']}");
-                return;
-            }}
+            const nameField = document.getElementById('player-name');
+            if(!nameField) return;
+            const name = nameField.value;
+            if(!window.app.data.user.sprite || !name) return alert("{t['alert_profile']}");
             window.app.data.user.name = name;
-            if(window.app.data.user.xp === undefined) window.app.data.user.xp = 0;
             window.app.saveData();
             window.app.nav('home');
         }},
 
         renderPath: () => {{
-            const container = document.getElementById('path-container'); container.innerHTML = "";
+            const container = document.getElementById('path-container'); 
+            if(!container) return;
+            container.innerHTML = "";
             window.app.data.missions.forEach((m, idx) => {{
                 const isLeft = idx % 2 === 0; const reqChapter = idx + 1;
                 let statusClass = m.completed ? 'completed' : ''; let iconClass = m.completed ? 'fa-check' : m.icon;
                 
-                if (window.app.currentChapter < reqChapter) {{
-                    statusClass = 'locked'; iconClass = 'fa-lock';
-                }} else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{
-                    statusClass = 'active';
-                }}
+                if (window.app.currentChapter < reqChapter) {{ statusClass = 'locked'; iconClass = 'fa-lock'; }} 
+                else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{ statusClass = 'active'; }}
                 
                 container.innerHTML += `
                 <div class="mission-node ${{isLeft ? 'left' : 'right'}} ${{statusClass}}" onclick="window.app.openModal(${{m.id}}, '${{statusClass}}')">
                     <div class="node-icon"><i class="fa-solid ${{iconClass}}"></i></div>
-                    <div>
-                        <h5 class="mb-0 fw-bold">${{m.title}}</h5>
-                        <small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small>
-                    </div>
+                    <div><h5 class="mb-0 fw-bold">${{m.title}}</h5><small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small></div>
                 </div>`;
             }});
         }},
@@ -623,7 +475,6 @@ JS_CODE = f"""
             const hashedInp = btoa(inp); 
             const m = window.app.data.missions.find(x => x.id === window.app.currentId);
             if(hashedInp === m.code) {{
-                sfx_unlock.play().catch(e=>console.warn(e)); 
                 m.completed = true; 
                 document.getElementById('feedback-msg').innerText = "{t['validated_xp']}"; 
                 document.getElementById('feedback-msg').style.color = "#28a745"; 
@@ -635,7 +486,7 @@ JS_CODE = f"""
             }}
         }},
 
-        // === ARCADE (10 CATEGORIES CON FEEDBACK) ===
+        // === ARCADE FULL 10 CATEGORIES ===
         startGame: (t) => {{
             const QUIZ = {{
                 num: [
@@ -758,7 +609,36 @@ JS_CODE = f"""
             document.getElementById('game-menu').style.display = 'flex'; 
         }},
 
-        // === OTROS (DIARIO, MAPA, TTS, OSCARS) ===
+        // === CÓDIGOS SECRETOS ===
+        checkSecretCode: () => {{
+            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
+            const hashedInput = btoa(input);
+            const SECRET_CODES = {{
+                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
+                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
+                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
+                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
+            }};
+            const msgBox = document.getElementById('secret-msg');
+            
+            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
+                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
+                return;
+            }}
+            
+            if(SECRET_CODES[hashedInput]) {{
+                window.app.data.user.usedCodes.push(hashedInput);
+                window.app.addXP(SECRET_CODES[hashedInput].xp);
+                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
+                msgBox.style.color = "#28a745"; 
+                document.getElementById('secret-code-input').value = "";
+            }} else {{
+                msgBox.innerText = "{t['code_invalid']}"; 
+                msgBox.style.color = "#dc3545";
+            }}
+        }},
+
+        // === OTROS (DIARIO, MAPA, TTS) ===
         selectMood: (e,m) => {{
             document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
             e.classList.add('selected'); document.getElementById('selected-mood').value = m;
@@ -790,23 +670,8 @@ JS_CODE = f"""
             const x = ev.clientX - rect.left; const y = ev.clientY - rect.top; 
             el.style.left = ((x / rect.width) * 100) + "%"; el.style.top = ((y / rect.height) * 100) + "%"; 
         }},
-        renderNominees: () => {{
-            const list = document.getElementById('nominees-list'); list.innerHTML = "";
-            const nominees = ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"];
-            nominees.forEach(n => {{
-                list.innerHTML += `<div class='glass-panel d-flex justify-content-between align-items-center mb-2'><span class="fw-bold text-dark">${{n}}</span><button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button></div>`;
-            }});
-        }},
-        submitVote: (name) => {{
-            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{ alert("{t['already_voted']}"); return; }}
-            if(confirm("Voter pour " + name + " ?")) {{ window.app.data.user.myVote = name; window.app.addXP(20); window.app.saveData(); window.app.renderNominees(); }}
-        }},
-        speakText: (text) => {{
-            window.speechSynthesis.cancel(); 
-            const msg = new SpeechSynthesisUtterance(); msg.text = text; msg.lang = 'fr-FR'; 
-            window.speechSynthesis.speak(msg);
-        }},
         speakQuestion: () => {{ window.app.speakText(document.getElementById('game-question').innerText); }},
+        toggleZen: () => {{ document.body.classList.toggle('mode-zen'); localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen')); }},
         claimUltimateReward: () => {{
             try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
             document.getElementById('golden-star').style.display = 'none'; 
@@ -814,7 +679,7 @@ JS_CODE = f"""
         }}
     }};
 
-    setTimeout(() => window.app.init(), 200);
+    setTimeout(() => window.app.init(), 100);
 </script>
 """
 
@@ -843,8 +708,8 @@ HTML_CODE = f"""
         <button class="btn-zen" onclick="window.app.toggleZen()">🧠 Mode Zen</button>
     </div>
 
-    <!-- PANTALLA LOGIN -->
-    <section id="view-login" class="view">
+    <!-- PANTALLA LOGIN (Por defecto visible para evitar fallos si JS tarda) -->
+    <section id="view-login" class="view active-view">
         <div class="glass-panel text-center mt-2">
             <h1 class="fw-bold" style="font-family: var(--font-head); font-size:2.5rem;">J.O. AVENIR</h1>
         </div>
@@ -852,7 +717,6 @@ HTML_CODE = f"""
             <h4 class="fw-bold">{t['create_athlete']}</h4>
             <div class="avatar-grid" id="sprite-container"></div>
             <input type="text" id="player-name" class="solid-input mb-3" placeholder="{t['name_label']}">
-            <div class="trait-selector" id="trait-container"></div>
             <button class="btn-glass mt-2" onclick="window.app.saveProfile()">{t['enter_stadium']}</button>
         </div>
     </section>
