@@ -28,20 +28,24 @@ translations = {
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
         'name_label': "NOM", 'enter_stadium': "ENTRER DANS LE STADE",
         'profil_btn': "MON PROFIL", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "ÉVALUATION",
-        'global_impact': "IMPACT GLOBAL", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? (ex: MATH-50)", 'progression': "ROAD TO PARIS",
-        'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'journal_title': "JOURNAL DE BORD", 'campus_map': "PLAN DU CAMPUS", 'oscars_title': "CO-ÉVALUATION",
-        'locked_chap': "Chapitre Requis", 'next': "Suivant", 'correct': "Correct!", 'incorrect': "Incorrect", 'quit': "Quitter",
-        'validate': "VALIDER", 'close': "Fermer", 'post': "POSTER L'ENTRÉE", 'vote_btn': "VOTER",
-        'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO",
+        'global_impact': "IMPACT GLOBAL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
+        'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "VOTE & ÉVALUATION",
+        'progression': "ROAD TO PARIS", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? (ex: MATH-50)",
+        'back': "Retour", 'campus_map': "PLAN DU CAMPUS", 'legend': "LÉGENDE", 'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'quit': "Quitter",
+        'locked_chap': "Chapitre Requis", 'validate': "VALIDER", 'close': "Fermer",
+        'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅",
+        'win_msg': "La classe a atteint 100% d'Impact Global ! Vous êtes les maîtres des Jeux.",
+        'amazing': "INCROYABLE !", 'journal_title': "JOURNAL DE BORD", 'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO", 'post': "POSTER L'ENTRÉE",
+        'oscars_title': "CO-ÉVALUATION GYMKHANA", 'vote_btn': "VOTER", 'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !",
+        'p_start': "Départ", 'p_end': "Arrivée", 'p_food': "Ravito", 'p_recyc': "Recyclage", 'p_water': "Eau", 'p_med': "Secours",
         'alert_profile': "Complétez votre profil !", 'code_used': "Code déjà utilisé !", 'code_invalid': "Code invalide.",
-        'validated_xp': "Validé ! +100 XP", 'end_score': "Fin! Score: ", 'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !",
-        'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅", 'win_msg': "La classe a atteint 100% d'Impact Global !", 'amazing': "INCROYABLE !",
+        'validated_xp': "Validé ! +100 XP", 'incorrect': "Incorrect", 'end_score': "Fin! Score: ", 'next': "Suivant", 'correct': "Correct!",
         'm1_title': "Conférence ODD", 'm1_desc': "Création monnaie solidaire.", 'm2_title': "Équipes Inclusives", 'm2_desc': "Création des équipes.", 
         'm3_title': "Obstacles Avenir", 'm3_desc': "Design d'épreuves.", 'm4_title': "Règlement", 'm4_desc': "Pacte de Fair-play.", 
         'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains.", 'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
     },
     'Español': {
-        'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'mic': "🎙️ Micrófono", 'listen': "Escuchar 🔊",
+        'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'mic': "🎙️ Micrófono",
         'card': "🎒 Carnet Alumno", 'name': "Nombre:", 'trait': "Habilidad:", 
         'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet",
         'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos",
@@ -49,15 +53,18 @@ translations = {
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
         'name_label': "NOMBRE", 'enter_stadium': "ENTRAR AL ESTADIO",
         'profil_btn': "MI PERFIL", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE", 'oscars_btn': "EVALUACIÓN",
-        'global_impact': "IMPACTO GLOBAL", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? (ej: MATH-50)", 'progression': "ROAD TO PARIS",
-        'arcade_title': "ARCADE INTERDISCIPLINAR", 'journal_title': "DIARIO DE A BORDO", 'campus_map': "MAPA DEL CAMPUS", 'oscars_title': "COEVALUACIÓN",
-        'locked_chap': "Capítulo Requerido", 'next': "Siguiente", 'correct': "¡Correcto!", 'incorrect': "Incorrecto", 'quit': "Salir",
-        'validate': "VALIDAR", 'close': "Cerrar", 'post': "PUBLICAR ENTRADA", 'vote_btn': "VOTAR",
-        'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO",
+        'global_impact': "IMPACTO GLOBAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
+        'progression': "ROAD TO PARIS", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? (ej: MATH-50)",
+        'back': "Volver", 'campus_map': "MAPA DEL CAMPUS", 'legend': "LEYENDA", 'arcade_title': "ARCADE INTERDISCIPLINAR", 'quit': "Salir",
+        'locked_chap': "Capítulo Requerido", 'validate': "VALIDAR", 'close': "Cerrar",
+        'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅",
+        'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global! Sois los maestros de los Juegos.",
+        'amazing': "¡INCREÍBLE!", 'journal_title': "DIARIO DE A BORDO", 'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO", 'post': "PUBLICAR ENTRADA",
+        'oscars_title': "COEVALUACIÓN GYMKHANA", 'vote_btn': "VOTAR", 'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!",
+        'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín",
         'alert_profile': "¡Completa tu perfil!", 'code_used': "¡Código ya usado!", 'code_invalid': "Código inválido.",
-        'validated_xp': "¡Validado! +100 XP", 'end_score': "¡Fin! Puntuación: ", 'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!",
-        'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅", 'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global!", 'amazing': "¡INCREÍBLE!",
-        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
+        'validated_xp': "¡Validado! +100 XP", 'incorrect': "Incorrecto", 'end_score': "¡Fin! Puntuación: ", 'next': "Siguiente", 'correct': "¡Correcto!",
+        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda solidaria.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
         'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.", 'm4_title': "Reglamento", 'm4_desc': "Pacto Fair-play.", 
         'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.", 'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en campus."
     }
@@ -99,9 +106,9 @@ with st.sidebar:
     
     st.title(t['tools'])
     
-    with st.expander(t['tts']):
+    with st.expander(t.get('tts', "Lecteur")):
         text_to_speak = st.text_input("", "Allez!")
-        if st.button("🔊" if 'listen' not in t else t['listen']):
+        if st.button("🔊"):
             try:
                 tts = gTTS(text=text_to_speak, lang=get_tts_lang(st.session_state.lang))
                 audio_bytes = io.BytesIO()
@@ -110,17 +117,17 @@ with st.sidebar:
             except Exception as e:
                 st.error("Erreur TTS")
 
-    with st.expander(t['mic']):
+    with st.expander(t.get('mic', "Micro")):
         wav_audio_data = st_audiorec()
         if wav_audio_data is not None:
             st.audio(wav_audio_data, format='audio/wav')
 
     st.divider()
     
-    st.markdown(f"### {t['card']}")
-    player_name = st.text_input(t['name'], "Athlète")
-    player_trait = st.selectbox(t['trait'], t['traits'])
-    if st.button(t['download_pdf']):
+    st.markdown(f"### {t.get('card', 'Carte')}")
+    player_name = st.text_input(t.get('name', 'Nom'), "Athlète")
+    player_trait = st.selectbox(t.get('trait', 'Atout'), t.get('traits', []))
+    if st.button(t.get('download_pdf', 'PDF')):
         try:
             pdf_data = create_player_card(player_name, player_trait)
             st.download_button("📥 PDF", pdf_data, file_name="carte.pdf", mime="application/pdf")
@@ -130,8 +137,8 @@ with st.sidebar:
 
     st.divider()
     
-    st.markdown(f"### {t['admin']}")
-    password = st.text_input(t['pass'], type="password")
+    st.markdown(f"### {t.get('admin', 'Admin')}")
+    password = st.text_input(t.get('pass', 'Mot de passe'), type="password")
     if password == "prof123": 
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
@@ -142,7 +149,7 @@ with st.sidebar:
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;} .block-container {padding:0;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 3. CSS (APP NATIVA)
+# 3. CSS (APP NATIVA Y VISTAS)
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -183,7 +190,7 @@ CSS_CODE = """
     .game-opt:hover { background: #e2e2e2; }
     .game-opt.disabled { pointer-events: none; opacity: 0.6; }
 
-    /* RUTAS Y AVATARES */
+    /* RUTAS DE MISIONES (DUOLINGO) */
     .path-container { display: flex; flex-direction: column; align-items: center; position: relative; padding: 20px 0; }
     .path-container::before { content: ''; position: absolute; width: 6px; background: rgba(255,255,255,0.8); top: 0; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 0; }
     .mission-node { position: relative; z-index: 1; width: 85%; background: white; border-radius: 20px; padding: 15px; display: flex; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 30px; border: 4px solid transparent; cursor: pointer; }
@@ -195,55 +202,128 @@ CSS_CODE = """
     .node-icon { width: 60px; height: 60px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 15px; }
     .completed .node-icon { background: #00b894; color: white; }
     .active .node-icon { background: var(--primary); color: white; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 102, 204, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 102, 204, 0); } }
     
+    /* AVATARES */
     .avatar-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
     .avatar-item { background: white; border: 2px solid #ccc; border-radius: 10px; padding: 12px; text-align: center; cursor: pointer; font-size: 1.5rem; }
     .avatar-item.selected { border-color: var(--primary); border-width: 4px; transform: scale(1.1); }
+    .avatar-item.locked { background: #444; border-color: #222; color: #777; }
+    .avatar-item.unlocked { background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
-    /* ESTILOS DEL DIARIO Y MAPA FÍSICO */
+    /* ESTILOS DEL DIARIO */
     .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
     .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
     .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
+    
+    /* MAPA */
     .map-container { position: relative; width: 100%; height: 650px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; }
     .map-frame { width: 150%; height: 150%; border: 0; pointer-events: none; transform: rotate(90deg); flex-shrink: 0; filter: contrast(1.1) saturate(1.1); }
     .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 6px 12px rgba(0,0,0,0.5); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
+    .map-hud { position: absolute; bottom: 15px; left: 15px; right: 15px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 12px; padding: 15px; z-index: 20; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.2); pointer-events: none; }
+    
+    /* MODALS Y OTROS */
+    .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
+    .xp-badge { background: var(--accent); color: #000; font-weight: 900; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; border: 2px solid #fff; display: inline-block;}
+    .medal-box { display: flex; gap: 10px; margin-top: 10px; }
+    .medal { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #eee; color: #aaa; border: 2px solid #ccc; transition: 0.3s; }
+    .medal.unlocked.bronze { background: #cd7f32; color: white; border-color: #8c5622; box-shadow: 0 0 10px rgba(205,127,50,0.5); }
+    .medal.unlocked.silver { background: #c0c0c0; color: white; border-color: #888; box-shadow: 0 0 10px rgba(192,192,192,0.5); }
+    .medal.unlocked.gold { background: #ffd700; color: white; border-color: #b8860b; box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+    #golden-star { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; text-shadow: 0 0 20px #FFD700; cursor: pointer; z-index: 100; display: none; }
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+    .custom-modal.show { display: flex; }
 </style>
 """
 
 # ==========================================================
-# 4. JAVASCRIPT LOGIC
+# 4. JAVASCRIPT LOGIC (TODO INCLUIDO)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<script>
+<script type="module">
+    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import {{ getFirestore, doc, setDoc, getDoc, onSnapshot }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    let db = null;
+    try {{
+        const firebaseConfig = {{ {FIREBASE_CONFIG} }};
+        const fbApp = initializeApp(firebaseConfig);
+        db = getFirestore(fbApp);
+    }} catch (e) {{
+        console.warn("Firebase config manquante ou invalide. Mode hors-ligne activé.");
+    }}
+
     const sfx_coin = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg');
+    const sfx_unlock = new Audio('https://actions.google.com/sounds/v1/magic/magic_chime.ogg');
 
     window.app = {{
         currentChapter: {st.session_state.chapter},
-        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [] }},
+        nominees: ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"],
+        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [], myVote: "" }}, missions: [], journal: [] }},
         
-        init: () => {{
+        init: async () => {{
+            if(localStorage.getItem('jo_avenir_zen') === 'true') document.body.classList.add('mode-zen');
+
             window.app.data.missions = [
-                {{ id: 1, title: "{t['m1_title']}", desc: "{t['m1_desc']}", icon: "fa-coins", completed: false }},
-                {{ id: 2, title: "{t['m2_title']}", desc: "{t['m2_desc']}", icon: "fa-users", completed: false }},
-                {{ id: 3, title: "{t['m3_title']}", desc: "{t['m3_desc']}", icon: "fa-recycle", completed: false }},
-                {{ id: 4, title: "{t['m4_title']}", desc: "{t['m4_desc']}", icon: "fa-scale-balanced", completed: false }},
-                {{ id: 5, title: "{t['m5_title']}", desc: "{t['m5_desc']}", icon: "fa-apple-whole", completed: false }},
-                {{ id: 6, title: "{t['m6_title']}", desc: "{t['m6_desc']}", icon: "fa-map", completed: false }}
+                {{ id: 1, type: "code", code: "T0RELTc0QQ==", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
+                {{ id: 2, type: "code", code: "RVEtOTJC", title: "{t['m2_title']}", odd: "ODD 5 & 10", icon: "fa-users", desc: "{t['m2_desc']}", completed: false }},
+                {{ id: 3, type: "code", code: "RUNPLTE4Qw==", title: "{t['m3_title']}", odd: "ODD 13", icon: "fa-recycle", desc: "{t['m3_desc']}", completed: false }},
+                {{ id: 4, type: "code", code: "UkVHLTQ0RA==", title: "{t['m4_title']}", odd: "ODD 16", icon: "fa-scale-balanced", desc: "{t['m4_desc']}", completed: false }},
+                {{ id: 5, type: "code", code: "TUlBTS02NkU=", title: "{t['m5_title']}", odd: "ODD 3", icon: "fa-apple-whole", desc: "{t['m5_desc']}", completed: false }},
+                {{ id: 6, type: "code", code: "TUFQLTMxRg==", title: "{t['m6_title']}", odd: "ODD 11", icon: "fa-map", desc: "{t['m6_desc']}", completed: false }}
             ];
 
             try {{
                 const localData = localStorage.getItem("jo_avenir_2026");
-                if (localData) window.app.data = JSON.parse(localData);
+                if (localData) {{
+                    const parsedData = JSON.parse(localData);
+                    if (parsedData && parsedData.user) window.app.data = parsedData;
+                }}
             }} catch (error) {{
-                console.warn(error);
+                console.error("Erreur critique de LocalStorage:", error);
                 localStorage.removeItem("jo_avenir_2026");
             }}
 
+            try {{
+                if (db && window.app.data.user.name !== "") {{
+                    const docRef = doc(db, "students", window.app.data.user.name);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) window.app.data = docSnap.data();
+                    
+                    onSnapshot(doc(db, "global", "stats"), (doc) => {{
+                        if(doc.exists()) {{
+                            let pct = (doc.data().totalXP / 100);
+                            const gb = document.getElementById('global-xp');
+                            if(gb) gb.style.width = pct + "%";
+                        }}
+                    }});
+                }}
+            }} catch (error) {{
+                console.warn("Erreur de synchronisation Firebase (Travaillant hors-ligne):", error);
+            }}
+
             window.app.renderAvatars();
-            window.app.updateUI();
             
+            const tCont = document.getElementById('trait-container');
+            tCont.innerHTML = "";
+            const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
+            TRAITS.forEach(t => {{
+                const span = document.createElement('span'); 
+                span.className = "trait-tag";
+                if(window.app.data.user.trait === t) span.classList.add('selected');
+                span.innerText = t;
+                span.onclick = function() {{
+                    document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
+                    this.classList.add('selected');
+                    window.app.data.user.trait = t;
+                }};
+                tCont.appendChild(span);
+            }});
+
+            window.app.updateUI();
             if (window.app.data.user.name !== "") {{
                 document.getElementById('player-name').value = window.app.data.user.name;
                 window.app.nav('home');
@@ -252,19 +332,26 @@ JS_CODE = f"""
             }}
         }},
 
-        saveData: () => {{
+        toggleZen: () => {{
+            document.body.classList.toggle('mode-zen');
+            localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen'));
+        }},
+
+        saveData: async () => {{
+            try {{ localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data)); }} catch(e) {{}}
             try {{
-                localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data));
-            }} catch(e) {{
-                console.warn(e);
-            }}
+                if(db && window.app.data.user.name !== "") {{
+                    await setDoc(doc(db, "students", window.app.data.user.name), window.app.data);
+                }}
+            }} catch(e) {{}}
             window.app.updateUI();
         }},
 
         addXP: (amount) => {{
-            try {{ sfx_coin.play(); }} catch(e) {{ console.warn(e); }}
+            sfx_coin.play().catch(e => console.warn("Audio bloqué par navigateur"));
             window.app.data.user.xp += amount;
             window.app.saveData();
+            try {{ confetti({{ particleCount: 100, spread: 70, origin: {{ y: 0.6 }} }}); }} catch(e) {{}}
         }},
 
         nav: (view) => {{
@@ -287,11 +374,20 @@ JS_CODE = f"""
             }}
 
             if(view === 'missions') window.app.renderPath();
+            if(view === 'journal') window.app.renderJournal();
+            if(view === 'oscars') window.app.renderNominees();
         }},
 
         renderAvatars: () => {{
             const grid = document.getElementById('sprite-container'); grid.innerHTML = "";
-            const SPRITES = ["fa-dragon", "fa-robot", "fa-bolt", "fa-leaf", "fa-meteor"];
+            const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf", "fa-crow", "fa-spider", "fa-fish", "fa-bug", "fa-hippo", "fa-otter", "fa-frog", "fa-horse", "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"];
+            const HIDDEN_SPRITES = [
+                {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
+                {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
+                {{ icon: "fa-mask", code: "SPARK-44" }}, {{ icon: "fa-hat-wizard", code: "AURA-77" }}, 
+                {{ icon: "fa-gem", code: "ECHO-LUM" }}
+            ];
+            
             SPRITES.forEach(icon => {{
                 const div = document.createElement('div'); div.className = "avatar-item";
                 if(window.app.data.user.sprite === icon) div.classList.add('selected');
@@ -302,20 +398,98 @@ JS_CODE = f"""
                 }};
                 grid.appendChild(div);
             }});
+            
+            HIDDEN_SPRITES.forEach(h => {{
+                const div = document.createElement('div');
+                if (window.app.data.user.unlockedAvatars.includes(h.icon)) {{
+                    div.className = "avatar-item unlocked";
+                    if(window.app.data.user.sprite === h.icon) div.classList.add('selected');
+                    div.innerHTML = `<i class="fa-solid ${{h.icon}}"></i>`;
+                    div.onclick = function() {{
+                        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected'); window.app.data.user.sprite = h.icon;
+                    }};
+                }} else {{
+                    div.className = "avatar-item locked";
+                    div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
+                    div.onclick = function() {{
+                        const guess = prompt("Code secret:");
+                        if (guess && guess.trim().toUpperCase() === h.code) {{
+                            window.app.data.user.unlockedAvatars.push(h.icon);
+                            window.app.saveData(); window.app.renderAvatars();
+                            try{{ confetti(); }}catch(e){{}}
+                        }} else if(guess) {{
+                            alert("{t['code_invalid']}");
+                        }}
+                    }};
+                }}
+                grid.appendChild(div);
+            }});
         }},
 
         updateUI: () => {{
             const xp = window.app.data.user.xp || 0;
             document.querySelectorAll('.xp-counter').forEach(el => el.innerText = xp);
-            if(window.app.data.user.sprite) {{
-                document.querySelectorAll('.mini-avatar').forEach(el => el.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`);
+            
+            document.querySelectorAll('.mini-avatar').forEach(mini => {{
+                if(window.app.data.user.sprite) {{
+                    mini.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`;
+                }}
+            }});
+            
+            if (xp >= 100) document.getElementById('m-bronze').classList.add('unlocked', 'bronze');
+            if (xp >= 300) document.getElementById('m-silver').classList.add('unlocked', 'silver');
+            if (xp >= 500) document.getElementById('m-gold').classList.add('unlocked', 'gold');
+            
+            let globalPct = Math.min((xp / 1000) * 100, 100);
+            const gb = document.querySelector('.fill-global');
+            if(gb) gb.style.width = globalPct + "%";
+            
+            if (globalPct >= 100) document.getElementById('golden-star').style.display = 'block';
+        }},
+
+        checkSecretCode: () => {{
+            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
+            const hashedInput = btoa(input);
+            const SECRET_CODES = {{
+                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
+                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
+                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
+                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
+            }};
+            const msgBox = document.getElementById('secret-msg');
+            
+            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
+                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
+                return;
             }}
+            
+            if(SECRET_CODES[hashedInput]) {{
+                window.app.data.user.usedCodes.push(hashedInput);
+                window.app.addXP(SECRET_CODES[hashedInput].xp);
+                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
+                msgBox.style.color = "#28a745"; 
+                document.getElementById('secret-code-input').value = "";
+            }} else {{
+                msgBox.innerText = "{t['code_invalid']}"; 
+                msgBox.style.color = "#dc3545";
+            }}
+        }},
+
+        claimUltimateReward: () => {{
+            try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
+            document.getElementById('golden-star').style.display = 'none'; 
+            document.getElementById('ultimateModal').classList.add('show');
         }},
 
         saveProfile: () => {{
             const name = document.getElementById('player-name').value;
-            if(!window.app.data.user.sprite || !name) return alert("{t['alert_profile']}");
+            if(!window.app.data.user.sprite || !name || !window.app.data.user.trait) {{
+                alert("{t['alert_profile']}");
+                return;
+            }}
             window.app.data.user.name = name;
+            if(window.app.data.user.xp === undefined) window.app.data.user.xp = 0;
             window.app.saveData();
             window.app.nav('home');
         }},
@@ -326,18 +500,55 @@ JS_CODE = f"""
                 const isLeft = idx % 2 === 0; const reqChapter = idx + 1;
                 let statusClass = m.completed ? 'completed' : ''; let iconClass = m.completed ? 'fa-check' : m.icon;
                 
-                if (window.app.currentChapter < reqChapter) {{ statusClass = 'locked'; iconClass = 'fa-lock'; }} 
-                else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{ statusClass = 'active'; }}
+                if (window.app.currentChapter < reqChapter) {{
+                    statusClass = 'locked'; iconClass = 'fa-lock';
+                }} else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{
+                    statusClass = 'active';
+                }}
                 
                 container.innerHTML += `
-                <div class="mission-node ${{isLeft ? 'left' : 'right'}} ${{statusClass}}">
+                <div class="mission-node ${{isLeft ? 'left' : 'right'}} ${{statusClass}}" onclick="window.app.openModal(${{m.id}}, '${{statusClass}}')">
                     <div class="node-icon"><i class="fa-solid ${{iconClass}}"></i></div>
-                    <div><h5 class="mb-0 fw-bold">${{m.title}}</h5><small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small></div>
+                    <div>
+                        <h5 class="mb-0 fw-bold">${{m.title}}</h5>
+                        <small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small>
+                    </div>
                 </div>`;
             }});
         }},
 
-        // === ARCADE FULL 10 CATEGORIES ===
+        openModal: (id, status) => {{
+            if(status === 'locked' || status === 'completed') return;
+            window.app.currentId = id; 
+            const m = window.app.data.missions.find(x => x.id === id);
+            document.getElementById('modal-title').innerText = m.title; 
+            document.getElementById('modal-desc').innerText = m.desc; 
+            document.getElementById('modal-odd').innerText = m.odd;
+            document.getElementById('user-input').value = ""; 
+            document.getElementById('feedback-msg').innerText = ""; 
+            document.getElementById('customModal').classList.add('show');
+        }},
+
+        closeModal: () => {{ document.getElementById('customModal').classList.remove('show'); }},
+
+        validate: () => {{
+            const inp = document.getElementById('user-input').value.trim().toUpperCase(); 
+            const hashedInp = btoa(inp); 
+            const m = window.app.data.missions.find(x => x.id === window.app.currentId);
+            if(hashedInp === m.code) {{
+                sfx_unlock.play().catch(e=>console.warn(e)); 
+                m.completed = true; 
+                document.getElementById('feedback-msg').innerText = "{t['validated_xp']}"; 
+                document.getElementById('feedback-msg').style.color = "#28a745"; 
+                window.app.addXP(100);
+                setTimeout(() => {{ window.app.closeModal(); window.app.renderPath(); }}, 1200);
+            }} else {{
+                document.getElementById('feedback-msg').innerText = "{t['incorrect']}"; 
+                document.getElementById('feedback-msg').style.color = "#dc3545";
+            }}
+        }},
+
+        // === ARCADE (10 CATEGORIES, 3 PREGUNTAS CON FEEDBACK) ===
         startGame: (t) => {{
             const QUIZ = {{
                 num: [
@@ -452,6 +663,103 @@ JS_CODE = f"""
         nextQuestion: () => {{
             window.app.qIndex++; 
             window.app.renderQuestion();
+        }},
+        
+        exitGame: () => {{
+            document.getElementById('game-interface').style.display = 'none'; 
+            document.getElementById('game-menu').style.display = 'flex'; 
+        }},
+
+        // === JOURNAL ===
+        selectMood: (e,m) => {{
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+            e.classList.add('selected'); 
+            document.getElementById('selected-mood').value = m;
+        }},
+
+        saveJournal: () => {{ 
+            const m = document.getElementById('selected-mood').value;
+            const t = document.getElementById('journal-text').value;
+            if(!m || !t) return; 
+            
+            if(!window.app.data.journal) window.app.data.journal = [];
+            window.app.data.journal.unshift({{d: new Date().toLocaleDateString(), m: m, t: t}});
+            
+            window.app.addXP(20); 
+            window.app.saveData(); 
+            window.app.renderJournal();
+            
+            document.getElementById('journal-text').value = ""; 
+            document.getElementById('selected-mood').value = "";
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+        }},
+
+        renderJournal: () => {{
+            const c = document.getElementById('journal-feed'); 
+            c.innerHTML = ""; 
+            if(!window.app.data.journal) window.app.data.journal = []; 
+            window.app.data.journal.forEach(e => {{ 
+                c.innerHTML += `
+                <div class='glass-panel'>
+                    <div class='d-flex justify-content-between mb-2'>
+                        <span class="text-secondary small fw-bold">${{e.d}}</span>
+                        <span style="font-size:1.5rem;">${{e.m}}</span>
+                    </div>
+                    <p class='text-dark mb-0'>${{e.t}}</p>
+                </div>`;
+            }}); 
+        }},
+
+        // === MAPA ===
+        allowDrop: (ev) => {{ ev.preventDefault(); }},
+        drag: (ev) => {{ ev.dataTransfer.setData("text", ev.target.id); }},
+        drop: (ev) => {{ 
+            ev.preventDefault(); 
+            const data = ev.dataTransfer.getData("text"); 
+            const el = document.getElementById(data); 
+            const rect = ev.currentTarget.getBoundingClientRect(); 
+            const x = ev.clientX - rect.left; 
+            const y = ev.clientY - rect.top; 
+            el.style.left = ((x / rect.width) * 100) + "%"; 
+            el.style.top = ((y / rect.height) * 100) + "%"; 
+        }},
+
+        // === OSCARS ===
+        renderNominees: () => {{
+            const list = document.getElementById('nominees-list'); 
+            list.innerHTML = "";
+            window.app.nominees.forEach(n => {{
+                list.innerHTML += `
+                <div class='glass-panel d-flex justify-content-between align-items-center mb-2'>
+                    <span class="fw-bold text-dark">${{n}}</span>
+                    <button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button>
+                </div>`;
+            }});
+        }},
+
+        submitVote: (name) => {{
+            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{
+                alert("{t['already_voted']}"); 
+                return;
+            }}
+            if(confirm("Voter pour " + name + " ?")) {{
+                window.app.data.user.myVote = name; 
+                window.app.addXP(20); 
+                window.app.saveData(); 
+                window.app.renderNominees();
+            }}
+        }},
+
+        // === TTS ===
+        speakText: (text) => {{
+            window.speechSynthesis.cancel(); 
+            const msg = new SpeechSynthesisUtterance(); 
+            msg.text = text; 
+            msg.lang = 'fr-FR'; 
+            window.speechSynthesis.speak(msg);
+        }},
+        speakQuestion: () => {{
+            window.app.speakText(document.getElementById('game-question').innerText);
         }}
     }};
 
@@ -460,7 +768,7 @@ JS_CODE = f"""
 """
 
 # ==========================================================
-# 5. HTML FINAL (VISTAS COMPLETAS)
+# 6. HTML FINAL (VISTAS COMPLETAS)
 # ==========================================================
 HTML_CODE = f"""
 <!DOCTYPE html>
@@ -488,6 +796,7 @@ HTML_CODE = f"""
             <h4 class="fw-bold">{t['create_athlete']}</h4>
             <div class="avatar-grid" id="sprite-container"></div>
             <input type="text" id="player-name" class="solid-input mb-3" placeholder="{t['name_label']}">
+            <div class="trait-selector" id="trait-container"></div>
             <button class="btn-glass mt-2" onclick="window.app.saveProfile()">{t['enter_stadium']}</button>
         </div>
     </section>
@@ -523,6 +832,14 @@ HTML_CODE = f"""
             </div>
             <div id="secret-msg" class="small mt-2 fw-bold"></div>
         </div>
+        
+        <div class="glass-panel mt-4">
+            <h6 class="fw-bold"><i class="fa-solid fa-earth-americas text-primary"></i> {t['global_impact']}</h6>
+            <div class="progress" style="height: 15px; border-radius: 10px; background:#fff;">
+                <div id="global-xp" class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 15%"></div>
+            </div>
+            <small class="text-secondary">{t['obj_comm']}</small>
+        </div>
     </section>
 
     <!-- SECCIÓN RUTA DE MISIONES -->
@@ -530,7 +847,7 @@ HTML_CODE = f"""
         <div id="path-container" class="path-container"></div>
     </section>
 
-    <!-- SECCIÓN ARCADE FULL 10 CATEGORÍAS (CON FEEDBACK) -->
+    <!-- SECCIÓN ARCADE (CON FEEDBACK) -->
     <section id="view-games" class="view">
         <div id="game-menu" class="row g-2">
             <div class="col-6"><div class="glass-panel p-3 mb-2 text-center" onclick="window.app.startGame('num')" style="cursor:pointer;"><i class="fa-solid fa-calculator fa-2x text-primary mb-2"></i><br><h6 class="mb-0 fw-bold small">NOMBRES</h6></div></div>
@@ -547,7 +864,10 @@ HTML_CODE = f"""
         
         <div id="game-interface" style="display:none;">
             <div class="glass-panel">
-                <h5 id="game-question" class="fw-bold mb-3 text-center">...</h5>
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <h5 id="game-question" class="fw-bold mb-0 text-center">...</h5>
+                    <button class="tts-btn" onclick="window.app.speakQuestion()" style="background:none; border:none; font-size:1.5rem; margin-left:10px;">🔊</button>
+                </div>
                 <div id="game-options"></div>
                 
                 <!-- CAJA DE FEEDBACK -->
@@ -557,13 +877,82 @@ HTML_CODE = f"""
                 
                 <button id="btn-next-question" class="btn-glass mt-3" style="display:none;" onclick="window.app.nextQuestion()">{t['next']}</button>
             </div>
+            <button onclick="window.app.exitGame()" class="btn btn-outline w-100">{t['quit']}</button>
         </div>
     </section>
 
-    <!-- VISTAS VACÍAS PARA NAVEGACIÓN -->
-    <section id="view-map" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
-    <section id="view-journal" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
-    <section id="view-oscars" class="view"><div class="glass-panel text-center"><h4>En cours de développement...</h4></div></section>
+    <!-- SECCIÓN MAPA -->
+    <section id="view-map" class="view">
+        <div class="glass-panel">
+            <h4 class="fw-bold text-center">{t['campus_map']}</h4>
+            <div class="map-container mt-3">
+                 <iframe class="map-frame" src="https://maps.google.com/maps?q=38.9763185,-3.9443803&t=k&z=19&ie=UTF8&iwloc=&output=embed" frameborder="0"></iframe>
+                 <div class="map-overlay" ondrop="window.app.drop(event)" ondragover="window.app.allowDrop(event)">
+                    <div id="pin1" class="map-pin pin-pulse" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 10%; background:#FFD93D;">🚀</div>
+                    <div id="pin2" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 30%; background:#FF6B6B;">🏁</div>
+                    <div id="pin3" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 50%; background:#4D79FF;">🍎</div>
+                    <div id="pin4" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 10%; left: 70%; background:#28a745;">♻️</div>
+                    <div id="pin5" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 30%; left: 10%; background:#17a2b8;">💧</div>
+                    <div id="pin6" class="map-pin" draggable="true" ondragstart="window.app.drag(event)" style="top: 30%; left: 30%; background:#e83e8c;">🏥</div>
+                </div>
+            </div>
+            <div class="glass-panel mt-3">
+                <h6 class="text-dark mb-2 fw-bold" style="font-size: 0.85rem;"><i class="fa-solid fa-hand-pointer text-primary"></i> {t['legend']}</h6>
+                <div class="row g-1 small text-dark" style="font-size: 0.7rem; font-weight: bold;">
+                    <div class="col-4">🚀 {t['p_start']}</div> <div class="col-4">🏁 {t['p_end']}</div> <div class="col-4">🍎 {t['p_food']}</div>
+                    <div class="col-4">♻️ {t['p_recyc']}</div> <div class="col-4">💧 {t['p_water']}</div> <div class="col-4">🏥 {t['p_med']}</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DIARIO DE A BORDO -->
+    <section id="view-journal" class="view">
+        <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['journal_title']}</h4>
+        <div class="glass-panel">
+            <label class="small text-secondary mb-2">{t['mood']}</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="mood-btn" onclick="window.app.selectMood(this, '🤩')">🤩</div>
+                <div class="mood-btn" onclick="window.app.selectMood(this, '🙂')">🙂</div>
+                <div class="mood-btn" onclick="window.app.selectMood(this, '😐')">😐</div>
+                <div class="mood-btn" onclick="window.app.selectMood(this, '🥱')">🥱</div>
+            </div>
+            <input type="hidden" id="selected-mood">
+            <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="{t['reflection']}"></textarea>
+            <button onclick="window.app.saveJournal()" class="btn-glass mt-2">{t['post']}</button>
+        </div>
+        <div id="journal-feed" class="mt-4"></div>
+    </section>
+
+    <!-- SECCIÓN OSCARS (VOTACIONES) -->
+    <section id="view-oscars" class="view">
+        <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['oscars_title']}</h4>
+        <div id="nominees-list"></div>
+    </section>
+
+    <!-- MODAL MISIONES -->
+    <div id="customModal" class="custom-modal">
+        <div class="glass-panel" style="width: 90%; max-width: 400px; text-align: center;">
+            <h4 id="modal-title" class="fw-bold mb-2">...</h4>
+            <div class="badge bg-warning text-dark mb-2" id="modal-odd">ODD</div>
+            <p id="modal-desc" class="text-secondary small mb-4">...</p>
+            <input type="text" id="user-input" class="solid-input text-uppercase" placeholder="CODE">
+            <button onclick="window.app.validate()" class="btn-glass mb-2">{t['validate']}</button>
+            <button onclick="window.app.closeModal()" class="btn btn-outline">{t['close']}</button>
+            <div id="feedback-msg" class="mt-3 small fw-bold"></div>
+        </div>
+    </div>
+    
+    <!-- MODAL FINAL (ESTRELLA DORADA) -->
+    <div id="ultimateModal" class="custom-modal">
+        <div class="glass-panel" style="width: 90%; max-width: 400px; text-align: center; border: 4px solid #FFD700;">
+            <i class="fa-solid fa-crown fa-4x mb-3" style="color: #FFD700; text-shadow: 0 4px 10px rgba(255,215,0,0.5);"></i>
+            <h2 class="fw-bold text-dark">{t['legend_unlocked']}</h2>
+            <h4 class="fw-bold text-danger mb-3">{t['org_top']}</h4>
+            <p class="text-secondary small mb-4">{t['win_msg']}</p>
+            <button onclick="document.getElementById('ultimateModal').classList.remove('show')" class="btn-glass" style="background:#FFD700; color:#000;">{t['amazing']}</button>
+        </div>
+    </div>
 
     {JS_CODE}
 </body>
