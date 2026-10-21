@@ -20,10 +20,10 @@ if 'chapter' not in st.session_state: st.session_state.chapter = 1
 
 translations = {
     'Français': {
-        'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'mic': "🎙️ Micro (Oral)",
+        'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'listen': "Écouter 🔊", 'mic': "🎙️ Micro (Oral)",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Ton Atout:", 
         'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte",
-        'admin': "🔐 Zone Professeur", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres",
+        'admin': "🔐 Zone Professeur", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres", 'chap': "Chapitre:",
         'chap_titles': {1: "Chap. 1: L'Appel", 2: "Chap. 2: L'Équipe", 3: "Chap. 3: L'Action", 4: "Chap. 4: Les Règles", 5: "Chap. 5: L'Énergie", 6: "Chap. 6: La Gloire"},
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
         'name_label': "NOM", 'power_label': "SUPER-POUVOIR", 'enter_stadium': "ENTRER DANS LE STADE",
@@ -44,10 +44,10 @@ translations = {
         'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains.", 'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
     },
     'Español': {
-        'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'mic': "🎙️ Micrófono",
+        'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'listen': "Escuchar 🔊", 'mic': "🎙️ Micrófono",
         'card': "🎒 Carnet Alumno", 'name': "Tu Nombre:", 'trait': "Habilidad:", 
         'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet",
-        'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos",
+        'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos", 'chap': "Capítulo:",
         'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: Las Reglas", 5: "Cap. 5: La Energía", 6: "Cap. 6: La Gloria"},
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
         'name_label': "NOMBRE", 'power_label': "SUPERPODER", 'enter_stadium': "ENTRAR AL ESTADIO",
@@ -594,7 +594,6 @@ JS_CODE = f"""
             const list = document.getElementById('nominees-list'); 
             list.innerHTML = "";
             window.app.nominees.forEach(n => {{
-                // En Producción, aquí se verificaría la membresía real del equipo
                 list.innerHTML += `
                 <div class='glass-panel d-flex justify-content-between align-items-center mb-2'>
                     <span class="fw-bold text-dark">${{n}}</span>
@@ -655,7 +654,6 @@ JS_CODE = f"""
             }}); 
         }},
 
-        // Drag & Drop Map
         allowDrop: (ev) => {{ ev.preventDefault(); }},
         drag: (ev) => {{ ev.dataTransfer.setData("text", ev.target.id); }},
         drop: (ev) => {{ 
@@ -737,7 +735,7 @@ JS_CODE = f"""
         }}
     }};
 
-    // Iniciar con retraso ligero para asegurar carga del DOM
+    // Iniciar
     setTimeout(() => window.app.init(), 200);
 </script>
 """
