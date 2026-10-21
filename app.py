@@ -23,14 +23,22 @@ translations = {
         'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'mic': "🎙️ Micro",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Atout:", 
         'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte",
-        'admin': "🔐 Zone Prof", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres",
+        'admin': "🔐 Zone Prof", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres", 'chap': "Chapitre:",
         'chap_titles': {1: "Chap. 1: L'Appel", 2: "Chap. 2: L'Équipe", 3: "Chap. 3: L'Action", 4: "Chap. 4: Les Règles", 5: "Chap. 5: L'Énergie", 6: "Chap. 6: La Gloire"},
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
         'name_label': "NOM", 'enter_stadium': "ENTRER DANS LE STADE",
         'profil_btn': "MON PROFIL", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "ÉVALUATION",
-        'global_impact': "IMPACT GLOBAL", 'secret_codes_title': "CODES SECRETS", 'progression': "ROAD TO PARIS",
-        'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'journal_title': "JOURNAL DE BORD", 'campus_map': "PLAN DU CAMPUS", 'oscars_title': "CO-ÉVALUATION",
-        'locked_chap': "Chapitre Requis", 'next': "Suivant", 'correct': "Correct!", 'incorrect': "Incorrect",
+        'global_impact': "IMPACT GLOBAL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
+        'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? (ex: MATH-50)",
+        'progression': "ROAD TO PARIS", 'campus_map': "PLAN DU CAMPUS", 'legend': "LÉGENDE", 
+        'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'journal_title': "JOURNAL DE BORD", 'oscars_title': "CO-ÉVALUATION",
+        'locked_chap': "Chapitre Requis", 'next': "Suivant", 'correct': "Correct!", 'incorrect': "Incorrect", 'quit': "Quitter",
+        'validate': "VALIDER", 'close': "Fermer", 'post': "POSTER L'ENTRÉE", 'vote_btn': "VOTER",
+        'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO",
+        'p_start': "Départ", 'p_end': "Arrivée", 'p_food': "Ravito", 'p_recyc': "Recyclage", 'p_water': "Eau", 'p_med': "Secours",
+        'alert_profile': "Complétez votre profil !", 'code_used': "Code déjà utilisé !", 'code_invalid': "Code invalide.",
+        'validated_xp': "Validé ! +100 XP", 'end_score': "Fin! Score: ", 'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !",
+        'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅", 'win_msg': "La classe a atteint 100% d'Impact Global ! Vous êtes les maîtres des Jeux.", 'amazing': "INCROYABLE !",
         'm1_title': "Conférence ODD", 'm1_desc': "Création monnaie solidaire.", 'm2_title': "Équipes Inclusives", 'm2_desc': "Création des équipes.", 
         'm3_title': "Obstacles Avenir", 'm3_desc': "Design d'épreuves.", 'm4_title': "Règlement", 'm4_desc': "Pacte de Fair-play.", 
         'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains.", 'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
@@ -39,14 +47,22 @@ translations = {
         'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'mic': "🎙️ Micrófono",
         'card': "🎒 Carnet Alumno", 'name': "Nombre:", 'trait': "Habilidad:", 
         'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet",
-        'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos",
+        'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos", 'chap': "Capítulo:",
         'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: Las Reglas", 5: "Cap. 5: La Energía", 6: "Cap. 6: La Gloria"},
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
         'name_label': "NOMBRE", 'enter_stadium': "ENTRAR AL ESTADIO",
         'profil_btn': "MI PERFIL", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE", 'oscars_btn': "EVALUACIÓN",
-        'global_impact': "IMPACTO GLOBAL", 'secret_codes_title': "CÓDIGOS SECRETOS", 'progression': "ROAD TO PARIS",
-        'arcade_title': "ARCADE INTERDISCIPLINAR", 'journal_title': "DIARIO DE A BORDO", 'campus_map': "MAPA DEL CAMPUS", 'oscars_title': "COEVALUACIÓN",
-        'locked_chap': "Capítulo Requerido", 'next': "Siguiente", 'correct': "¡Correcto!", 'incorrect': "Incorrecto",
+        'global_impact': "IMPACTO GLOBAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
+        'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? (ej: MATH-50)",
+        'progression': "ROAD TO PARIS", 'campus_map': "MAPA DEL CAMPUS", 'legend': "LEYENDA", 
+        'arcade_title': "ARCADE INTERDISCIPLINAR", 'journal_title': "DIARIO DE A BORDO", 'oscars_title': "COEVALUACIÓN",
+        'locked_chap': "Capítulo Requerido", 'next': "Siguiente", 'correct': "¡Correcto!", 'incorrect': "Incorrecto", 'quit': "Salir",
+        'validate': "VALIDAR", 'close': "Cerrar", 'post': "PUBLICAR ENTRADA", 'vote_btn': "VOTAR",
+        'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO",
+        'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín",
+        'alert_profile': "¡Completa tu perfil!", 'code_used': "¡Código ya usado!", 'code_invalid': "Código inválido.",
+        'validated_xp': "¡Validado! +100 XP", 'end_score': "¡Fin! Puntuación: ", 'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!",
+        'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅", 'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global! Sois los maestros de los Juegos.", 'amazing': "¡INCREÍBLE!",
         'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
         'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.", 'm4_title': "Reglamento", 'm4_desc': "Pacto Fair-play.", 
         'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.", 'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en campus."
@@ -103,7 +119,7 @@ with st.sidebar:
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;} .block-container {padding:0;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 3. CSS (APP NATIVA) - NO MODIFICAR LLAVES
+# 3. CSS (APP NATIVA)
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -164,7 +180,7 @@ CSS_CODE = """
 """
 
 # ==========================================================
-# 4. JAVASCRIPT LOGIC (F-STRING SEGURO)
+# 4. JAVASCRIPT LOGIC
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -214,7 +230,6 @@ JS_CODE = f"""
         }},
 
         addXP: (amount) => {{
-            // CORRECCIÓN APLICADA: Error del catch(e=>{{}}) solucionado con doble llave
             sfx_coin.play().catch(e => console.warn(e));
             window.app.data.user.xp += amount;
             window.app.saveData();
@@ -430,14 +445,6 @@ HTML_CODE = f"""
 
     <!-- SECCIÓN PERFIL Y CÓDIGOS -->
     <section id="view-profil" class="view">
-        <div class="glass-panel">
-            <h6 class="fw-bold"><i class="fa-solid fa-earth-americas text-primary"></i> {t['global_impact']}</h6>
-            <div class="progress" style="height: 15px; border-radius: 10px; background:#fff;">
-                <div id="global-xp" class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 15%"></div>
-            </div>
-            <small class="text-secondary">{t['obj_comm']}</small>
-        </div>
-
         <div class="glass-panel text-center">
             <h6 class="fw-bold text-dark"><i class="fa-solid fa-user-secret text-danger"></i> {t['secret_codes_title']}</h6>
             <p class="small text-secondary mb-2">{t['secret_codes_desc']}</p>
