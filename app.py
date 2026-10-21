@@ -22,24 +22,22 @@ translations = {
     'Français': {
         'tools': "Boîte à Outils", 'tts': "🗣️ Lecteur (TTS)", 'mic': "🎙️ Micro",
         'card': "🎒 Carte Élève", 'name': "Ton Nom:", 'trait': "Atout:", 
-        'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte",
+        'traits': ["Vitesse", "Force", "Stratégie", "Créativité", "Éloquence"], 'download_pdf': "📄 Ma Carte", 'download_diploma': "🎓 Diplôme",
         'admin': "🔐 Zone Prof", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres",
         'chap_titles': {1: "Chap. 1: L'Appel", 2: "Chap. 2: L'Équipe", 3: "Chap. 3: L'Action", 4: "Chap. 4: Les Règles", 5: "Chap. 5: L'Énergie", 6: "Chap. 6: La Gloire"},
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
         'name_label': "NOM", 'enter_stadium': "ENTRER DANS LE STADE",
         'profil_btn': "MON PROFIL", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "ÉVALUATION",
-        'global_impact': "IMPACT GLOBAL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
-        'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "VOTE & ÉVALUATION",
+        'global_impact': "IMPACT GLOBAL", 'personal_impact': "MON IMPACT PERSONNEL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
         'progression': "ROAD TO PARIS", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? (ex: MATH-50)",
         'back': "Retour", 'campus_map': "PLAN DU CAMPUS", 'legend': "LÉGENDE", 'arcade_title': "ARCADE INTERDISCIPLINAIRE", 'quit': "Quitter",
-        'locked_chap': "Chapitre Requis", 'validate': "VALIDER", 'close': "Fermer",
-        'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅",
-        'win_msg': "La classe a atteint 100% d'Impact Global ! Vous êtes les maîtres des Jeux.",
-        'amazing': "INCROYABLE !", 'journal_title': "JOURNAL DE BORD", 'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO", 'post': "POSTER L'ENTRÉE",
-        'oscars_title': "CO-ÉVALUATION GYMKHANA", 'vote_btn': "VOTER", 'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !",
-        'p_start': "Départ", 'p_end': "Arrivée", 'p_food': "Ravito", 'p_recyc': "Recyclage", 'p_water': "Eau", 'p_med': "Secours",
-        'alert_profile': "Complétez votre profil !", 'code_used': "Code déjà utilisé !", 'code_invalid': "Code invalide.",
-        'validated_xp': "Validé ! +100 XP", 'incorrect': "Incorrect", 'end_score': "Fin! Score: ", 'next': "Suivant", 'correct': "Correct!",
+        'locked_chap': "Chapitre Requis", 'validate': "VALIDER", 'close': "Fermer", 'post': "POSTER L'ENTRÉE", 'vote_btn': "VOTER",
+        'legend_unlocked': "LÉGENDE DÉBLOQUÉE", 'org_top': "🏅 ORGANISATEURS TOP 🏅", 'win_msg': "La classe a atteint 100% d'Impact Global !", 'amazing': "INCROYABLE !",
+        'journal_title': "JOURNAL DE BORD", 'mood': "HUMEUR", 'reflection': "Réflexion...", 'photo': "PHOTO", 'oscars_title': "CO-ÉVALUATION GYMKHANA",
+        'vote_thanks': "Vote enregistré ! +20 XP", 'already_voted': "Vous avez déjà voté !", 'alert_profile': "Complétez votre profil !", 
+        'code_used': "Code déjà utilisé !", 'code_invalid': "Code invalide.", 'validated_xp': "Validé ! +100 XP", 'incorrect': "Incorrect", 
+        'end_score': "Fin! Score: ", 'next': "Suivant", 'correct': "Correct!", 'p_start': "Départ", 'p_end': "Arrivée", 'p_food': "Ravito", 
+        'p_recyc': "Recyclage", 'p_water': "Eau", 'p_med': "Secours", 'analytics_title': "📊 Learning Analytics (Erreurs)",
         'm1_title': "Conférence ODD", 'm1_desc': "Création monnaie solidaire.", 'm2_title': "Équipes Inclusives", 'm2_desc': "Création des équipes.", 
         'm3_title': "Obstacles Avenir", 'm3_desc': "Design d'épreuves.", 'm4_title': "Règlement", 'm4_desc': "Pacte de Fair-play.", 
         'm5_title': "Ravitaillement", 'm5_desc': "Snacks sains.", 'm6_title': "Plan Parcours", 'm6_desc': "Tracé sur le campus."
@@ -47,24 +45,23 @@ translations = {
     'Español': {
         'tools': "Herramientas", 'tts': "🗣️ Lector (TTS)", 'mic': "🎙️ Micrófono",
         'card': "🎒 Carnet Alumno", 'name': "Nombre:", 'trait': "Habilidad:", 
-        'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet",
+        'traits': ["Velocidad", "Fuerza", "Estrategia", "Creatividad", "Elocuencia"], 'download_pdf': "📄 Mi Carnet", 'download_diploma': "🎓 Diploma",
         'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos",
         'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: Las Reglas", 5: "Cap. 5: La Energía", 6: "Cap. 6: La Gloria"},
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
         'name_label': "NOMBRE", 'enter_stadium': "ENTRAR AL ESTADIO",
         'profil_btn': "MI PERFIL", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE", 'oscars_btn': "EVALUACIÓN",
-        'global_impact': "IMPACTO GLOBAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
+        'global_impact': "IMPACTO GLOBAL", 'personal_impact': "MI IMPACTO PERSONAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
         'progression': "ROAD TO PARIS", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? (ej: MATH-50)",
         'back': "Volver", 'campus_map': "MAPA DEL CAMPUS", 'legend': "LEYENDA", 'arcade_title': "ARCADE INTERDISCIPLINAR", 'quit': "Salir",
-        'locked_chap': "Capítulo Requerido", 'validate': "VALIDAR", 'close': "Cerrar",
-        'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅",
-        'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global! Sois los maestros de los Juegos.",
-        'amazing': "¡INCREÍBLE!", 'journal_title': "DIARIO DE A BORDO", 'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO", 'post': "PUBLICAR ENTRADA",
-        'oscars_title': "COEVALUACIÓN GYMKHANA", 'vote_btn': "VOTAR", 'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!",
-        'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín",
-        'alert_profile': "¡Completa tu perfil!", 'code_used': "¡Código ya usado!", 'code_invalid': "Código inválido.",
-        'validated_xp': "¡Validado! +100 XP", 'incorrect': "Incorrecto", 'end_score': "¡Fin! Puntuación: ", 'next': "Siguiente", 'correct': "¡Correcto!",
-        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda solidaria.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
+        'locked_chap': "Capítulo Requerido", 'validate': "VALIDAR", 'close': "Cerrar", 'post': "PUBLICAR ENTRADA", 'vote_btn': "VOTAR",
+        'legend_unlocked': "LEYENDA DESBLOQUEADA", 'org_top': "🏅 ORGANIZADORES TOP 🏅", 'win_msg': "¡La clase ha alcanzado el 100% de Impacto Global!", 'amazing': "¡INCREÍBLE!",
+        'journal_title': "DIARIO DE A BORDO", 'mood': "ESTADO DE ÁNIMO", 'reflection': "Reflexión...", 'photo': "FOTO", 'oscars_title': "COEVALUACIÓN GYMKHANA",
+        'vote_thanks': "¡Voto registrado! +20 XP", 'already_voted': "¡Ya has votado!", 'alert_profile': "¡Completa tu perfil!", 
+        'code_used': "¡Código ya usado!", 'code_invalid': "Código inválido.", 'validated_xp': "¡Validado! +100 XP", 'incorrect': "Incorrecto", 
+        'end_score': "¡Fin! Puntuación: ", 'next': "Siguiente", 'correct': "¡Correcto!", 'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 
+        'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín", 'analytics_title': "📊 Learning Analytics (Errores)",
+        'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
         'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.", 'm4_title': "Reglamento", 'm4_desc': "Pacto Fair-play.", 
         'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.", 'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en campus."
     }
@@ -76,7 +73,7 @@ def get_tts_lang(lang_choice):
     return 'es' if lang_choice == 'Español' else 'fr'
 
 # ==========================================================
-# 2. BACKEND Y SIDEBAR (PYTHON)
+# 2. BACKEND Y GENERADORES DE PDF (PYTHON)
 # ==========================================================
 FIREBASE_CONFIG = "/* Omitido en demo local */"
 
@@ -100,6 +97,37 @@ def create_player_card(name, trait):
     pdf.cell(210, 15, f"Atout: {trait}", 0, 1, 'C')
     return pdf.output(dest='S').encode('latin-1')
 
+def generate_diploma(name):
+    # Generador de Diploma Apaisado (Landscape)
+    pdf = FPDF(orientation='L', unit='mm', format='A4')
+    pdf.add_page()
+    pdf.set_line_width(5)
+    pdf.set_draw_color(255, 215, 0) # Borde Dorado
+    pdf.rect(10, 10, 277, 190)
+    
+    pdf.set_font("Arial", 'B', 45)
+    pdf.set_text_color(0, 102, 204)
+    pdf.cell(277, 40, "DIPLÔME D'EXCELLENCE", 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'I', 20)
+    pdf.set_text_color(50, 50, 50)
+    pdf.cell(277, 20, "Décerné avec honneur à :", 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'B', 55)
+    pdf.set_text_color(220, 20, 60)
+    pdf.cell(277, 30, name.upper(), 0, 1, 'C')
+    
+    pdf.set_font("Arial", '', 16)
+    pdf.set_text_color(0, 0, 0)
+    pdf.cell(277, 20, "Pour sa participation exceptionnelle, son engagement envers les ODD et le Fair-Play.", 0, 1, 'C')
+    
+    pdf.set_font("Arial", 'I', 14)
+    pdf.cell(277, 20, "Projet : J.O. De l'Avenir", 0, 1, 'C')
+    return pdf.output(dest='S').encode('latin-1')
+
+# ==========================================================
+# 3. BARRA LATERAL DEL PROFESOR Y ANALÍTICAS
+# ==========================================================
 with st.sidebar:
     st.selectbox("🌐 Langue / Idioma", ["Français", "Español"], key='lang')
     t = translations.get(st.session_state.lang, translations['Français'])
@@ -127,29 +155,54 @@ with st.sidebar:
     st.markdown(f"### {t.get('card', 'Carte')}")
     player_name = st.text_input(t.get('name', 'Nom'), "Athlète")
     player_trait = st.selectbox(t.get('trait', 'Atout'), t.get('traits', []))
-    if st.button(t.get('download_pdf', 'PDF')):
-        try:
-            pdf_data = create_player_card(player_name, player_trait)
-            st.download_button("📥 PDF", pdf_data, file_name="carte.pdf", mime="application/pdf")
-            st.success("PDF Généré !")
-        except Exception as e:
-            st.error("Erreur PDF")
+    
+    col_pdf1, col_pdf2 = st.columns(2)
+    with col_pdf1:
+        if st.button("🎒 Card"):
+            try:
+                pdf_data = create_player_card(player_name, player_trait)
+                st.download_button("📥 PDF", pdf_data, file_name="carte.pdf", mime="application/pdf")
+            except: st.error("Erreur")
+    with col_pdf2:
+        if st.button("🎓 Diplôme"):
+            try:
+                diploma_data = generate_diploma(player_name)
+                st.download_button("📥 PDF", diploma_data, file_name="diplome.pdf", mime="application/pdf")
+            except: st.error("Erreur")
 
     st.divider()
     
     st.markdown(f"### {t.get('admin', 'Admin')}")
     password = st.text_input(t.get('pass', 'Mot de passe'), type="password")
     if password == "prof123": 
+        st.success("Admin OK")
+        
+        # 1. CONTROL DE CAPÍTULOS
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
         col2.markdown(f"<div style='text-align:center;'>{st.session_state.chapter}</div>", unsafe_allow_html=True)
         if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
         st.download_button("📥 Rapport Excel", data=generate_excel(get_mock_data()), file_name="rapport.xlsx")
+        
+        # 2. LEARNING ANALYTICS (NUEVO)
+        st.markdown("---")
+        st.markdown(f"**{t['analytics_title']}**")
+        # Datos simulados para la defensa (Tasa de error en %)
+        analytics_data = pd.DataFrame({
+            'Catégorie': ['Futur', 'Partitifs', 'Maths', 'Bio (ODD)', 'Géo'],
+            'Taux d\'erreur (%)': [68, 45, 30, 15, 10]
+        }).set_index('Catégorie')
+        st.bar_chart(analytics_data)
+
+        # 3. RESETEO DE DATOS
+        st.markdown("---")
+        if st.button("🗑️ Réinitialiser / Borrar", type="primary"):
+            components.html("<script>window.parent.localStorage.removeItem('jo_avenir_2026'); window.parent.location.reload();</script>", height=0)
 
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;} .block-container {padding:0;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 3. CSS (APP NATIVA Y VISTAS)
+# 4. CSS (APP NATIVA Y VISTAS)
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -211,119 +264,68 @@ CSS_CODE = """
     .avatar-item.locked { background: #444; border-color: #222; color: #777; }
     .avatar-item.unlocked { background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
 
-    /* ESTILOS DEL DIARIO */
+    /* BARRAS DE PROGRESO Y OTROS */
+    .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #ccc;}
+    .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
+    .fill-personal { background: linear-gradient(90deg, #00d2ff, #3a7bd5); height: 100%; width: 0%; transition: width 1s ease-out; }
+    .xp-badge { background: var(--accent); color: #000; font-weight: 900; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; border: 2px solid #fff; display: inline-block;}
+    
+    /* ESTILOS DEL DIARIO Y MAPA FÍSICO */
     .mood-btn { font-size: 2.5rem; background: #fff; border: 2px solid #eee; border-radius: 12px; padding: 5px; cursor: pointer; flex: 1; text-align: center; margin: 0 3px; }
     .mood-btn.selected { background: #e6f0ff; border-color: var(--primary); transform: scale(1.1); }
     .custom-file-input { width: 100%; padding: 10px; background: #222; color: white; border-radius: 8px; cursor: pointer; margin-bottom: 10px; }
-    
-    /* MAPA */
     .map-container { position: relative; width: 100%; height: 650px; background: #eee; border-radius: 15px; overflow: hidden; border: 4px solid white; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; }
     .map-frame { width: 150%; height: 150%; border: 0; pointer-events: none; transform: rotate(90deg); flex-shrink: 0; filter: contrast(1.1) saturate(1.1); }
     .map-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 5; }
     .map-pin { position: absolute; width: 55px; height: 55px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 900; cursor: grab; border: 3px solid #fff; box-shadow: 0 6px 12px rgba(0,0,0,0.5); font-size: 1.8rem; z-index: 10; transform: translate(-50%, -50%); transition: transform 0.1s; }
-    .map-hud { position: absolute; bottom: 15px; left: 15px; right: 15px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 12px; padding: 15px; z-index: 20; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 10px 30px rgba(0,0,0,0.2); pointer-events: none; }
     
-    /* MODALS Y OTROS */
-    .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
-    .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
-    .xp-badge { background: var(--accent); color: #000; font-weight: 900; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; border: 2px solid #fff; display: inline-block;}
+    /* MODALS */
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+    .custom-modal.show { display: flex; }
+    #golden-star { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; text-shadow: 0 0 20px #FFD700; cursor: pointer; z-index: 100; display: none; }
+    
     .medal-box { display: flex; gap: 10px; margin-top: 10px; }
     .medal { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: #eee; color: #aaa; border: 2px solid #ccc; transition: 0.3s; }
     .medal.unlocked.bronze { background: #cd7f32; color: white; border-color: #8c5622; box-shadow: 0 0 10px rgba(205,127,50,0.5); }
     .medal.unlocked.silver { background: #c0c0c0; color: white; border-color: #888; box-shadow: 0 0 10px rgba(192,192,192,0.5); }
     .medal.unlocked.gold { background: #ffd700; color: white; border-color: #b8860b; box-shadow: 0 0 15px rgba(255,215,0,0.8); }
-    #golden-star { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem; text-shadow: 0 0 20px #FFD700; cursor: pointer; z-index: 100; display: none; }
-    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-    .custom-modal.show { display: flex; }
 </style>
 """
 
 # ==========================================================
-# 4. JAVASCRIPT LOGIC (TODO INCLUIDO)
+# 5. JAVASCRIPT LOGIC
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-<script type="module">
-    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import {{ getFirestore, doc, setDoc, getDoc, onSnapshot }} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-    let db = null;
-    try {{
-        const firebaseConfig = {{ {FIREBASE_CONFIG} }};
-        const fbApp = initializeApp(firebaseConfig);
-        db = getFirestore(fbApp);
-    }} catch (e) {{
-        console.warn("Firebase config manquante ou invalide. Mode hors-ligne activé.");
-    }}
-
+<script>
     const sfx_coin = new Audio('https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg');
-    const sfx_unlock = new Audio('https://actions.google.com/sounds/v1/magic/magic_chime.ogg');
+    const MAX_INDIVIDUAL_XP = 600; 
 
     window.app = {{
         currentChapter: {st.session_state.chapter},
-        nominees: ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"],
-        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [], unlockedAvatars: [], myVote: "" }}, missions: [], journal: [] }},
+        data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [], journal: [] }},
         
-        init: async () => {{
-            if(localStorage.getItem('jo_avenir_zen') === 'true') document.body.classList.add('mode-zen');
-
+        init: () => {{
             window.app.data.missions = [
-                {{ id: 1, type: "code", code: "T0RELTc0QQ==", title: "{t['m1_title']}", odd: "ODD 1-17", icon: "fa-coins", desc: "{t['m1_desc']}", completed: false }},
-                {{ id: 2, type: "code", code: "RVEtOTJC", title: "{t['m2_title']}", odd: "ODD 5 & 10", icon: "fa-users", desc: "{t['m2_desc']}", completed: false }},
-                {{ id: 3, type: "code", code: "RUNPLTE4Qw==", title: "{t['m3_title']}", odd: "ODD 13", icon: "fa-recycle", desc: "{t['m3_desc']}", completed: false }},
-                {{ id: 4, type: "code", code: "UkVHLTQ0RA==", title: "{t['m4_title']}", odd: "ODD 16", icon: "fa-scale-balanced", desc: "{t['m4_desc']}", completed: false }},
-                {{ id: 5, type: "code", code: "TUlBTS02NkU=", title: "{t['m5_title']}", odd: "ODD 3", icon: "fa-apple-whole", desc: "{t['m5_desc']}", completed: false }},
-                {{ id: 6, type: "code", code: "TUFQLTMxRg==", title: "{t['m6_title']}", odd: "ODD 11", icon: "fa-map", desc: "{t['m6_desc']}", completed: false }}
+                {{ id: 1, title: "{t['m1_title']}", desc: "{t['m1_desc']}", icon: "fa-coins", completed: false }},
+                {{ id: 2, title: "{t['m2_title']}", desc: "{t['m2_desc']}", icon: "fa-users", completed: false }},
+                {{ id: 3, title: "{t['m3_title']}", desc: "{t['m3_desc']}", icon: "fa-recycle", completed: false }},
+                {{ id: 4, title: "{t['m4_title']}", desc: "{t['m4_desc']}", icon: "fa-scale-balanced", completed: false }},
+                {{ id: 5, title: "{t['m5_title']}", desc: "{t['m5_desc']}", icon: "fa-apple-whole", completed: false }},
+                {{ id: 6, title: "{t['m6_title']}", desc: "{t['m6_desc']}", icon: "fa-map", completed: false }}
             ];
 
             try {{
                 const localData = localStorage.getItem("jo_avenir_2026");
-                if (localData) {{
-                    const parsedData = JSON.parse(localData);
-                    if (parsedData && parsedData.user) window.app.data = parsedData;
-                }}
+                if (localData) window.app.data = JSON.parse(localData);
             }} catch (error) {{
-                console.error("Erreur critique de LocalStorage:", error);
+                console.warn(error);
                 localStorage.removeItem("jo_avenir_2026");
             }}
 
-            try {{
-                if (db && window.app.data.user.name !== "") {{
-                    const docRef = doc(db, "students", window.app.data.user.name);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) window.app.data = docSnap.data();
-                    
-                    onSnapshot(doc(db, "global", "stats"), (doc) => {{
-                        if(doc.exists()) {{
-                            let pct = (doc.data().totalXP / 100);
-                            const gb = document.getElementById('global-xp');
-                            if(gb) gb.style.width = pct + "%";
-                        }}
-                    }});
-                }}
-            }} catch (error) {{
-                console.warn("Erreur de synchronisation Firebase (Travaillant hors-ligne):", error);
-            }}
-
             window.app.renderAvatars();
-            
-            const tCont = document.getElementById('trait-container');
-            tCont.innerHTML = "";
-            const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
-            TRAITS.forEach(t => {{
-                const span = document.createElement('span'); 
-                span.className = "trait-tag";
-                if(window.app.data.user.trait === t) span.classList.add('selected');
-                span.innerText = t;
-                span.onclick = function() {{
-                    document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
-                    this.classList.add('selected');
-                    window.app.data.user.trait = t;
-                }};
-                tCont.appendChild(span);
-            }});
-
             window.app.updateUI();
+            
             if (window.app.data.user.name !== "") {{
                 document.getElementById('player-name').value = window.app.data.user.name;
                 window.app.nav('home');
@@ -332,26 +334,19 @@ JS_CODE = f"""
             }}
         }},
 
-        toggleZen: () => {{
-            document.body.classList.toggle('mode-zen');
-            localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen'));
-        }},
-
-        saveData: async () => {{
-            try {{ localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data)); }} catch(e) {{}}
+        saveData: () => {{
             try {{
-                if(db && window.app.data.user.name !== "") {{
-                    await setDoc(doc(db, "students", window.app.data.user.name), window.app.data);
-                }}
-            }} catch(e) {{}}
+                localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data));
+            }} catch(e) {{
+                console.warn(e);
+            }}
             window.app.updateUI();
         }},
 
         addXP: (amount) => {{
-            sfx_coin.play().catch(e => console.warn("Audio bloqué par navigateur"));
+            try {{ sfx_coin.play(); }} catch(e) {{ console.warn(e); }}
             window.app.data.user.xp += amount;
             window.app.saveData();
-            try {{ confetti({{ particleCount: 100, spread: 70, origin: {{ y: 0.6 }} }}); }} catch(e) {{}}
         }},
 
         nav: (view) => {{
@@ -374,20 +369,11 @@ JS_CODE = f"""
             }}
 
             if(view === 'missions') window.app.renderPath();
-            if(view === 'journal') window.app.renderJournal();
-            if(view === 'oscars') window.app.renderNominees();
         }},
 
         renderAvatars: () => {{
             const grid = document.getElementById('sprite-container'); grid.innerHTML = "";
-            const SPRITES = ["fa-dragon", "fa-ghost", "fa-robot", "fa-cat", "fa-bolt", "fa-fire", "fa-snowflake", "fa-leaf", "fa-crow", "fa-spider", "fa-fish", "fa-bug", "fa-hippo", "fa-otter", "fa-frog", "fa-horse", "fa-dove", "fa-dog", "fa-kiwi-bird", "fa-worm", "fa-locust", "fa-mosquito", "fa-meteor"];
-            const HIDDEN_SPRITES = [
-                {{ icon: "fa-crown", code: "NOVA-33" }}, {{ icon: "fa-user-astronaut", code: "TITAN-8X" }}, 
-                {{ icon: "fa-jedi", code: "NEXUS-V" }}, {{ icon: "fa-user-ninja", code: "PHOENIX-9" }}, 
-                {{ icon: "fa-mask", code: "SPARK-44" }}, {{ icon: "fa-hat-wizard", code: "AURA-77" }}, 
-                {{ icon: "fa-gem", code: "ECHO-LUM" }}
-            ];
-            
+            const SPRITES = ["fa-dragon", "fa-robot", "fa-bolt", "fa-leaf", "fa-meteor"];
             SPRITES.forEach(icon => {{
                 const div = document.createElement('div'); div.className = "avatar-item";
                 if(window.app.data.user.sprite === icon) div.classList.add('selected');
@@ -398,44 +384,14 @@ JS_CODE = f"""
                 }};
                 grid.appendChild(div);
             }});
-            
-            HIDDEN_SPRITES.forEach(h => {{
-                const div = document.createElement('div');
-                if (window.app.data.user.unlockedAvatars.includes(h.icon)) {{
-                    div.className = "avatar-item unlocked";
-                    if(window.app.data.user.sprite === h.icon) div.classList.add('selected');
-                    div.innerHTML = `<i class="fa-solid ${{h.icon}}"></i>`;
-                    div.onclick = function() {{
-                        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('selected'));
-                        this.classList.add('selected'); window.app.data.user.sprite = h.icon;
-                    }};
-                }} else {{
-                    div.className = "avatar-item locked";
-                    div.innerHTML = `<i class="fa-solid fa-lock"></i>`;
-                    div.onclick = function() {{
-                        const guess = prompt("Code secret:");
-                        if (guess && guess.trim().toUpperCase() === h.code) {{
-                            window.app.data.user.unlockedAvatars.push(h.icon);
-                            window.app.saveData(); window.app.renderAvatars();
-                            try{{ confetti(); }}catch(e){{}}
-                        }} else if(guess) {{
-                            alert("{t['code_invalid']}");
-                        }}
-                    }};
-                }}
-                grid.appendChild(div);
-            }});
         }},
 
         updateUI: () => {{
             const xp = window.app.data.user.xp || 0;
             document.querySelectorAll('.xp-counter').forEach(el => el.innerText = xp);
-            
-            document.querySelectorAll('.mini-avatar').forEach(mini => {{
-                if(window.app.data.user.sprite) {{
-                    mini.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`;
-                }}
-            }});
+            if(window.app.data.user.sprite) {{
+                document.querySelectorAll('.mini-avatar').forEach(el => el.innerHTML = `<i class="fa-solid ${{window.app.data.user.sprite}}"></i>`);
+            }}
             
             if (xp >= 100) document.getElementById('m-bronze').classList.add('unlocked', 'bronze');
             if (xp >= 300) document.getElementById('m-silver').classList.add('unlocked', 'silver');
@@ -445,51 +401,17 @@ JS_CODE = f"""
             const gb = document.querySelector('.fill-global');
             if(gb) gb.style.width = globalPct + "%";
             
+            let personalPct = Math.min((xp / MAX_INDIVIDUAL_XP) * 100, 100);
+            const pb = document.getElementById('personal-xp');
+            if(pb) pb.style.width = personalPct + "%";
+            
             if (globalPct >= 100) document.getElementById('golden-star').style.display = 'block';
-        }},
-
-        checkSecretCode: () => {{
-            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
-            const hashedInput = btoa(input);
-            const SECRET_CODES = {{
-                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
-                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
-                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
-                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
-            }};
-            const msgBox = document.getElementById('secret-msg');
-            
-            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
-                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
-                return;
-            }}
-            
-            if(SECRET_CODES[hashedInput]) {{
-                window.app.data.user.usedCodes.push(hashedInput);
-                window.app.addXP(SECRET_CODES[hashedInput].xp);
-                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
-                msgBox.style.color = "#28a745"; 
-                document.getElementById('secret-code-input').value = "";
-            }} else {{
-                msgBox.innerText = "{t['code_invalid']}"; 
-                msgBox.style.color = "#dc3545";
-            }}
-        }},
-
-        claimUltimateReward: () => {{
-            try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
-            document.getElementById('golden-star').style.display = 'none'; 
-            document.getElementById('ultimateModal').classList.add('show');
         }},
 
         saveProfile: () => {{
             const name = document.getElementById('player-name').value;
-            if(!window.app.data.user.sprite || !name || !window.app.data.user.trait) {{
-                alert("{t['alert_profile']}");
-                return;
-            }}
+            if(!window.app.data.user.sprite || !name) return alert("{t['alert_profile']}");
             window.app.data.user.name = name;
-            if(window.app.data.user.xp === undefined) window.app.data.user.xp = 0;
             window.app.saveData();
             window.app.nav('home');
         }},
@@ -500,19 +422,13 @@ JS_CODE = f"""
                 const isLeft = idx % 2 === 0; const reqChapter = idx + 1;
                 let statusClass = m.completed ? 'completed' : ''; let iconClass = m.completed ? 'fa-check' : m.icon;
                 
-                if (window.app.currentChapter < reqChapter) {{
-                    statusClass = 'locked'; iconClass = 'fa-lock';
-                }} else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{
-                    statusClass = 'active';
-                }}
+                if (window.app.currentChapter < reqChapter) {{ statusClass = 'locked'; iconClass = 'fa-lock'; }} 
+                else if (!m.completed && (idx === 0 || window.app.data.missions[idx-1].completed)) {{ statusClass = 'active'; }}
                 
                 container.innerHTML += `
                 <div class="mission-node ${{isLeft ? 'left' : 'right'}} ${{statusClass}}" onclick="window.app.openModal(${{m.id}}, '${{statusClass}}')">
                     <div class="node-icon"><i class="fa-solid ${{iconClass}}"></i></div>
-                    <div>
-                        <h5 class="mb-0 fw-bold">${{m.title}}</h5>
-                        <small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small>
-                    </div>
+                    <div><h5 class="mb-0 fw-bold">${{m.title}}</h5><small class="text-secondary">${{statusClass==='locked' ? "{t['locked_chap']} "+reqChapter : m.desc}}</small></div>
                 </div>`;
             }});
         }},
@@ -529,14 +445,16 @@ JS_CODE = f"""
             document.getElementById('customModal').classList.add('show');
         }},
 
-        closeModal: () => {{ document.getElementById('customModal').classList.remove('show'); }},
+        closeModal: () => {{
+            document.getElementById('customModal').classList.remove('show');
+        }},
 
         validate: () => {{
             const inp = document.getElementById('user-input').value.trim().toUpperCase(); 
             const hashedInp = btoa(inp); 
             const m = window.app.data.missions.find(x => x.id === window.app.currentId);
             if(hashedInp === m.code) {{
-                sfx_unlock.play().catch(e=>console.warn(e)); 
+                try {{ sfx_coin.play(); }} catch(e) {{}}
                 m.completed = true; 
                 document.getElementById('feedback-msg').innerText = "{t['validated_xp']}"; 
                 document.getElementById('feedback-msg').style.color = "#28a745"; 
@@ -548,7 +466,7 @@ JS_CODE = f"""
             }}
         }},
 
-        // === ARCADE (10 CATEGORIES, 3 PREGUNTAS CON FEEDBACK) ===
+        // === ARCADE FULL 10 CATEGORIES ===
         startGame: (t) => {{
             const QUIZ = {{
                 num: [
@@ -632,7 +550,7 @@ JS_CODE = f"""
                 optionsDiv.innerHTML += `<div class='game-opt' onclick='window.app.checkAnswer(${{i}}, this)'>${{ans}}</div>`;
             }});
             
-            document.getElementById('game-feedback').className = "feedback-box";
+            document.getElementById('game-feedback').style.display = "none";
             document.getElementById('btn-next-question').style.display = "none";
         }},
 
@@ -657,6 +575,7 @@ JS_CODE = f"""
                 feedbackText.innerHTML = `<strong>{t['incorrect']}</strong><br><small>${{q.f}}</small>`;
             }}
 
+            feedbackBox.style.display = "block";
             btnNext.style.display = "block";
         }},
 
@@ -670,47 +589,57 @@ JS_CODE = f"""
             document.getElementById('game-menu').style.display = 'flex'; 
         }},
 
-        // === JOURNAL ===
-        selectMood: (e,m) => {{
-            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
-            e.classList.add('selected'); 
-            document.getElementById('selected-mood').value = m;
+        // === CÓDIGOS SECRETOS ===
+        checkSecretCode: () => {{
+            const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
+            const hashedInput = btoa(input);
+            const SECRET_CODES = {{
+                "UkVMQUlTLTEwMA==": {{ xp: 100, msg: "+100 XP" }}, 
+                "QklPUy01MA==": {{ xp: 50, msg: "+50 XP (SVT)" }}, 
+                "QVRMQVMtNTA=": {{ xp: 50, msg: "+50 XP (GÉO)" }}, 
+                "TUFUSC01MA==": {{ xp: 50, msg: "+50 XP (MATHS)" }}
+            }};
+            const msgBox = document.getElementById('secret-msg');
+            
+            if(window.app.data.user.usedCodes.includes(hashedInput)) {{
+                msgBox.innerText = "{t['code_used']}"; msgBox.style.color = "#dc3545";
+                return;
+            }}
+            
+            if(SECRET_CODES[hashedInput]) {{
+                window.app.data.user.usedCodes.push(hashedInput);
+                window.app.addXP(SECRET_CODES[hashedInput].xp);
+                msgBox.innerText = SECRET_CODES[hashedInput].msg; 
+                msgBox.style.color = "#28a745"; 
+                document.getElementById('secret-code-input').value = "";
+            }} else {{
+                msgBox.innerText = "{t['code_invalid']}"; 
+                msgBox.style.color = "#dc3545";
+            }}
         }},
 
+        // === OTROS (DIARIO, MAPA, TTS, OSCARS) ===
+        selectMood: (e,m) => {{
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+            e.classList.add('selected'); document.getElementById('selected-mood').value = m;
+        }},
         saveJournal: () => {{ 
             const m = document.getElementById('selected-mood').value;
             const t = document.getElementById('journal-text').value;
             if(!m || !t) return; 
-            
             if(!window.app.data.journal) window.app.data.journal = [];
             window.app.data.journal.unshift({{d: new Date().toLocaleDateString(), m: m, t: t}});
-            
-            window.app.addXP(20); 
-            window.app.saveData(); 
-            window.app.renderJournal();
-            
-            document.getElementById('journal-text').value = ""; 
-            document.getElementById('selected-mood').value = "";
+            window.app.addXP(20); window.app.saveData(); window.app.renderJournal();
+            document.getElementById('journal-text').value = ""; document.getElementById('selected-mood').value = "";
             document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
         }},
-
         renderJournal: () => {{
-            const c = document.getElementById('journal-feed'); 
-            c.innerHTML = ""; 
+            const c = document.getElementById('journal-feed'); c.innerHTML = ""; 
             if(!window.app.data.journal) window.app.data.journal = []; 
             window.app.data.journal.forEach(e => {{ 
-                c.innerHTML += `
-                <div class='glass-panel'>
-                    <div class='d-flex justify-content-between mb-2'>
-                        <span class="text-secondary small fw-bold">${{e.d}}</span>
-                        <span style="font-size:1.5rem;">${{e.m}}</span>
-                    </div>
-                    <p class='text-dark mb-0'>${{e.t}}</p>
-                </div>`;
+                c.innerHTML += `<div class='glass-panel'><div class='d-flex justify-content-between mb-2'><span class="text-secondary small fw-bold">${{e.d}}</span><span style="font-size:1.5rem;">${{e.m}}</span></div><p class='text-dark mb-0'>${{e.t}}</p></div>`;
             }}); 
         }},
-
-        // === MAPA ===
         allowDrop: (ev) => {{ ev.preventDefault(); }},
         drag: (ev) => {{ ev.dataTransfer.setData("text", ev.target.id); }},
         drop: (ev) => {{ 
@@ -718,48 +647,31 @@ JS_CODE = f"""
             const data = ev.dataTransfer.getData("text"); 
             const el = document.getElementById(data); 
             const rect = ev.currentTarget.getBoundingClientRect(); 
-            const x = ev.clientX - rect.left; 
-            const y = ev.clientY - rect.top; 
-            el.style.left = ((x / rect.width) * 100) + "%"; 
-            el.style.top = ((y / rect.height) * 100) + "%"; 
+            const x = ev.clientX - rect.left; const y = ev.clientY - rect.top; 
+            el.style.left = ((x / rect.width) * 100) + "%"; el.style.top = ((y / rect.height) * 100) + "%"; 
         }},
-
-        // === OSCARS ===
         renderNominees: () => {{
-            const list = document.getElementById('nominees-list'); 
-            list.innerHTML = "";
-            window.app.nominees.forEach(n => {{
-                list.innerHTML += `
-                <div class='glass-panel d-flex justify-content-between align-items-center mb-2'>
-                    <span class="fw-bold text-dark">${{n}}</span>
-                    <button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button>
-                </div>`;
+            const list = document.getElementById('nominees-list'); list.innerHTML = "";
+            const nominees = ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"];
+            nominees.forEach(n => {{
+                list.innerHTML += `<div class='glass-panel d-flex justify-content-between align-items-center mb-2'><span class="fw-bold text-dark">${{n}}</span><button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button></div>`;
             }});
         }},
-
         submitVote: (name) => {{
-            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{
-                alert("{t['already_voted']}"); 
-                return;
-            }}
-            if(confirm("Voter pour " + name + " ?")) {{
-                window.app.data.user.myVote = name; 
-                window.app.addXP(20); 
-                window.app.saveData(); 
-                window.app.renderNominees();
-            }}
+            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{ alert("{t['already_voted']}"); return; }}
+            if(confirm("Voter pour " + name + " ?")) {{ window.app.data.user.myVote = name; window.app.addXP(20); window.app.saveData(); window.app.renderNominees(); }}
         }},
-
-        // === TTS ===
         speakText: (text) => {{
             window.speechSynthesis.cancel(); 
-            const msg = new SpeechSynthesisUtterance(); 
-            msg.text = text; 
-            msg.lang = 'fr-FR'; 
+            const msg = new SpeechSynthesisUtterance(); msg.text = text; msg.lang = 'fr-FR'; 
             window.speechSynthesis.speak(msg);
         }},
-        speakQuestion: () => {{
-            window.app.speakText(document.getElementById('game-question').innerText);
+        speakQuestion: () => {{ window.app.speakText(document.getElementById('game-question').innerText); }},
+        toggleZen: () => {{ document.body.classList.toggle('mode-zen'); localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen')); }},
+        claimUltimateReward: () => {{
+            try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
+            document.getElementById('golden-star').style.display = 'none'; 
+            document.getElementById('ultimateModal').classList.add('show');
         }}
     }};
 
@@ -787,6 +699,11 @@ HTML_CODE = f"""
         <div id="header-title" class="header-title">TITRE</div>
     </div>
 
+    <!-- BOTON ZEN (FIJO) -->
+    <div style="position:fixed; top:10px; right:10px; z-index:9999;">
+        <button class="btn-zen" onclick="window.app.toggleZen()">🧠 Mode Zen</button>
+    </div>
+
     <!-- PANTALLA LOGIN -->
     <section id="view-login" class="view">
         <div class="glass-panel text-center mt-2">
@@ -796,7 +713,6 @@ HTML_CODE = f"""
             <h4 class="fw-bold">{t['create_athlete']}</h4>
             <div class="avatar-grid" id="sprite-container"></div>
             <input type="text" id="player-name" class="solid-input mb-3" placeholder="{t['name_label']}">
-            <div class="trait-selector" id="trait-container"></div>
             <button class="btn-glass mt-2" onclick="window.app.saveProfile()">{t['enter_stadium']}</button>
         </div>
     </section>
@@ -811,6 +727,14 @@ HTML_CODE = f"""
             <div class="mini-avatar" style="font-size: 2.2rem; color: var(--primary); background: white; padding: 15px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"></div>
         </div>
 
+        <div class="glass-panel mb-4">
+            <h6 class="fw-bold"><i class="fa-solid fa-earth-americas text-primary"></i> {t['global_impact']}</h6>
+            <div class="progress" style="height: 15px; border-radius: 10px; background:#fff;">
+                <div id="global-xp" class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 15%"></div>
+            </div>
+            <small class="text-secondary">{t['obj_comm']}</small>
+        </div>
+
         <div class="row g-3 mb-4">
             <div class="col-6"><div class="home-btn" onclick="window.app.nav('profil')"><i class="fa-solid fa-user text-secondary mb-2 fs-1"></i><h6 class="fw-bold mb-0">{t['profil_btn']}</h6></div></div>
             <div class="col-6"><div class="home-btn" style="background:#f0f4ff;" onclick="window.app.nav('missions')"><i class="fa-solid fa-route text-primary mb-2 fs-1"></i><h6 class="fw-bold mb-0">{t['missions_btn']}</h6></div></div>
@@ -823,6 +747,18 @@ HTML_CODE = f"""
 
     <!-- SECCIÓN PERFIL Y CÓDIGOS -->
     <section id="view-profil" class="view">
+        <div class="glass-panel mt-4">
+            <h6 class="fw-bold"><i class="fa-solid fa-user text-info"></i> {t['personal_impact']}</h6>
+            <div class="progress" style="height: 15px; border-radius: 10px; background:#fff;">
+                <div id="personal-xp" class="progress-bar bg-info progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+            </div>
+            <div class="medal-box mt-2">
+                <div id="m-bronze" class="medal"><i class="fa-solid fa-medal"></i></div>
+                <div id="m-silver" class="medal"><i class="fa-solid fa-medal"></i></div>
+                <div id="m-gold" class="medal"><i class="fa-solid fa-trophy"></i></div>
+            </div>
+        </div>
+
         <div class="glass-panel text-center">
             <h6 class="fw-bold text-dark"><i class="fa-solid fa-user-secret text-danger"></i> {t['secret_codes_title']}</h6>
             <p class="small text-secondary mb-2">{t['secret_codes_desc']}</p>
@@ -831,14 +767,6 @@ HTML_CODE = f"""
                 <button class="btn btn-dark" style="border-radius: 8px; font-weight:bold;" onclick="window.app.checkSecretCode()">GO</button>
             </div>
             <div id="secret-msg" class="small mt-2 fw-bold"></div>
-        </div>
-        
-        <div class="glass-panel mt-4">
-            <h6 class="fw-bold"><i class="fa-solid fa-earth-americas text-primary"></i> {t['global_impact']}</h6>
-            <div class="progress" style="height: 15px; border-radius: 10px; background:#fff;">
-                <div id="global-xp" class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 15%"></div>
-            </div>
-            <small class="text-secondary">{t['obj_comm']}</small>
         </div>
     </section>
 
