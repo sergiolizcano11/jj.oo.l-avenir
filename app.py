@@ -191,12 +191,14 @@ with st.sidebar:
     if password == "prof123": 
         st.success("Admin Connecté")
         
+        # 1. CONTROL DE CAPÍTULOS
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
         col2.markdown(f"<div style='text-align:center;'>{st.session_state.chapter}</div>", unsafe_allow_html=True)
         if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
         st.download_button("📥 Rapport Excel", data=generate_excel(get_mock_data()), file_name="rapport.xlsx", use_container_width=True)
         
+        # 2. LEARNING ANALYTICS
         st.markdown("---")
         st.markdown(f"**{t['analytics_title']}**")
         analytics_data = pd.DataFrame({
@@ -210,18 +212,20 @@ with st.sidebar:
             st.download_button("📊 Télécharger Rapport PDF", analytics_pdf, file_name="learning_analytics.pdf", mime="application/pdf", use_container_width=True)
         except: pass
 
+        # 3. RESETEO DE DATOS SEGURO (Mejorado para evitar errores CORS en el iframe)
         st.markdown("---")
         if st.button("🗑️ Réinitialiser / Borrar Todo", type="primary", use_container_width=True):
-            st.warning("⚠️ Action irréversible.")
+            st.warning("⚠️ Action irréversible. Les profils actuels seront supprimés.")
             components.html("""
                 <script>
                     try {
-                        window.parent.localStorage.removeItem('jo_avenir_2026');
-                        alert('Base de données effacée ! Rechargez la page web (F5) pour un nouveau cours.');
-                    } catch(e) { console.error(e); }
+                        localStorage.removeItem('jo_avenir_2026');
+                        window.parent.location.reload();
+                    } catch(e) { console.error("Error al resetear:", e); }
                 </script>
             """, height=0)
 
+# Ocultar footer y menú principal, pero DEJAR VISIBLE la flecha lateral del profesor
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} .block-container {padding:0; padding-top: 1rem;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
@@ -278,6 +282,11 @@ CSS_CODE = """
     .avatar-item.selected { border-color: var(--primary); border-width: 4px; transform: scale(1.1); }
     .avatar-item.locked { background: #444; border-color: #222; color: #777; }
     .avatar-item.unlocked { background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+    
+    /* ESTILOS DEL SELECTOR DE HABILIDADES (ATOUT) RESTAURADOS */
+    .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; justify-content: center; margin-bottom: 15px; }
+    .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
+    .trait-tag.selected { background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }
 
     .progress-bar-bg { background: #e9ecef; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 8px; border: 1px solid #ccc;}
     .fill-global { background: linear-gradient(90deg, #FFD93D, #FF6B6B); height: 100%; width: 0%; transition: width 1s ease-out; }
@@ -326,7 +335,7 @@ CSS_CODE = """
 """
 
 # ==========================================================
-# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT MULTILINGÜE Y DOCK)
+# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT, DOCK Y ERROR HANDLER)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -337,15 +346,14 @@ JS_CODE = f"""
         currentChapter: {st.session_state.chapter},
         data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [], journal: [] }},
         
-        // --- 🛡️ CAZADOR DE ERRORES GLOBAL ---
+        // --- 🛡️ CAZADOR DE ERRORES GLOBAL SILENCIOSO ---
         setupErrorHandling: () => {{
             window.onerror = function(message, source, lineno, colno, error) {{
-                console.error("🚨 Fallo detectado:", message, "en línea", lineno);
-                alert("Oups ! Une petite erreur s'est produite. L'application va continuer de fonctionner.");
-                return true; 
+                console.error("🚨 Fallo detectado (Capturado y silenciado para UX):", message, "en línea", lineno);
+                return true; // Evita que el error rompa la pantalla
             }};
             window.onunhandledrejection = function(event) {{
-                console.error("🚨 Promesa fallida:", event.reason);
+                console.error("🚨 Promesa fallida (Capturada):", event.reason);
             }};
         }},
 
@@ -365,19 +373,39 @@ JS_CODE = f"""
                 const localData = localStorage.getItem("jo_avenir_2026");
                 if (localData) window.app.data = JSON.parse(localData);
             }} catch (error) {{
-                console.warn(error);
-                localStorage.removeItem("jo_avenir_2026");
+                console.warn("Parse error:", error);
+                try {{ localStorage.removeItem("jo_avenir_2026"); }} catch(e) {{}}
             }}
 
             window.app.renderAvatars();
+            
+            // PROGRAMACIÓN DEFENSIVA: Evitar que choque si falta el trait-container
+            const tCont = document.getElementById('trait-container');
+            if (tCont) {{
+                tCont.innerHTML = "";
+                const TRAITS = ["{t['traits'][0]}", "{t['traits'][1]}", "{t['traits'][2]}", "{t['traits'][3]}", "{t['traits'][4]}"];
+                TRAITS.forEach(t => {{
+                    const span = document.createElement('span'); 
+                    span.className = "trait-tag";
+                    if(window.app.data.user.trait === t) span.classList.add('selected');
+                    span.innerText = t;
+                    span.onclick = function() {{
+                        document.querySelectorAll('.trait-tag').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        window.app.data.user.trait = t;
+                    }};
+                    tCont.appendChild(span);
+                }});
+            }}
+
             window.app.updateUI();
             
             if (window.app.data.user.name && window.app.data.user.name !== "") {{
                 const nameField = document.getElementById('player-name');
                 if(nameField) nameField.value = window.app.data.user.name;
-                window.app.nav('home');
+                window.app.nav('home', false);
             }} else {{
-                window.app.nav('login');
+                window.app.nav('login', false);
             }}
         }},
 
@@ -410,7 +438,7 @@ JS_CODE = f"""
                 }}
             }}
 
-            // Gestionar el Dock Menú (Barra inferior nativa)
+            // GESTIÓN DEL DOCK MENÚ (Barra Inferior)
             const dock = document.getElementById('app-dock');
             if (dock) {{
                 if (view === 'login') {{
@@ -423,6 +451,7 @@ JS_CODE = f"""
                 }}
             }}
 
+            // CONEXIÓN CON EL BOTÓN "ATRÁS" DEL MÓVIL
             if (pushToHistory) {{
                 history.pushState({{ view: view }}, "", "#" + view);
             }}
@@ -471,7 +500,10 @@ JS_CODE = f"""
             const nameField = document.getElementById('player-name');
             if(!nameField) return;
             const name = nameField.value;
-            if(!window.app.data.user.sprite || !name) return alert("{t['alert_profile']}");
+            // Se valida que se haya seleccionado un poder y un nombre
+            if(!window.app.data.user.sprite || !name || !window.app.data.user.trait) {{
+                return alert("{t['alert_profile']}");
+            }}
             window.app.data.user.name = name;
             window.app.saveData();
             window.app.nav('home');
@@ -766,7 +798,7 @@ JS_CODE = f"""
         }}
     }};
 
-    // Event listener para el botón atrás del móvil / navegador
+    // ESCUCHADOR DEL BOTÓN ATRÁS DEL NAVEGADOR
     window.addEventListener('popstate', (event) => {{
         if (event.state && event.state.view) {{
             window.app.nav(event.state.view, false);
@@ -831,6 +863,8 @@ HTML_CODE = f"""
             <h4 class="fw-bold">{t['create_athlete']}</h4>
             <div class="avatar-grid" id="sprite-container"></div>
             <input type="text" id="player-name" class="solid-input mb-3" placeholder="{t['name_label']}">
+            <!-- Selector de Habilidades Restaurado -->
+            <div class="trait-selector" id="trait-container"></div>
             <button class="btn-glass mt-2" onclick="window.app.saveProfile()">{t['enter_stadium']}</button>
         </div>
     </section>
@@ -976,7 +1010,7 @@ HTML_CODE = f"""
         <div id="nominees-list"></div>
     </section>
 
-    <!-- BARRA DE NAVEGACIÓN INFERIOR (DOCK NATIVO) -->
+    <!-- DOCK MENÚ INFERIOR (NAVEGACIÓN NATIVA) -->
     <div id="app-dock" class="dock-nav" style="display:none;">
         <div id="dock-home" class="dock-item" onclick="window.app.nav('home')">
             <i class="fa-solid fa-house"></i><span>ACCUEIL</span>
