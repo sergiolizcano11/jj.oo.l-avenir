@@ -222,7 +222,6 @@ with st.sidebar:
                 </script>
             """, height=0)
 
-# Ocultar footer pero DEJAR VISIBLE la flecha lateral del profesor
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} .block-container {padding:0; padding-top: 1rem;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
@@ -317,11 +316,17 @@ CSS_CODE = """
     .chat-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 8px 15px; outline: none; }
     .chat-send { background: var(--accent); border: none; border-radius: 50%; width: 40px; height: 40px; color: black; font-weight: bold; cursor: pointer; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* DOCK MENÚ INFERIOR */
+    .dock-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-top: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-around; padding: 12px 0; z-index: 2000; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+    .dock-item { font-size: 1.5rem; color: #aaa; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+    .dock-item span { font-size: 0.6rem; font-weight: bold; font-family: var(--font-head); }
+    .dock-item.active { color: var(--primary); transform: translateY(-3px); }
 </style>
 """
 
 # ==========================================================
-# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT MULTILINGÜE)
+# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT MULTILINGÜE Y DOCK)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -332,7 +337,21 @@ JS_CODE = f"""
         currentChapter: {st.session_state.chapter},
         data: {{ user: {{ sprite: "", name: "", trait: "", xp: 0, usedCodes: [] }}, missions: [], journal: [] }},
         
+        // --- 🛡️ CAZADOR DE ERRORES GLOBAL ---
+        setupErrorHandling: () => {{
+            window.onerror = function(message, source, lineno, colno, error) {{
+                console.error("🚨 Fallo detectado:", message, "en línea", lineno);
+                alert("Oups ! Une petite erreur s'est produite. L'application va continuer de fonctionner.");
+                return true; 
+            }};
+            window.onunhandledrejection = function(event) {{
+                console.error("🚨 Promesa fallida:", event.reason);
+            }};
+        }},
+
         init: () => {{
+            window.app.setupErrorHandling();
+
             window.app.data.missions = [
                 {{ id: 1, title: "{t['m1_title']}", desc: "{t['m1_desc']}", icon: "fa-coins", completed: false }},
                 {{ id: 2, title: "{t['m2_title']}", desc: "{t['m2_desc']}", icon: "fa-users", completed: false }},
@@ -369,7 +388,7 @@ JS_CODE = f"""
 
         addXP: (amount) => {{ window.app.data.user.xp += amount; window.app.saveData(); }},
 
-        nav: (view) => {{
+        nav: (view, pushToHistory = true) => {{
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
             const targetView = document.getElementById('view-' + view);
             if(targetView) targetView.classList.add('active-view');
@@ -390,6 +409,24 @@ JS_CODE = f"""
                     title.innerText = titles[view] || "J.O. AVENIR";
                 }}
             }}
+
+            // Gestionar el Dock Menú (Barra inferior nativa)
+            const dock = document.getElementById('app-dock');
+            if (dock) {{
+                if (view === 'login') {{
+                    dock.style.display = 'none';
+                }} else {{
+                    dock.style.display = 'flex';
+                    document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+                    const activeDock = document.getElementById('dock-' + view);
+                    if (activeDock) activeDock.classList.add('active');
+                }}
+            }}
+
+            if (pushToHistory) {{
+                history.pushState({{ view: view }}, "", "#" + view);
+            }}
+
             if(view === 'missions') window.app.renderPath();
         }},
 
@@ -729,6 +766,15 @@ JS_CODE = f"""
         }}
     }};
 
+    // Event listener para el botón atrás del móvil / navegador
+    window.addEventListener('popstate', (event) => {{
+        if (event.state && event.state.view) {{
+            window.app.nav(event.state.view, false);
+        }} else {{
+            window.app.nav('home', false);
+        }}
+    }});
+
     setTimeout(() => window.app.init(), 200);
 </script>
 """
@@ -929,6 +975,22 @@ HTML_CODE = f"""
         <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['oscars_title']}</h4>
         <div id="nominees-list"></div>
     </section>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR (DOCK NATIVO) -->
+    <div id="app-dock" class="dock-nav" style="display:none;">
+        <div id="dock-home" class="dock-item" onclick="window.app.nav('home')">
+            <i class="fa-solid fa-house"></i><span>ACCUEIL</span>
+        </div>
+        <div id="dock-missions" class="dock-item" onclick="window.app.nav('missions')">
+            <i class="fa-solid fa-route"></i><span>MISSIONS</span>
+        </div>
+        <div id="dock-games" class="dock-item" onclick="window.app.nav('games')">
+            <i class="fa-solid fa-gamepad"></i><span>ARCADE</span>
+        </div>
+        <div id="dock-profil" class="dock-item" onclick="window.app.nav('profil')">
+            <i class="fa-solid fa-user"></i><span>PROFIL</span>
+        </div>
+    </div>
 
     <!-- MODAL MISIONES -->
     <div id="customModal" class="custom-modal">
