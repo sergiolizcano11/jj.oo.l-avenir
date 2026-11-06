@@ -17,6 +17,7 @@ st.set_page_config(page_title="J.O. De l'Avenir", layout="wide", initial_sidebar
 
 if 'lang' not in st.session_state: st.session_state.lang = 'Français'
 if 'chapter' not in st.session_state: st.session_state.chapter = 1
+if 'timer_min' not in st.session_state: st.session_state.timer_min = 45 # Temporizador por defecto
 
 translations = {
     'Français': {
@@ -26,7 +27,7 @@ translations = {
         'admin': "🔐 Zone Prof", 'pass': "Mot de passe:", 'chap_control': "Contrôle Chapitres",
         'chap_titles': {1: "Chap. 1: L'Appel", 2: "Chap. 2: L'Équipe", 3: "Chap. 3: L'Action", 4: "Chap. 4: Les Règles", 5: "Chap. 5: L'Énergie", 6: "Chap. 6: La Gloire"},
         'create_athlete': "CRÉEZ VOTRE ATHLÈTE", 'choose_champ': "CHOISISSEZ VOTRE CHAMPION",
-        'name_label': "NOM", 'enter_stadium': "ENTRER DANS LE STADE",
+        'name_label': "NOM (ou Alias)", 'enter_stadium': "ENTRER DANS LE STADE",
         'profil_btn': "MON PROFIL", 'missions_btn': "MISSIONS", 'map_btn': "PLAN", 'journal_btn': "JOURNAL", 'arcade_btn': "ARCADE", 'oscars_btn': "ÉVALUATION",
         'global_impact': "IMPACT GLOBAL", 'personal_impact': "MON IMPACT PERSONNEL", 'class': "CLASSE", 'obj_comm': "Objectif commun (ODD 17)",
         'progression': "ROAD TO PARIS", 'secret_codes_title': "CODES SECRETS", 'secret_codes_desc': "As-tu un code caché ? (ex: MATH-50)",
@@ -49,7 +50,7 @@ translations = {
         'admin': "🔐 Zona Profesor", 'pass': "Contraseña:", 'chap_control': "Control Capítulos",
         'chap_titles': {1: "Cap. 1: La Llamada", 2: "Cap. 2: El Equipo", 3: "Cap. 3: La Acción", 4: "Cap. 4: Las Reglas", 5: "Cap. 5: La Energía", 6: "Cap. 6: La Gloria"},
         'create_athlete': "CREA TU ATLETA", 'choose_champ': "ELIGE TU CAMPEÓN",
-        'name_label': "NOMBRE", 'enter_stadium': "ENTRAR AL ESTADIO",
+        'name_label': "NOMBRE (o Alias)", 'enter_stadium': "ENTRAR AL ESTADIO",
         'profil_btn': "MI PERFIL", 'missions_btn': "MISIONES", 'map_btn': "MAPA", 'journal_btn': "DIARIO", 'arcade_btn': "ARCADE", 'oscars_btn': "EVALUACIÓN",
         'global_impact': "IMPACTO GLOBAL", 'personal_impact': "MI IMPACTO PERSONAL", 'class': "CLASE", 'obj_comm': "Objetivo común (ODS 17)",
         'progression': "ROAD TO PARIS", 'secret_codes_title': "CÓDIGOS SECRETOS", 'secret_codes_desc': "¿Tienes un código oculto? (ej: MATH-50)",
@@ -191,14 +192,19 @@ with st.sidebar:
     if password == "prof123": 
         st.success("Admin Connecté")
         
-        # 1. CONTROL DE CAPÍTULOS
+        # CONTROLES DEL PROFESOR
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
         col2.markdown(f"<div style='text-align:center;'>{st.session_state.chapter}</div>", unsafe_allow_html=True)
         if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
+        
+        # TEMPORIZADOR MODIFICABLE PARA EL ESCAPE ROOM
+        st.markdown("---")
+        st.markdown("**⏱️ Timer Escape Room**")
+        st.session_state.timer_min = st.number_input("Minutes", 1, 120, st.session_state.timer_min)
+        
         st.download_button("📥 Rapport Excel", data=generate_excel(get_mock_data()), file_name="rapport.xlsx", use_container_width=True)
         
-        # 2. LEARNING ANALYTICS
         st.markdown("---")
         st.markdown(f"**{t['analytics_title']}**")
         analytics_data = pd.DataFrame({
@@ -212,10 +218,9 @@ with st.sidebar:
             st.download_button("📊 Télécharger Rapport PDF", analytics_pdf, file_name="learning_analytics.pdf", mime="application/pdf", use_container_width=True)
         except: pass
 
-        # 3. RESETEO DE DATOS SEGURO (Mejorado para evitar errores CORS en el iframe)
         st.markdown("---")
         if st.button("🗑️ Réinitialiser / Borrar Todo", type="primary", use_container_width=True):
-            st.warning("⚠️ Action irréversible. Les profils actuels seront supprimés.")
+            st.warning("⚠️ Action irréversible.")
             components.html("""
                 <script>
                     try {
@@ -229,7 +234,7 @@ with st.sidebar:
 st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} .block-container {padding:0; padding-top: 1rem;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 4. CSS (APP NATIVA Y CHATBOT)
+# 4. CSS (APP NATIVA, DUA Y CHATBOT)
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -237,13 +242,24 @@ CSS_CODE = """
     :root { --primary: #0066CC; --accent: #FFB100; --font-head: 'Montserrat', sans-serif; --font-body: 'Poppins', sans-serif; }
     body { background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop'); background-size: cover; background-attachment: fixed; color: #111; font-family: var(--font-body); margin: 0; padding-bottom: 90px; padding-top: 60px; overflow-x: hidden;}
     
+    /* MODO ZEN */
     body.mode-zen { background-image: none !important; background-color: #FDF6E3 !important; font-family: 'Comic Sans MS', sans-serif !important; }
     body.mode-zen .glass-panel, body.mode-zen .chat-window { box-shadow: none !important; border: 2px solid #ccc !important; background-color: #fff !important; backdrop-filter: none; }
     
+    /* MODO DUA (ACCESIBILIDAD DISLEXIA & CONTRASTE) */
+    body.mode-dua * { font-family: 'Comic Sans MS', 'OpenDyslexic', sans-serif !important; letter-spacing: 0.1em !important; line-height: 1.6 !important; font-size: 105%; }
+    body.mode-dua .glass-panel, body.mode-dua .chat-window { background: #ffffff !important; border: 3px solid #000000 !important; color: #000000 !important; box-shadow: none !important; backdrop-filter: none !important; }
+    body.mode-dua .btn-glass { background: #000000 !important; border: 3px solid #FFB100 !important; color: #FFB100 !important; }
+    
+    /* BOTONES FLOTANTES SUPERIORES (ZEN Y DUA) */
+    .btn-zen { background: #FFB100; color: black; border: 2px solid white; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;}
+    .btn-dua { background: #0066CC; color: white; border: 2px solid white; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: 0.2s;}
+    .btn-zen:active, .btn-dua:active { transform: scale(0.95); }
+
     .app-header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 15px; z-index: 2000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); transition: transform 0.3s; transform: translateY(-100%); }
     .app-header.visible { transform: translateY(0); }
     .back-btn { font-size: 1.5rem; color: var(--primary); cursor: pointer; border: none; background: transparent; padding: 10px; }
-    .header-title { flex-grow: 1; text-align: center; font-weight: 800; font-family: var(--font-head); margin-right: 40px; text-transform: uppercase; color: #222;}
+    .header-title { flex-grow: 1; text-align: center; font-weight: 800; font-family: var(--font-head); margin-right: 20px; text-transform: uppercase; color: #222;}
 
     .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); margin-bottom: 20px; }
     
@@ -283,7 +299,6 @@ CSS_CODE = """
     .avatar-item.locked { background: #444; border-color: #222; color: #777; }
     .avatar-item.unlocked { background: #FFD700; border-color: #b8860b; color: #222; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
     
-    /* ESTILOS DEL SELECTOR DE HABILIDADES (ATOUT) RESTAURADOS */
     .trait-selector { display: flex; overflow-x: auto; padding-bottom: 10px; gap: 8px; justify-content: center; margin-bottom: 15px; }
     .trait-tag { background: white; border: 2px solid #ccc; color: #333; padding: 8px 15px; border-radius: 20px; white-space: nowrap; cursor: pointer; font-size: 0.9rem; }
     .trait-tag.selected { background: var(--accent); color: black; font-weight: 800; border-color: #e6a000; transform: scale(1.05); }
@@ -335,10 +350,12 @@ CSS_CODE = """
 """
 
 # ==========================================================
-# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT, DOCK Y ERROR HANDLER)
+# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT, DOCK, ERROR HANDLER, DUA Y TIMER)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<!-- Librería para generar el PDF del Portfolio directamente desde el navegador -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
     const MAX_INDIVIDUAL_XP = 600; 
 
@@ -349,8 +366,8 @@ JS_CODE = f"""
         // --- 🛡️ CAZADOR DE ERRORES GLOBAL SILENCIOSO ---
         setupErrorHandling: () => {{
             window.onerror = function(message, source, lineno, colno, error) {{
-                console.error("🚨 Fallo detectado (Capturado y silenciado para UX):", message, "en línea", lineno);
-                return true; // Evita que el error rompa la pantalla
+                console.error("🚨 Fallo detectado (Capturado y silenciado para UX):", message, "en ligne", lineno);
+                return true; 
             }};
             window.onunhandledrejection = function(event) {{
                 console.error("🚨 Promesa fallida (Capturada):", event.reason);
@@ -359,6 +376,10 @@ JS_CODE = f"""
 
         init: () => {{
             window.app.setupErrorHandling();
+
+            // Cargar preferencias DUA/Zen
+            if(localStorage.getItem('jo_avenir_zen') === 'true') document.body.classList.add('mode-zen');
+            if(localStorage.getItem('jo_avenir_dua') === 'true') document.body.classList.add('mode-dua');
 
             window.app.data.missions = [
                 {{ id: 1, title: "{t['m1_title']}", desc: "{t['m1_desc']}", icon: "fa-coins", completed: false }},
@@ -379,7 +400,7 @@ JS_CODE = f"""
 
             window.app.renderAvatars();
             
-            // PROGRAMACIÓN DEFENSIVA: Evitar que choque si falta el trait-container
+            // PROGRAMACIÓN DEFENSIVA: Evitar choque si falta contenedor
             const tCont = document.getElementById('trait-container');
             if (tCont) {{
                 tCont.innerHTML = "";
@@ -415,6 +436,15 @@ JS_CODE = f"""
         }},
 
         addXP: (amount) => {{ window.app.data.user.xp += amount; window.app.saveData(); }},
+
+        // --- 🎲 GENERADOR DE ALIAS (RGPD) ---
+        generateAlias: () => {{
+            const adjs = ["Rapide", "Astucieux", "Vaillant", "Féroce", "Céleste", "Habile", "Intrépide", "Silencieux"];
+            const nouns = ["Tigre", "Renard", "Dragon", "Aigle", "Loup", "Ours", "Faucon", "Panthère"];
+            const res = nouns[Math.floor(Math.random() * nouns.length)] + " " + adjs[Math.floor(Math.random() * adjs.length)];
+            const nameField = document.getElementById('player-name');
+            if (nameField) nameField.value = res;
+        }},
 
         nav: (view, pushToHistory = true) => {{
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
@@ -500,7 +530,6 @@ JS_CODE = f"""
             const nameField = document.getElementById('player-name');
             if(!nameField) return;
             const name = nameField.value;
-            // Se valida que se haya seleccionado un poder y un nombre
             if(!window.app.data.user.sprite || !name || !window.app.data.user.trait) {{
                 return alert("{t['alert_profile']}");
             }}
@@ -709,6 +738,49 @@ JS_CODE = f"""
             }}
         }},
 
+        // === 📁 DESCARGA DEL PORTFOLIO (PDF DESDE JS) ===
+        downloadPortfolio: () => {{
+            const element = document.getElementById('journal-feed');
+            if(element.innerHTML.trim() === "") return alert("Le journal est vide ! / ¡El diario está vacío!");
+            
+            const opt = {{
+              margin:       10,
+              filename:     'Mon_Portfolio_JO.pdf',
+              image:        {{ type: 'jpeg', quality: 0.98 }},
+              html2canvas:  {{ scale: 2 }},
+              jsPDF:        {{ unit: 'mm', format: 'a4', orientation: 'portrait' }}
+            }};
+            
+            // Genera y descarga el PDF usando la librería inyectada
+            html2pdf().set(opt).from(element).save();
+        }},
+
+        // === ⏱️ TEMPORIZADOR ESCAPE ROOM ===
+        startTimer: () => {{
+            if(window.app.timerInterval) return; // Evita lanzar dos veces
+            let time = {st.session_state.timer_min} * 60; // Minutos elegidos por el profe en Python
+            const timerEl = document.getElementById('escape-timer');
+            const btnEl = document.getElementById('start-timer-btn');
+            
+            timerEl.style.display = 'block';
+            if(btnEl) btnEl.style.display = 'none';
+            
+            window.app.timerInterval = setInterval(() => {{
+                let m = Math.floor(time / 60); 
+                let s = time % 60;
+                // Formateo del tiempo: "45:00"
+                timerEl.innerText = `⏱️ ${{m}}:${{s < 10 ? '0' : ''}}${{s}}`;
+                
+                if(time <= 0) {{
+                    clearInterval(window.app.timerInterval);
+                    timerEl.innerText = "⏱️ 00:00";
+                    timerEl.style.color = "red";
+                    alert("⏰ Temps écoulé ! Fin de l'Escape Room.");
+                }}
+                time--;
+            }}, 1000);
+        }},
+
         // === OTROS ===
         selectMood: (e,m) => {{
             document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
@@ -758,7 +830,10 @@ JS_CODE = f"""
             window.speechSynthesis.speak(msg);
         }},
         speakQuestion: () => {{ window.app.speakText(document.getElementById('game-question').innerText); }},
+        
+        // --- BOTONES FLOTANTES: DUA Y ZEN ---
         toggleZen: () => {{ document.body.classList.toggle('mode-zen'); localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen')); }},
+        toggleDUA: () => {{ document.body.classList.toggle('mode-dua'); localStorage.setItem('jo_avenir_dua', document.body.classList.contains('mode-dua')); }},
         
         // === BOT CHAT (COACH OLYMPIQUE) MULTILINGÜE ===
         toggleChat: () => {{
@@ -775,7 +850,6 @@ JS_CODE = f"""
             input.value = "";
             body.scrollTop = body.scrollHeight;
             
-            // MOTOR DE REGLAS POR KEYWORDS (FR, ES, EN)
             let reply = "Je suis ton Coach Olympique. Pose-moi une question ! / Soy tu Coach Olímpico. ¡Pregúntame algo! / I am your Olympic Coach. Ask me anything!";
             
             if(text.includes('mission 1') || text.includes('misión 1') || text.includes('mission one') || text.includes('odd') || text.includes('ods') || text.includes('sdg')) {{
@@ -790,7 +864,6 @@ JS_CODE = f"""
                 reply = "Demande-moi des indices sur les 'missions', les 'maths', le 'futur' ou les 'codes' ! / ¡Pregúntame por 'misiones', 'mates', 'futuro' o 'códigos'!";
             }}
             
-            // Respuesta del Bot (Simular retraso humano)
             setTimeout(() => {{
                 body.innerHTML += `<div class="chat-bubble bot-bubble">${{reply}}</div>`;
                 body.scrollTop = body.scrollHeight;
@@ -825,15 +898,17 @@ HTML_CODE = f"""
     {CSS_CODE}
 </head>
 <body>
-    <!-- HEADER NATIVO -->
+    <!-- HEADER NATIVO CON ESPACIO PARA EL TEMPORIZADOR -->
     <div id="app-header" class="app-header">
         <button class="back-btn" onclick="window.app.nav('home')"><i class="fa-solid fa-chevron-left"></i></button>
         <div id="header-title" class="header-title">TITRE</div>
+        <div id="escape-timer" style="font-weight:bold; color:#dc3545; font-size:1.2rem; display:none; margin-right:15px;"></div>
     </div>
 
-    <!-- BOTON ZEN (FIJO) -->
-    <div style="position:fixed; top:10px; right:10px; z-index:9999;">
-        <button class="btn-zen" onclick="window.app.toggleZen()">🧠 Mode Zen</button>
+    <!-- BOTONES SUPERIORES (DUA Y ZEN FIJOS) -->
+    <div style="position:fixed; top:10px; right:10px; z-index:9999; display:flex; gap:10px;">
+        <button class="btn-dua" onclick="window.app.toggleDUA()">👁️ DUA</button>
+        <button class="btn-zen" onclick="window.app.toggleZen()">🧠 Zen</button>
     </div>
 
     <!-- CHATBOT FLOTANTE (COACH OLYMPIQUE) -->
@@ -862,7 +937,13 @@ HTML_CODE = f"""
         <div class="glass-panel mt-4">
             <h4 class="fw-bold">{t['create_athlete']}</h4>
             <div class="avatar-grid" id="sprite-container"></div>
-            <input type="text" id="player-name" class="solid-input mb-3" placeholder="{t['name_label']}">
+            
+            <!-- CONTENEDOR CON ALIAS (RGPD) -->
+            <div class="d-flex gap-2 mb-3">
+                <input type="text" id="player-name" class="solid-input mb-0" placeholder="{t['name_label']}">
+                <button class="btn btn-dark" style="border-radius:10px;" onclick="window.app.generateAlias()">🎲 Alias</button>
+            </div>
+            
             <!-- Selector de Habilidades Restaurado -->
             <div class="trait-selector" id="trait-container"></div>
             <button class="btn-glass mt-2" onclick="window.app.saveProfile()">{t['enter_stadium']}</button>
@@ -922,8 +1003,12 @@ HTML_CODE = f"""
         </div>
     </section>
 
-    <!-- SECCIÓN RUTA DE MISIONES -->
+    <!-- SECCIÓN RUTA DE MISIONES CON EL BOTÓN DEL TEMPORIZADOR -->
     <section id="view-missions" class="view">
+        <div class="text-center mb-3">
+            <!-- El profesor decide los minutos en la pestaña admin de python y se inyectan aquí -->
+            <button id="start-timer-btn" class="btn btn-danger fw-bold" style="border-radius:20px; box-shadow: 0 4px 10px rgba(220,53,69,0.3);" onclick="window.app.startTimer()">▶️ Lancer Chrono ({st.session_state.timer_min} min)</button>
+        </div>
         <div id="path-container" class="path-container"></div>
     </section>
 
@@ -986,7 +1071,7 @@ HTML_CODE = f"""
         </div>
     </section>
 
-    <!-- SECCIÓN DIARIO DE A BORDO -->
+    <!-- SECCIÓN DIARIO DE A BORDO CON BOTÓN DE DESCARGA PDF -->
     <section id="view-journal" class="view">
         <h4 class="fw-bold mb-3 text-white" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">{t['journal_title']}</h4>
         <div class="glass-panel">
@@ -1000,6 +1085,7 @@ HTML_CODE = f"""
             <input type="hidden" id="selected-mood">
             <textarea id="journal-text" class="solid-textarea mt-2" rows="2" placeholder="{t['reflection']}"></textarea>
             <button onclick="window.app.saveJournal()" class="btn-glass mt-2">{t['post']}</button>
+            <button onclick="window.app.downloadPortfolio()" class="btn-glass mt-2" style="background:#28a745;"><i class="fa-solid fa-file-pdf"></i> Télécharger Portfolio (PDF)</button>
         </div>
         <div id="journal-feed" class="mt-4"></div>
     </section>
