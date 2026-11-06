@@ -13,7 +13,7 @@ import json
 # ==========================================================
 # 1. CONFIGURACIÓN Y DICCIONARIOS
 # ==========================================================
-st.set_page_config(page_title="J.O. De l'Avenir", layout="wide", initial_sidebar_state="expanded", page_icon="🏅")
+st.set_page_config(page_title="J.O. De l'Avenir", layout="wide", initial_sidebar_state="collapsed", page_icon="🏅")
 
 if 'lang' not in st.session_state: st.session_state.lang = 'Français'
 if 'chapter' not in st.session_state: st.session_state.chapter = 1
@@ -62,7 +62,7 @@ translations = {
         'end_score': "¡Fin! Puntuación: ", 'next': "Siguiente", 'correct': "¡Correcto!", 'p_start': "Salida", 'p_end': "Meta", 'p_food': "Snacks", 
         'p_recyc': "Reciclaje", 'p_water': "Agua", 'p_med': "Botiquín", 'analytics_title': "📊 Learning Analytics",
         'm1_title': "Conferencia ODS", 'm1_desc': "Creación moneda.", 'm2_title': "Equipos Inclusivos", 'm2_desc': "Formación de equipos.", 
-        'm3_title': "Obstáculos Futuro", 'm3_desc': "Diseño de pruebas.", 'm4_title': "Reglamento", 'm4_desc': "Pacto Fair-play.", 
+        'm3_title': "Obstacles Futuro", 'm3_desc': "Diseño de pruebas.", 'm4_title': "Reglamento", 'm4_desc': "Pacto Fair-play.", 
         'm5_title': "Avituallamiento", 'm5_desc': "Snacks saludables.", 'm6_title': "Plano Recorrido", 'm6_desc': "Trazado en campus."
     }
 }
@@ -149,7 +149,7 @@ with st.sidebar:
     
     with st.expander(t.get('tts', "Lecteur")):
         text_to_speak = st.text_input("", "Allez!")
-        if st.button("🔊"):
+        if st.button("🔊" if 'listen' not in t else t['listen']):
             try:
                 tts = gTTS(text=text_to_speak, lang=get_tts_lang(st.session_state.lang))
                 audio_bytes = io.BytesIO()
@@ -191,14 +191,12 @@ with st.sidebar:
     if password == "prof123": 
         st.success("Admin Connecté")
         
-        # 1. CONTROL DE CAPÍTULOS
         col1, col2, col3 = st.columns([1,2,1])
         if col1.button("⏪"): st.session_state.chapter = max(1, st.session_state.chapter - 1)
         col2.markdown(f"<div style='text-align:center;'>{st.session_state.chapter}</div>", unsafe_allow_html=True)
         if col3.button("⏩"): st.session_state.chapter = min(6, st.session_state.chapter + 1)
         st.download_button("📥 Rapport Excel", data=generate_excel(get_mock_data()), file_name="rapport.xlsx", use_container_width=True)
         
-        # 2. LEARNING ANALYTICS
         st.markdown("---")
         st.markdown(f"**{t['analytics_title']}**")
         analytics_data = pd.DataFrame({
@@ -212,7 +210,6 @@ with st.sidebar:
             st.download_button("📊 Télécharger Rapport PDF", analytics_pdf, file_name="learning_analytics.pdf", mime="application/pdf", use_container_width=True)
         except: pass
 
-        # 3. RESETEO DE DATOS SEGURO
         st.markdown("---")
         if st.button("🗑️ Réinitialiser / Borrar Todo", type="primary", use_container_width=True):
             st.warning("⚠️ Action irréversible.")
@@ -225,10 +222,11 @@ with st.sidebar:
                 </script>
             """, height=0)
 
-st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;} .block-container {padding:0;}</style>", unsafe_allow_html=True)
+# Ocultar footer pero DEJAR VISIBLE la flecha lateral del profesor
+st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} .block-container {padding:0; padding-top: 1rem;}</style>", unsafe_allow_html=True)
 
 # ==========================================================
-# 4. CSS (APP NATIVA Y VISTAS)
+# 4. CSS (APP NATIVA Y CHATBOT)
 # ==========================================================
 CSS_CODE = """
 <style>
@@ -237,7 +235,7 @@ CSS_CODE = """
     body { background-image: url('https://images.unsplash.com/photo-1533107862482-0e6974b06ec4?q=80&w=2574&auto=format&fit=crop'); background-size: cover; background-attachment: fixed; color: #111; font-family: var(--font-body); margin: 0; padding-bottom: 90px; padding-top: 60px; overflow-x: hidden;}
     
     body.mode-zen { background-image: none !important; background-color: #FDF6E3 !important; font-family: 'Comic Sans MS', sans-serif !important; }
-    body.mode-zen .glass-panel { box-shadow: none !important; border: 2px solid #ccc !important; background-color: #fff !important; backdrop-filter: none; }
+    body.mode-zen .glass-panel, body.mode-zen .chat-window { box-shadow: none !important; border: 2px solid #ccc !important; background-color: #fff !important; backdrop-filter: none; }
     
     .app-header { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 15px; z-index: 2000; box-shadow: 0 2px 15px rgba(0,0,0,0.1); transition: transform 0.3s; transform: translateY(-100%); }
     .app-header.visible { transform: translateY(0); }
@@ -304,11 +302,26 @@ CSS_CODE = """
     .medal.unlocked.bronze { background: #cd7f32; color: white; border-color: #8c5622; box-shadow: 0 0 10px rgba(205,127,50,0.5); }
     .medal.unlocked.silver { background: #c0c0c0; color: white; border-color: #888; box-shadow: 0 0 10px rgba(192,192,192,0.5); }
     .medal.unlocked.gold { background: #ffd700; color: white; border-color: #b8860b; box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+
+    /* CHATBOT PEDAGÓGICO (COACH) */
+    .chatbot-toggle { position: fixed; bottom: 80px; right: 20px; width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; z-index: 2500; transition: 0.3s; border: 2px solid white; }
+    .chatbot-toggle:hover { transform: scale(1.1); }
+    .chat-window { position: fixed; bottom: 150px; right: 20px; width: 320px; max-width: 90vw; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid rgba(0,0,0,0.1); z-index: 2499; display: none; flex-direction: column; overflow: hidden; animation: slideUp 0.3s ease-out; }
+    .chat-window.show { display: flex; }
+    .chat-header { background: var(--primary); color: white; padding: 12px; font-weight: bold; font-family: var(--font-head); display: flex; justify-content: space-between; align-items: center; }
+    .chat-body { padding: 15px; height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f8f9fa; }
+    .chat-bubble { padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; max-width: 85%; }
+    .bot-bubble { background: #e9ecef; color: #111; align-self: flex-start; border-bottom-left-radius: 0; }
+    .user-bubble { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 0; }
+    .chat-footer { padding: 10px; background: white; border-top: 1px solid #ddd; display: flex; gap: 5px; }
+    .chat-input { flex-grow: 1; border: 1px solid #ccc; border-radius: 20px; padding: 8px 15px; outline: none; }
+    .chat-send { background: var(--accent); border: none; border-radius: 50%; width: 40px; height: 40px; color: black; font-weight: bold; cursor: pointer; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 """
 
 # ==========================================================
-# 5. JAVASCRIPT LOGIC (ROBUSTO Y SEGURO)
+# 5. JAVASCRIPT LOGIC (INCLUYE CHATBOT MULTILINGÜE)
 # ==========================================================
 JS_CODE = f"""
 <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
@@ -333,15 +346,13 @@ JS_CODE = f"""
                 const localData = localStorage.getItem("jo_avenir_2026");
                 if (localData) window.app.data = JSON.parse(localData);
             }} catch (error) {{
-                console.warn("Local storage parse error:", error);
+                console.warn(error);
                 localStorage.removeItem("jo_avenir_2026");
             }}
 
             window.app.renderAvatars();
             window.app.updateUI();
             
-            // LÓGICA DE INICIO: Mostrar Login por defecto, a menos que haya nombre.
-            // Para asegurar que la vista activa inicial funciona, forzamos render.
             if (window.app.data.user.name && window.app.data.user.name !== "") {{
                 const nameField = document.getElementById('player-name');
                 if(nameField) nameField.value = window.app.data.user.name;
@@ -352,16 +363,11 @@ JS_CODE = f"""
         }},
 
         saveData: () => {{
-            try {{
-                localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data));
-            }} catch(e) {{ console.warn(e); }}
+            try {{ localStorage.setItem("jo_avenir_2026", JSON.stringify(window.app.data)); }} catch(e) {{}}
             window.app.updateUI();
         }},
 
-        addXP: (amount) => {{
-            window.app.data.user.xp += amount;
-            window.app.saveData();
-        }},
+        addXP: (amount) => {{ window.app.data.user.xp += amount; window.app.saveData(); }},
 
         nav: (view) => {{
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
@@ -384,7 +390,6 @@ JS_CODE = f"""
                     title.innerText = titles[view] || "J.O. AVENIR";
                 }}
             }}
-
             if(view === 'missions') window.app.renderPath();
         }},
 
@@ -466,9 +471,7 @@ JS_CODE = f"""
             document.getElementById('customModal').classList.add('show');
         }},
 
-        closeModal: () => {{
-            document.getElementById('customModal').classList.remove('show');
-        }},
+        closeModal: () => {{ document.getElementById('customModal').classList.remove('show'); }},
 
         validate: () => {{
             const inp = document.getElementById('user-input').value.trim().toUpperCase(); 
@@ -587,7 +590,6 @@ JS_CODE = f"""
                 btnElement.style.border = "3px solid #28a745";
                 feedbackBox.className = "feedback-box correct";
                 feedbackText.innerHTML = `<strong>{t['correct']}</strong><br><small>${{q.f}}</small>`;
-                try {{ confetti({{ particleCount: 40, spread: 50, origin: {{ y: 0.6 }} }}); }} catch(e) {{}}
             }} else {{
                 btnElement.style.border = "3px solid #dc3545";
                 document.querySelectorAll('.game-opt')[q.c].style.border = "3px solid #28a745";
@@ -638,7 +640,7 @@ JS_CODE = f"""
             }}
         }},
 
-        // === OTROS (DIARIO, MAPA, TTS) ===
+        // === OTROS ===
         selectMood: (e,m) => {{
             document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
             e.classList.add('selected'); document.getElementById('selected-mood').value = m;
@@ -670,16 +672,64 @@ JS_CODE = f"""
             const x = ev.clientX - rect.left; const y = ev.clientY - rect.top; 
             el.style.left = ((x / rect.width) * 100) + "%"; el.style.top = ((y / rect.height) * 100) + "%"; 
         }},
+        renderNominees: () => {{
+            const list = document.getElementById('nominees-list'); list.innerHTML = "";
+            const nominees = ["Les Titans", "Eco-Warriors", "Cyber-Français", "Green Team"];
+            nominees.forEach(n => {{
+                list.innerHTML += `<div class='glass-panel d-flex justify-content-between align-items-center mb-2'><span class="fw-bold text-dark">${{n}}</span><button class='btn btn-warning fw-bold' style='border-radius:8px;' onclick='window.app.submitVote("${{n}}")'>{t['vote_btn']}</button></div>`;
+            }});
+        }},
+        submitVote: (name) => {{
+            if(window.app.data.user.myVote && window.app.data.user.myVote !== "") {{ alert("{t['already_voted']}"); return; }}
+            if(confirm("Voter pour " + name + " ?")) {{ window.app.data.user.myVote = name; window.app.addXP(20); window.app.saveData(); window.app.renderNominees(); }}
+        }},
+        speakText: (text) => {{
+            window.speechSynthesis.cancel(); 
+            const msg = new SpeechSynthesisUtterance(); msg.text = text; msg.lang = 'fr-FR'; 
+            window.speechSynthesis.speak(msg);
+        }},
         speakQuestion: () => {{ window.app.speakText(document.getElementById('game-question').innerText); }},
         toggleZen: () => {{ document.body.classList.toggle('mode-zen'); localStorage.setItem('jo_avenir_zen', document.body.classList.contains('mode-zen')); }},
-        claimUltimateReward: () => {{
-            try{{ confetti({{ particleCount: 300, spread: 160, origin: {{ y: 0.4 }} }}); }}catch(e){{}}
-            document.getElementById('golden-star').style.display = 'none'; 
-            document.getElementById('ultimateModal').classList.add('show');
+        
+        // === BOT CHAT (COACH OLYMPIQUE) MULTILINGÜE ===
+        toggleChat: () => {{
+            const chat = document.getElementById('chat-window');
+            chat.classList.toggle('show');
+        }},
+        sendChatMessage: () => {{
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim().toLowerCase();
+            if(!text) return;
+            
+            const body = document.getElementById('chat-body');
+            body.innerHTML += `<div class="chat-bubble user-bubble">${{text}}</div>`;
+            input.value = "";
+            body.scrollTop = body.scrollHeight;
+            
+            // MOTOR DE REGLAS POR KEYWORDS (FR, ES, EN)
+            let reply = "Je suis ton Coach Olympique. Pose-moi une question ! / Soy tu Coach Olímpico. ¡Pregúntame algo! / I am your Olympic Coach. Ask me anything!";
+            
+            if(text.includes('mission 1') || text.includes('misión 1') || text.includes('mission one') || text.includes('odd') || text.includes('ods') || text.includes('sdg')) {{
+                reply = "💡 Indice (Mission 1) : L'ODD 1 parle de la pauvreté. / El ODS 1 trata sobre la pobreza. / SDG 1 is about poverty.";
+            }} else if(text.includes('futur') || text.includes('future') || text.includes('grammaire') || text.includes('gramática') || text.includes('grammar')) {{
+                reply = "💡 Indice (Grammaire) : Le futur simple se forme avec l'infinitif + ai, as, a, ons, ez, ont. / Recuerda las terminaciones del futuro en francés.";
+            }} else if(text.includes('math') || text.includes('mate') || text.includes('vitesse') || text.includes('velocidad') || text.includes('speed')) {{
+                reply = "💡 Indice (Maths) : La vitesse est la distance divisée par le temps (V = d/t). / La velocidad es distancia dividida por el tiempo.";
+            }} else if(text.includes('code') || text.includes('código') || text.includes('codigo') || text.includes('secret') || text.includes('secreto')) {{
+                reply = "🕵️ Les codes sont cachés dans les activités de classe. / Los códigos están escondidos en las actividades de clase. / Codes are hidden in class activities.";
+            }} else if(text.includes('aide') || text.includes('ayuda') || text.includes('help') || text.includes('pista') || text.includes('hint')) {{
+                reply = "Demande-moi des indices sur les 'missions', les 'maths', le 'futur' ou les 'codes' ! / ¡Pregúntame por 'misiones', 'mates', 'futuro' o 'códigos'!";
+            }}
+            
+            // Respuesta del Bot (Simular retraso humano)
+            setTimeout(() => {{
+                body.innerHTML += `<div class="chat-bubble bot-bubble">${{reply}}</div>`;
+                body.scrollTop = body.scrollHeight;
+            }}, 800);
         }}
     }};
 
-    setTimeout(() => window.app.init(), 100);
+    setTimeout(() => window.app.init(), 200);
 </script>
 """
 
@@ -708,7 +758,25 @@ HTML_CODE = f"""
         <button class="btn-zen" onclick="window.app.toggleZen()">🧠 Mode Zen</button>
     </div>
 
-    <!-- PANTALLA LOGIN (Por defecto visible para evitar fallos si JS tarda) -->
+    <!-- CHATBOT FLOTANTE (COACH OLYMPIQUE) -->
+    <div class="chatbot-toggle" onclick="window.app.toggleChat()">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+    <div id="chat-window" class="chat-window">
+        <div class="chat-header">
+            <span>🏅 Coach Olympique</span>
+            <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="window.app.toggleChat()"></i>
+        </div>
+        <div id="chat-body" class="chat-body">
+            <div class="chat-bubble bot-bubble">Bonjour ! Besoin d'un indice ? / ¿Necesitas una pista? / Need a hint?</div>
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Pose ta question..." onkeypress="if(event.key === 'Enter') window.app.sendChatMessage()">
+            <button class="chat-send" onclick="window.app.sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- PANTALLA LOGIN -->
     <section id="view-login" class="view active-view">
         <div class="glass-panel text-center mt-2">
             <h1 class="fw-bold" style="font-family: var(--font-head); font-size:2.5rem;">J.O. AVENIR</h1>
